@@ -34,7 +34,7 @@ export default {
       Login() {
         // console.log('submit!',this.loginForm);
         
-            this.axios.post('http://localhost:3312/sys-user/login',this.loginForm).then((resp)=>{
+            this.axios.post('http://localhost:9090/login',this.loginForm).then((resp)=>{
                 let data = resp.data;
                 if(data.success){
                     this.loginForm= {};

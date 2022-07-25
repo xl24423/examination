@@ -103,7 +103,7 @@ export default {
     methods: {
       submitForm(ruleForm) {
 
-        this.axios.post('http://localhost:3312/sys-user/register',this.ruleForm).then((resp)=>{
+        this.axios.post('http://localhost:9090/register',this.ruleForm).then((resp)=>{
             console.log(resp);
             let data = resp.data;
             console.log(data);
