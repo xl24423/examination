@@ -155,7 +155,7 @@ export default {
   },
   created() {
     //请求分页查询数据
-    axios.get("http://localhost:9090/user/page?pageNum=1&pageSize=2").then(res => res.json()).then(res =>{
+    axios.get("http://localhost:9090/user/page?pageNum=1&pageSize=2").then(res =>{
       console.log(res)
     })
   },

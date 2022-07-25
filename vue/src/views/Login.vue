@@ -28,7 +28,7 @@
 </template>
 
 <script>
-
+import qs from 'qs'
 export default {
   name: 'Login',
   data() {
@@ -49,26 +49,22 @@ export default {
         // console.log('submit!',this.loginForm);
             let username = this.loginForm.username;
             let password = this.loginForm.password;
-            this.axios.post("http://localhost:9090/login?username="+username+"&password="+password).then((resp)=>{
+            this.axios.post("http://localhost:9090/login?"+qs.stringify(this.loginForm)).then((resp)=>{
                 let data = resp.data;
-                if(data.success){
+                alert(data.code);
+                if(data.code === 200){
                     this.loginForm= {};
                     this.$message({
                     message: '欢迎光临后台管理系统!!!',
                     type: 'success'
                     });
-                    this.$router.push({path:'/Home'})
+                    this.$router.push({path:'/'})
                 }
             })
 
       },
       toRegister(){
         this.$router.push({path:'/Register'})
-      },
-      created: function (){
-        this.search.error = location.search === "?error";
-        this.search.logout = location.search === "?logout";
-        this.search.register = location.search === "?register";
       }
     }
 

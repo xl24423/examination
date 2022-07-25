@@ -24,6 +24,7 @@ public class SpringDataUserDetailsService implements UserDetailsService {
     private UserDao userDao;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.debug("用户名"+username);
         User user = userDao.selectByUserName(username);
         if (user == null) {
             throw new ServiceException("用户不存在");
