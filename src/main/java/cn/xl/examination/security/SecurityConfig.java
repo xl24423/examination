@@ -1,12 +1,21 @@
 package cn.xl.examination.security;
 
 import cn.xl.examination.service.impl.SpringDataUserDetailsService;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.util.ClassUtils;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 // SpringBoot启动时扫描到@Configuration标记的类,会自动加载其中的配置
 // 所有SpringBoot框架环境下@Configuration必须写才能配置生效
@@ -20,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 我们要想修改配置的话,重写它的方法即可
 
     // 下面的配置是让我们编写的UserDetailsServiceImpl类生效的
-    @Autowired(required = false)
+    @Autowired
     private SpringDataUserDetailsService userDetailsService;
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -28,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 调用我们编写的userDetailsService中的方法
         auth.userDetailsService(userDetailsService);
     }
+
     // 配置页面权限的方法
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -6,7 +6,7 @@
                 <el-button   @click="toRegister()">点我注册</el-button>
             </h3>
             <el-form-item label="">
-                <el-input  type="text" v-model="loginForm.loginName" autocomplete="off" placeholder="账号"></el-input>
+                <el-input  type="text" v-model="loginForm.username" autocomplete="off" placeholder="账号"></el-input>
             </el-form-item>
                        <el-form-item label="">
                 <el-input type="password" v-model="loginForm.password" autocomplete="off" placeholder="密码"></el-input>
@@ -25,7 +25,7 @@ export default {
   data() {
       return {
         loginForm: {
-          loginName: '',
+          username: '',
           password: ''
         }
       }
@@ -33,8 +33,9 @@ export default {
     methods: {
       Login() {
         // console.log('submit!',this.loginForm);
-        
-            this.axios.post('http://localhost:9090/login',this.loginForm).then((resp)=>{
+            let username = this.loginForm.username;
+            let password = this.loginForm.password;
+            this.axios.post("http://localhost:9090/login?username="+username+"&password="+password).then((resp)=>{
                 let data = resp.data;
                 if(data.success){
                     this.loginForm= {};
