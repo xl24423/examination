@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     public static final GrantedAuthority ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
 
-    @GetMapping("/index.html")
+    @GetMapping("/index")
     public String index(@AuthenticationPrincipal UserDetails userDetails) {
         log.debug("进入到了重定向");
         if (userDetails.getAuthorities().contains(ADMIN)) {

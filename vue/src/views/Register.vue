@@ -122,7 +122,7 @@ export default {
         this.$refs[formName].resetFields();
       },
       toLogin(){
-         this.$router.push({path:'/'})
+         this.$router.push({path:'/login.html'})
       }
 
     }
