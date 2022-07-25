@@ -28,21 +28,19 @@
 </template>
 
 <script>
-  $("#poster").search.error = location.search === "?error";
-  $("#poster").search.logout = location.search === "?logout";
-  $("#poster").search.register = location.search === "?register";
+
 export default {
   name: 'Login',
   data() {
       return {
+        loginForm: {
+          username: '',
+          password: ''
+        },
         search:{
           error:false,
           logout:false,
           register:false
-        },
-        loginForm: {
-          username: '',
-          password: ''
         }
       }
     },
@@ -66,6 +64,11 @@ export default {
       },
       toRegister(){
         this.$router.push({path:'/Register'})
+      },
+      created: function (){
+        this.search.error = location.search === "?error";
+        this.search.logout = location.search === "?logout";
+        this.search.register = location.search === "?register";
       }
     }
 

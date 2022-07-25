@@ -41,31 +41,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 配置页面权限的方法
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+        http.cors();
         http.csrf().disable()  // 设置禁用防跨域攻击
                 .authorizeRequests()  // 开始设置页面访问权限
                 .antMatchers(// 指定路径
                         "/register.html",
                         "/register",
-                        "/index.html",
-                        "/login.html",
+                        "/index",
+                        "/indexError",
                         "/login",
+                        "/login.html",
                         "/js/**",
                         "/css/**",
                         "/bower_components/**",
                         "/img/**",
+                        "vue",
                         "http://localhost:8080/views/Login.vue"
                 ).permitAll()  // 上述路径全部放行(不登录就能访问)
                 .anyRequest()  // 除此之外的其它请求
                 .authenticated() // 需要登录才能访问
                 .and()         // 这是个分割,上面配置已经完毕下面编写新配置
                 .formLogin()  // 支持表单登录
-                .loginPage("http://localhost:8080/views/Login.vue")  // 配置登录页为login.html
+                .loginPage("http://localhost:8080/login")  // 配置登录页为login.html
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/login") // 配置表单提交登录信息的路径
                 .failureUrl("/login.html?error") // 配置登录失败跳转的路径
-                .defaultSuccessUrl("http://localhost:9090") //登录成功后跳转的页面*
+                .defaultSuccessUrl("http://localhost:8080") //登录成功后跳转的页面*
                 .and() //登录设置完成,开始设置登出
                 .logout()  // 开始设置登出
                 .logoutUrl("http://localhost:9090/logout")  // 设置登出路径

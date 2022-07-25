@@ -9,8 +9,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Login',
-    component: Login
+    name: 'Home',
+    component: Home
   },
   {
     path: '/Register',
@@ -18,9 +18,9 @@ const routes = [
     component: Register
   },
   {
-    path: '/Home',
-    name: 'Home',
-    component: Home
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
   {
     path: '/about',
