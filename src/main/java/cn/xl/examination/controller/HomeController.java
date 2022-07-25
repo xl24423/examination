@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller  // 支持重定向
 @Slf4j
-@CrossOrigin
 public class HomeController {
     public static final GrantedAuthority ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
 
@@ -19,9 +18,9 @@ public class HomeController {
     public String index(@AuthenticationPrincipal UserDetails userDetails) {
         log.debug("进入到了重定向");
         if (userDetails.getAuthorities().contains(ADMIN)) {
-            return "redirect:http://localhost:8080";
+            return "redirect:http://localhost:8080/";
         }
-        return "redirect:http://localhost:8080";
+        return "redirect:http://localhost:8080/";
     }
     @GetMapping("/indexError")
     public String error(){

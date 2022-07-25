@@ -47,27 +47,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(// 指定路径
                         "/register.html",
                         "/register",
-                        "/index",
-                        "/indexError",
                         "/login",
-                        "/login.html",
+                        "http://localhost:8080/login.html",
                         "/js/**",
                         "/css/**",
                         "/bower_components/**",
-                        "/img/**",
-                        "vue",
-                        "http://localhost:8080/views/Login.vue"
+                        "/img/**"
                 ).permitAll()  // 上述路径全部放行(不登录就能访问)
                 .anyRequest()  // 除此之外的其它请求
                 .authenticated() // 需要登录才能访问
                 .and()         // 这是个分割,上面配置已经完毕下面编写新配置
                 .formLogin()  // 支持表单登录
-                .loginPage("http://localhost:8080/login")  // 配置登录页为login.html
+                .loginPage("http://localhost:8080/login.html")  // 配置登录页为login.html
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/login") // 配置表单提交登录信息的路径
                 .failureUrl("/login.html?error") // 配置登录失败跳转的路径
-                .defaultSuccessUrl("http://localhost:8080") //登录成功后跳转的页面*
+                .defaultSuccessUrl("/index.html") //登录成功后跳转的页面*
                 .and() //登录设置完成,开始设置登出
                 .logout()  // 开始设置登出
                 .logoutUrl("http://localhost:9090/logout")  // 设置登出路径
