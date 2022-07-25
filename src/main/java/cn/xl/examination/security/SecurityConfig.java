@@ -65,10 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
                 .loginProcessingUrl("/login") // 配置表单提交登录信息的路径
                 .failureUrl("/login.html?error") // 配置登录失败跳转的路径
-                .defaultSuccessUrl("/index.html") //登录成功后跳转的页面*
+                .defaultSuccessUrl("http://localhost:9090") //登录成功后跳转的页面*
                 .and() //登录设置完成,开始设置登出
                 .logout()  // 开始设置登出
-                .logoutUrl("/logout")  // 设置登出路径
+                .logoutUrl("http://localhost:9090/logout")  // 设置登出路径
                 .logoutSuccessUrl("/login.html?logout");//设置登出成功后跳转的页面
         /*
             defaultSuccessUrl设置的是登录成功时默认跳转的页面
