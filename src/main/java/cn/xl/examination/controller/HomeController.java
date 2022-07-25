@@ -6,10 +6,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller  // 支持重定向
 @Slf4j
+@CrossOrigin
 public class HomeController {
     public static final GrantedAuthority ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
 
