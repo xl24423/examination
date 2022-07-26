@@ -43,7 +43,7 @@ public class UserController extends ApiController {
 //        return success(this.userService.page(page, new QueryWrapper<>(user)));
 //    }
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('/page')")
+//    @PreAuthorize("hasAuthority('/page')")
     public PageInfo<User> AllUser(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize){
           log.debug("开始查询:"+userDetails+","+pageNum+","+pageSize);
           return userService.getAllUser(userDetails.getUsername(),pageNum,pageSize);

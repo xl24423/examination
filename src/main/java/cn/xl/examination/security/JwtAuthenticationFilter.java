@@ -1,6 +1,7 @@
 package cn.xl.examination.security;
 
 import cn.hutool.core.util.StrUtil;
+import cn.xl.examination.service.impl.UserDetailsServiceImpl;
 import cn.xl.examination.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -9,6 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -25,6 +28,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Autowired
     JwtUtils jwtUtils;
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String jwt = request.getHeader(jwtUtils.getHeader());
@@ -41,10 +46,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         }
         String username = claims.getSubject();
         // 获取用户授权相关信息
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(username,null,null);
-        SecurityContextHolder.getContext().setAuthentication(token);
+                new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+        token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
+        SecurityContextHolder.getContext().setAuthentication(token);
         chain.doFilter(request,response);
     }
 }

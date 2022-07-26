@@ -6,15 +6,15 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		token: ''
-
+		token: '',
+		userinfo:{}
 	},
 	mutations: {
 
-		SET_TOKEN: (state, token) => {
-			state.token = token
-			localStorage.setItem("token", token)
-		},
+		// SET_TOKEN: (state, token) => {
+		// 	state.token = token
+		// 	localStorage.setItem("token", token)
+		// },
 
 
 	},
