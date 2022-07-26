@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2022-07-13 10:55:57
  */
 @RestController
-@RequestMapping("exam")
+@RequestMapping("/exam")
 public class ExamController extends ApiController {
     /**
      * 服务对象
@@ -83,6 +83,11 @@ public class ExamController extends ApiController {
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.examService.removeByIds(idList));
+    }
+
+    @GetMapping("/test")
+    public String t(){
+        return "success()";
     }
 }
 

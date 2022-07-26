@@ -2,6 +2,8 @@ package cn.xl.examination.security;
 
 import cn.hutool.json.JSONUtil;
 import cn.xl.examination.common.lang.Result;
+import cn.xl.examination.utils.JwtUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -14,12 +16,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
+    @Autowired
+    JwtUtils jwtUtils;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream outputStream = response.getOutputStream();
         // 生成 jwt , 并放入请求头
-        Result result = Result.succ(response.getStatus());
+        String jwt = jwtUtils.generateToken(authentication.getName());
+        response.setHeader(jwtUtils.getHeader(),jwt);
+
+        Result result = Result.succ(authentication.getName()+",   "+jwtUtils.getHeader()+",  "+jwt);
         outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
         outputStream.flush();
         outputStream.close();

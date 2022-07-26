@@ -19,7 +19,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class SpringDataUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserDao userDao;
     @Override

@@ -9,3 +9,8 @@ logging:
   level:
     cn.xl.examination: debug
 dirPath: D:/upload
+markerhub:
+  jwt:
+    header: Authorization
+    expire: 86400  # 1天
+    secret: jinknaskwnga3t903wkgasnn124nag93

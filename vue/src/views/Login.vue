@@ -49,7 +49,7 @@ export default {
         // console.log('submit!',this.loginForm);
             let username = this.loginForm.username;
             let password = this.loginForm.password;
-            this.axios.post("http://localhost:9090/login?"+qs.stringify(this.loginForm)).then((resp)=>{
+            this.axios.post("/login?"+qs.stringify(this.loginForm)).then((resp)=>{
                 let data = resp.data;
                 alert(data.code);
                 if(data.code === 200){
@@ -58,7 +58,13 @@ export default {
                     message: '欢迎光临后台管理系统!!!',
                     type: 'success'
                     });
-                    this.$router.push({path:'/'})
+                    const jwt = resp.headers['authorization']
+                    this.$store.commit('SET_TOKEN', jwt)
+                    window.sessionStorage.setItem("user",JSON.stringify(resp.obj))
+                    let path = this.$route.query.redirect;
+                    this.$router.replace((path == "/") || path == undefined ? "/" : path);
+                }else {
+                  return false;
                 }
             })
 
