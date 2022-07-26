@@ -3,7 +3,7 @@ import router from "./router";
 import Element from "element-ui"
 
 axios.defaults.baseURL = "http://localhost:9090"
-
+axios.defaults.headers.common['Authorization'] = localStorage.getItem('token')
 const request = axios.create({
 	timeout: 5000,
 	headers: {
@@ -11,10 +11,6 @@ const request = axios.create({
 	}
 })
 
-request.interceptors.request.use(config => {
-	config.headers['Authorization'] = localStorage.getItem("token")
-	return config
-})
 
 request.interceptors.response.use(response => {
 

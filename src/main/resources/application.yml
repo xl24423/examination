@@ -14,3 +14,6 @@ markerhub:
     header: Authorization
     expire: 86400  # 1天
     secret: jinknaskwnga3t903wkgasnn124nag93
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

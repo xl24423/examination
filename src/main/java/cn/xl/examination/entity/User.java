@@ -35,7 +35,6 @@ public class User extends Model<User> {
     private String username;
     //密码
     @TableField("password")
-    @JsonIgnore
     private String password;
     //0女1男
     @TableField("gender")
@@ -46,12 +45,12 @@ public class User extends Model<User> {
     //邀请码(管理员或者企业才有)
     @TableField("invite_code")
     private String inviteCode;
-    //电工证书保存地址
-    @TableField("certificate_url")
-    private String certificateUrl;
     //企业id, 对应company表
     @TableField("company_id")
     private Integer companyId;
+    //电工证书保存地址
+    @TableField("certificate_url")
+    private String certificateUrl;
     //专业类别（多选）  1并网调度协议练习人员；2变电站运维人员；3停送电联系人员；
     @TableField("major_type")
     private String majorType;
