@@ -10,16 +10,15 @@ const request = axios.create({
 		'Content-Type': "application/json; charset=utf-8"
 	}
 })
-
-
 request.interceptors.response.use(response => {
 
 		let res = response.data
-
+		console.log(res)
 		if (res.code === 200) {
 			return response
 		} else {
-			Element.Message.error('出错了',{duration : 3*1000})
+			Element.Message.error(res.msg,{duration : 3*1000})
+
 			return Promise.reject(response.data.msg)
 		}
 	},
@@ -27,7 +26,7 @@ request.interceptors.response.use(response => {
 
 		console.log(error)
 
-		if (error.response.data) {
+		if (error.response.data != null) {
 			error.massage = error.response.data.msg
 		}
 

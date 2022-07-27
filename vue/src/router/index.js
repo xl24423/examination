@@ -53,49 +53,49 @@ router.beforeEach((to, from, next) => {
     next({path: '/login'})
 
 
-  } else if(token && !hasRoute) {
-    axios.get("/sys/menu/nav", {
-      headers: {
-        Authorization: localStorage.getItem("token")
-      }
-    }).then(res => {
-
-      console.log(res.data.data)
-
-      // 拿到menuList
-      store.commit("setMenuList", res.data.data.nav)
-
-      // 拿到用户权限
-      store.commit("setPermList", res.data.data.authoritys)
-
-      console.log(store.state.menus.menuList)
-
-      // 动态绑定路由
-      let newRoutes = router.options.routes
-
-      res.data.data.nav.forEach(menu => {
-        if (menu.children) {
-          menu.children.forEach(e => {
-
-            // 转成路由
-            let route = menuToRoute(e)
-
-            // 吧路由添加到路由管理中
-            if (route) {
-              newRoutes[0].children.push(route)
-            }
-
-          })
-        }
-      })
-
-      console.log("newRoutes")
-      console.log(newRoutes)
-      router.addRoutes(newRoutes)
-
-      hasRoute = true
-      store.commit("changeRouteStatus", hasRoute)
-    })
+  // } else if(token && !hasRoute) {
+  //   axios.get("/sys/menu/nav", {
+  //     headers: {
+  //       Authorization: localStorage.getItem("token")
+  //     }
+  //   }).then(res => {
+  //
+  //     console.log(res.data.data)
+  //
+  //     // 拿到menuList
+  //     store.commit("setMenuList", res.data.data.nav)
+  //
+  //     // 拿到用户权限
+  //     store.commit("setPermList", res.data.data.authoritys)
+  //
+  //     console.log(store.state.menus.menuList)
+  //
+  //     // 动态绑定路由
+  //     let newRoutes = router.options.routes
+  //
+  //     res.data.data.nav.forEach(menu => {
+  //       if (menu.children) {
+  //         menu.children.forEach(e => {
+  //
+  //           // 转成路由
+  //           let route = menuToRoute(e)
+  //
+  //           // 吧路由添加到路由管理中
+  //           if (route) {
+  //             newRoutes[0].children.push(route)
+  //           }
+  //
+  //         })
+  //       }
+  //     })
+  //
+  //     console.log("newRoutes")
+  //     console.log(newRoutes)
+  //     router.addRoutes(newRoutes)
+  //
+  //     hasRoute = true
+  //     store.commit("changeRouteStatus", hasRoute)
+  //   })
   }
 
 

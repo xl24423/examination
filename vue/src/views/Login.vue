@@ -62,8 +62,11 @@ export default {
           const jwt = resp.headers['authorization']
           console.log(jwt)
           this.$store.commit('SET_TOKEN', jwt)
+          setTimeout(()=>{
+             localStorage.removeItem("token")
+          },1000*86400)
 
-          this.$router.push("/")
+          this.$router.replace("/")
         } else {
           return false;
         }

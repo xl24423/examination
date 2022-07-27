@@ -35,6 +35,7 @@ public class User extends Model<User> {
     private String username;
     //密码
     @TableField("password")
+    @JsonIgnore
     private String password;
     //0女1男
     @TableField("gender")

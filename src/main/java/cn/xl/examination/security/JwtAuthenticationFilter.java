@@ -41,6 +41,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         if (claims == null){
             throw new JwtException("token 异常");
         }
+
         if (jwtUtils.isTokenExpired(claims)){
             throw new JwtException("token 已过期");
         }
