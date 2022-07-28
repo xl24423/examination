@@ -62,7 +62,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   localStorage.setItem("currentPathName", to.name)  // 设置当前的路由名称，为了在Header组件中去使用
   let token = localStorage.getItem("token")
-  if (to.path == "/login"){
+  if (to.path == "/login" || to.path == '/register'){
     next();
   }else if (!token){
     next({path: "/login"})
