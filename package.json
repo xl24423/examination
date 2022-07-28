@@ -1,6 +1,10 @@
 {
   "dependencies": {
     "axios": "^0.27.2",
+    "qs": "^6.11.0",
     "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "storage-timing": "^1.0.7"
   }
 }

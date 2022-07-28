@@ -86,11 +86,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public PageInfo<User> getAllUser(String username, Integer pageNum, Integer pageSize) {
         log.debug(username);
-        User user = userDao.selectByUserName(username);
-        System.out.println("用户:"+user);
-        if (user.getRoleId() != 1) {
-            throw new ServiceException("你没有权限这么做");
-        }
         List<User> allUser = userDao.findAllUser();
         PageInfo<User> userPageInfo = new PageInfo<>(allUser);
         return userPageInfo;

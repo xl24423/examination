@@ -13,7 +13,7 @@ const request = axios.create({
 request.interceptors.response.use(response => {
 
 		let res = response.data
-		console.log(res)
+
 		if (res.code === 200) {
 			return response
 		} else {

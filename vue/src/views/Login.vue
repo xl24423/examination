@@ -1,111 +1,142 @@
 <template>
-  <body id="poster">
-  <el-form class="login-container" label-position="left" label-width="0px">
-    <h3 class="login_title">
-      系统登陆
-      <el-button @click="toRegister()">点我注册</el-button>
-    </h3>
-    <div class="alert alert-danger d-none" v-if="search.error">
-      <i class="fa fa-exclamation-triangle"></i> 账号或密码错误
+  <div class="wrapper">
+    <div
+      style="
+        margin: 200px auto;
+        background-color: #fff;
+        width: 350px;
+        height: 360px;
+        padding: 20px;
+        border-radius: 10px;
+      "
+    >
+      <div style="margin: 20px 0; text-align: center; font-size: 24px">
+        <b>登 录</b>
+      </div>
+      <el-form :model="user" :rules="rules" ref="userForm">
+        <el-form-item prop="username">
+          <el-input
+            size="medium"
+            style="margin: 10px 0"
+            prefix-icon="el-icon-user"
+            v-model="user.username"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            size="medium"
+            style="margin: 10px 0"
+            prefix-icon="el-icon-lock"
+            show-password
+            v-model="user.password"
+          ></el-input>
+        </el-form-item>
+                <el-row :span="24">
+          <el-col :span="14">
+            <el-form-item>
+              <el-input
+                placeholder="请输入验证码"
+                size="medium"
+                style="margin: 5px 0"
+                prefix-icon="el-icon-question"
+                v-model="user.verificationCode"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6" style="margin-left: 10px">
+            <img :src="imgUrl" width="100px" height="46px" alt="" />
+            <!-- <el-button @click="init()">获取短信</el-button> -->
+          </el-col>
+        </el-row>
+        <el-form-item style="margin: 10px 0; text-align: right">
+          <el-button
+            type="primary"
+            size="small"
+            autocomplete="off"
+            @click="login"
+            >登录</el-button
+          >
+          <el-button
+            type="warning"
+            size="small"
+            @click="$router.push('/register')"
+            autocomplete="off"
+            >注册</el-button
+          >
+        </el-form-item>
+      </el-form>
     </div>
-    <div class="alert alert-info d-none" v-if="search.logout">
-      <i class="fa fa-exclamation-triangle"></i> 已经登出系统
-    </div>
-    <div class="alert alert-info d-none" v-if="search.register">
-      <i class="fa fa-exclamation-triangle"></i> 已经成功注册，请登录。
-    </div>
-    <el-form-item label="">
-      <el-input type="text" v-model="loginForm.username" autocomplete="off" placeholder="账号"></el-input>
-    </el-form-item>
-    <el-form-item label="">
-      <el-input type="password" v-model="loginForm.password" autocomplete="off" placeholder="密码"></el-input>
-    </el-form-item>
-    <el-form-item style="width:100%;">
-      <el-button type="primary" style="width:100%;background:#505458;border:none" v-on:click="Login()">登陆</el-button>
-    </el-form-item>
-  </el-form>
-  </body>
+  </div>
 </template>
 
 <script>
+import user from "./User"
 import qs from 'qs'
 
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
-      loginForm: {
-        username: '',
-        password: ''
+      imgUrl:"",
+      user: {},
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 3, max: 10, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 1,
+            max: 20,
+            message: "长度在 1 到 20 个字符",
+            trigger: "blur",
+          },
+        ],
       },
-      search: {
-        error: false,
-        logout: false,
-        register: false
-      }
-    }
+    };
+  },
+  created() {
+    this.init()
   },
   methods: {
-    Login() {
-      // console.log('submit!',this.loginForm);
-      let username = this.loginForm.username;
-      let password = this.loginForm.password;
-      this.$axios.post("/login?" + qs.stringify(this.loginForm)).then((resp) => {
-        console.log(resp.data)
-        let data = resp.data;
-        if (data.code === 200) {
-          this.loginForm = {};
-          this.$message({
-            message: '欢迎光临后台管理系统!!!',
-            type: 'success'
-          });
-          const jwt = resp.headers['authorization']
-          console.log(jwt)
-          this.$store.commit('SET_TOKEN', jwt)
-          setTimeout(()=>{
-             localStorage.removeItem("token")
-          },1000*86400)
-
-          this.$router.replace("/")
-        } else {
-          return false;
-        }
-      })
+    init() {
+      // 获取短信验证码
+      // 操作
+      this.imgUrl =
+        "http://www.wanghun.top/img/7c0063948b2fce5787fe356a8a69e0f7.jpg";
     },
-    toRegister() {
-      this.$router.push({path: '/Register'})
-    }
-  }
-}
+    login() {
+      this.$refs["userForm"].validate((valid) => {
+        if (valid) {
+          // 表单校验合法
+          this.request.post("/login?"+qs.stringify(this.user)).then((response) => {
+            if (response.data.code === 200) {
+              localStorage.setItem("user", JSON.stringify(response.data.data)); //存储用户信息到浏览器
+              const jwt = response.headers.authorization;
+              localStorage.setItem("token", jwt)
+
+              setTimeout(()=>{
+                localStorage.removeItem("token")
+                localStorage.removeItem("user")
+              },1000*86400)
+              this.$router.push("/");
+              this.$message.success("登陆成功");
+            } else {
+              this.$message.error(response.data.msg);
+            }
+          });
+        }
+      });
+    },
+  },
+};
 </script>
+
 <style>
-#poster {
-  background-position: center;
-  height: 100%;
-  width: 100%;
-  background-size: cover;
-  position: fixed;
-}
-
-body {
-  margin: 0px;
-  padding: 0px;
-}
-
-.login-container {
-  border-radius: 15px;
-  background-clip: padding-box;
-  margin: 90px auto;
-  width: 350px;
-  padding: 35px 35px 15px 35px;
-  background: #fff;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 0 25px #cac6c6;
-}
-
-.login_title {
-  margin: 0px auto 40px auto;
-  text-align: center;
-  color: #505458;
+.wrapper {
+  height: 100vh;
+  background-image: linear-gradient(to bottom right, #fc466b, #3f5efb);
+  overflow: hidden;
 }
 </style>
