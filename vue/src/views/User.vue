@@ -33,10 +33,9 @@
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column prop="id" label="ID" width="80"></el-table-column>
       <el-table-column prop="username" label="用户名" width="140"></el-table-column>
-      <el-table-column prop="nickname" label="昵称" width="120"></el-table-column>
-      <el-table-column prop="email" label="邮箱"></el-table-column>
-      <el-table-column prop="phone" label="电话"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table-column prop="name" label="姓名" width="140"></el-table-column>
+      <el-table-column prop="tel" label="电话"></el-table-column>
+      <el-table-column prop="createtime" label="创建时间"></el-table-column>
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
@@ -102,8 +101,8 @@ export default {
       pageNum: 1,
       pageSize: 10,
       username: "",
-      email: "",
-      address: "",
+      name:"",
+      tel:"",
       form: {},
       dialogFormVisible: false,
       multipleSelection: [],
@@ -118,14 +117,11 @@ export default {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          username: this.username,
-          email: this.email,
-          address: this.address,
         }
       }).then(res => {
         console.log(res)
 
-        this.tableData = res.records
+        this.tableData = res.data.list;
         this.total = res.total
 
       })

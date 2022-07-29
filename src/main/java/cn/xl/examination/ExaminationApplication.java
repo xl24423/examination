@@ -22,6 +22,7 @@ public class ExaminationApplication {
     public static void main(String[] args) {
         SpringApplication.run(ExaminationApplication.class, args);
     }
+    // 保存此对象后, 数据库中的密文密码前不用加上 {bcrypt}
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

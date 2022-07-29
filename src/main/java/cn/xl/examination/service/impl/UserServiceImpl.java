@@ -58,7 +58,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             throw new ServiceException("手机号已存在");
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String pwd = "{bcrypt}" + passwordEncoder.encode(registerVO.getPassword());
+        String pwd = passwordEncoder.encode(registerVO.getPassword());
         String originalFilename = registerVO.getPicture().getOriginalFilename();
         String end = originalFilename.substring(originalFilename.lastIndexOf("."));
         String newName = UUID.randomUUID() + end;
