@@ -24,7 +24,7 @@ let createQuestionApp = new Vue({
                 method:'POST',
                 data:form,
             }).then(function(r){
-                console.log(r.data);
+
                 if(r.status === 200){
                     alert("上传成功");
                     location.href="/index_student.html";
@@ -56,7 +56,7 @@ let createQuestionApp = new Vue({
                 url:'/v1/users/master',
                 method: 'GET'
             }).then(function(r){
-                console.log(r);
+
                 if(r.status == OK){
                     let list=r.data;
                     let teachers = [];

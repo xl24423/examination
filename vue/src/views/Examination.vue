@@ -49,7 +49,7 @@
             ></el-col
           >
           <el-col :span="2"
-            ><el-button type="primary" @click="add" icon="el-icon-circle-plus-outline"
+            ><el-button type="primary" @click="dialogFormVisible = true" icon="el-icon-circle-plus-outline"
               >添加</el-button
             ></el-col
           >
@@ -104,6 +104,67 @@
         </el-pagination>
       </div>
     </el-main>
+
+
+          <!-- 添加 -->
+        <el-dialog title="题库添加" :visible.sync="dialogFormVisible" width="30%" >
+      <el-form label-width="120px" size="small">
+        <el-form-item label="考试名称">
+          <el-input  v-model="add.title" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="考试类型">
+           <el-select v-model="add.type" placeholder="请选择">
+                  <el-option
+                    label="开卷考"
+                    value="1"
+                  >开卷考</el-option>
+                  <el-option
+                    
+                    label="闭卷考"
+                    value="2"
+                  >闭卷考</el-option>
+                </el-select>
+        </el-form-item>
+        <el-form-item label="考试总分">
+          <el-input v-model="add.a" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="及格线">
+          <el-input v-model="add.a" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="考试状态">
+          <el-select v-model="add.type" placeholder="请选择">
+                  <el-option
+                    label="开始"
+                    value="1"
+                  >开始</el-option>
+                  <el-option
+                    
+                    label="结束"
+                    value="2"
+                  >结束</el-option>
+                  <el-option
+                    
+                    label="进行中"
+                    value="3"
+                  >进行中</el-option>
+                </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="试题类型">
+          <el-select v-model="add.type" placeholder="请选择活动区域">
+                  <el-option
+                    v-for="(item, i) in questions"
+                    :key="i"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
+        </el-form-item> -->
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addSub">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -112,6 +173,8 @@ export default {
   name: "Home",
   data() {
     return {
+      dialogFormVisible:false,
+      add:{},
       form: {},
       total: 30,
       pageSize: 10,
@@ -258,7 +321,9 @@ export default {
       console.log(val);
       this.current = val;
     },
-    add(){},
+    addSub(){
+      console.log(this.add);
+    },
   },
 };
 </script>

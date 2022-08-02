@@ -171,7 +171,7 @@ let postAnswerApp = new Vue({
                 form.append("questionId",qid);
                 form.append("content",content);
                 axios.post("/v1/answer",form).then(function (r) {
-                    console.log(r.data);
+
                     let answer = r.data;
                     answer.duration = "刚刚";
                     answer.show = true;

@@ -1,3 +1,32 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+
+@xl24423
+xl24423
+/
+examination
+Public
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+examination/vue/src/views/User.vue
+@xl24423
+xl24423 登录与跳转主页面完成
+Latest commit 680a581 4 days ago
+History
+1 contributor
+205 lines (196 sloc)  6.56 KB
+
 <template>
   <div>
     <div style="margin: 10px 0">
@@ -24,7 +53,7 @@
 
       <el-upload
           action="https://localhost:9090/user/import" :show-file-list ="false" accept=".xlsx" :on-success="handExcelImportSuccess" style="display:inline-block">
-      <el-button type="primary" class="ml-5">导入 <i class="el-icon-bottom"></i></el-button>
+        <el-button type="primary" class="ml-5">导入 <i class="el-icon-bottom"></i></el-button>
       </el-upload>
       <el-button type="primary" @click= "exp" class="ml-5"> 导出 <i class="el-icon-top"></i></el-button>
     </div>
@@ -119,11 +148,8 @@ export default {
           pageSize: this.pageSize,
         }
       }).then(res => {
-        console.log(res)
-
         this.tableData = res.data.list;
         this.total = res.total
-
       })
     },
     save() {
@@ -196,7 +222,6 @@ export default {
   }
 }
 </script>
-
 
 <style>
 .headerBg {

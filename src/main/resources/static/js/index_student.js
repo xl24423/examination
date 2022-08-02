@@ -19,7 +19,7 @@ let questionsApp = new Vue({
                 }
             }).then(function(r){
                 console.log("成功加载数据");
-                console.log(r);
+
                 if(r.status === 200){
                     questionsApp.questions = r.data.list;
                     questionsApp.pageinfo = r.data;

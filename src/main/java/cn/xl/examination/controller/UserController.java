@@ -1,11 +1,13 @@
 package cn.xl.examination.controller;
 
+import cn.xl.examination.common.lang.Result;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.service.UserService;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,9 +46,9 @@ public class UserController extends ApiController {
 //    }
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('/page')")
-    public PageInfo<User> AllUser(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize){
-          log.debug("开始查询:"+userDetails+","+pageNum+","+pageSize);
-          return userService.getAllUser(userDetails.getUsername(),pageNum,pageSize);
+    public PageInfo<User> AllUser( Integer pageNum, Integer pageSize){
+          log.debug(","+pageNum+","+pageSize);
+          return userService.getAllUser(pageNum,pageSize);
     }
 
     /**
@@ -95,6 +97,12 @@ public class UserController extends ApiController {
     @GetMapping("/me")
     public String me(){
         return "me";
+    }
+    @Autowired
+    Result result;
+    @GetMapping("/derive")
+    public String daochu(){
+        return "666";
     }
 }
 

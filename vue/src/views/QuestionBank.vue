@@ -16,7 +16,7 @@
           >
           <el-col style="float: right" :span="3"
             ><el-button type="primary" icon="el-icon-circle-plus-outline"
-              >添加</el-button
+            @click="dialogFormVisible = true"  >添加</el-button
             ></el-col
           >
         </el-row>
@@ -24,14 +24,23 @@
 
       <el-table ref="multipleTable" border :header-cell-class-name="'headerBg'"  :stripe="true" :data="questionList" style="width: 100%">
         <el-table-column type="selection"> </el-table-column>
-        <el-table-column label="题库名称">
-          <template slot-scope="scope">{{ scope.row.date }}</template>
-        </el-table-column>
-
-        <el-table-column prop="number" label="单选题数量"> </el-table-column>
-        <el-table-column prop="dan" label="多选题数量"> </el-table-column>
-        <el-table-column prop="duo" label="判断题数量"> </el-table-column>
-        <el-table-column prop="time" label="创建时间" show-overflow-tooltip>
+        <el-table-column label="题库名称" prop="name"></el-table-column>
+        <el-table-column prop="createtime" label="创建时间" show-overflow-tooltip></el-table-column>
+        <el-table-column  label="操作">
+          <template slot-scope="scope">
+            <el-popconfirm
+                class="ml-5"
+                confirm-button-text='确定'
+                cancel-button-text='我再想想'
+                icon="el-icon-info"
+                icon-color="red"
+                title="您确定删除吗？"
+                @confirm="del(scope.row.id)"
+            >
+              <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
+            </el-popconfirm>
+            <el-button type="warning" @click="selectAll(scope.row)">题库详情</el-button>
+          </template>
         </el-table-column>
       </el-table>
 
@@ -51,31 +60,49 @@
   </div>
     </el-main>
 
-  </div>
+      <!-- 添加 -->
+        <el-dialog title="题库添加" :visible.sync="dialogFormVisible" width="30%" >
+      <el-form label-width="120px" size="small">
+        <el-form-item label="题库名称">
+          <el-input  v-model="add.title" autocomplete="off"></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="试题类型">
+          <el-select v-model="add.type" placeholder="请选择活动区域">
+                  <el-option
+                    v-for="(item, i) in questions"
+                    :key="i"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
+        </el-form-item> -->
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addSub">确 定</el-button>
+      </div>
+    </el-dialog>
+</div>
 </template>
 
 <script>
+let date = new Date();
 export default {
   name: "Home",
   data() {
     return {
+      dialogFormVisible:false,
+      add:{},
         total:30,
+        pageNum: 1,
         pageSize:10,
         current:1,
       questionName: "",
       questionList: [
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-        { number: 1, dan: 1 , duo: 10 , time: new Date().getFullYear()+"年"+new Date().getMonth()+"月"+new Date().getDate()+"日"},
-
+        {
+          name: "2",
+          createtime: "3",
+        },
         ]
     };
   },
@@ -87,7 +114,30 @@ export default {
 
   methods: {
     init() {
-      
+        this.request.get("/questionBank/page",{
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+          }
+        }).then(res=>{
+           this.questionList = res.data.list
+        })
+    },
+    del(id){
+        this.request.delete("/questionBank",{
+          params: {
+            id: id,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+          }
+            }).then(res=>{
+              if (res.data.code === 200){
+                  console.log(res)
+                  this.questionList = res.data.data.list;
+              }else {
+                 alert("删除失败,请联系管理员")
+              }
+        })
     },
 
     handleSizeChange(val){
@@ -97,7 +147,11 @@ export default {
     handleCurrentChange(val){
         console.log(val);
         this.current = val
-    }
+    },
+    addSub(){
+      console.log(this.add);
+    },
+
   },
 };
 </script>

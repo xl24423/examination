@@ -8,7 +8,7 @@ export default new Vuex.Store({
 	state: {
 
 	},
-	 mutations: {
+	mutations: {
 
 	},
 	actions: {},
@@ -16,4 +16,3 @@ export default new Vuex.Store({
 		menus
 	}
 })
-

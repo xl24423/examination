@@ -17,6 +17,8 @@ public interface UserService extends IService<User> {
 
     void register(RegisterVO registerVO) throws IOException;
 
-    PageInfo<User> getAllUser(String username, Integer pageNum, Integer pageSize);
+    PageInfo<User> getAllUser(Integer pageNum, Integer pageSize);
+
+    User getUserByUsername(String username);
 }
 

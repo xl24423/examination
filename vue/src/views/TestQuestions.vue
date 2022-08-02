@@ -1,17 +1,22 @@
 <template>
   <div>
-    <el-main>
+    <el-main style="min-width: 1050px">
       <div style="margin-bottom: 20px">
         <el-row :span="24">
-          <el-form ref="form" :model="form" >
+          <el-form ref="form" :model="form">
             <el-col :span="4">
-              <el-form-item v-model="form.region" >
+              <el-form-item v-model="form.region">
                 <el-select v-model="form.region" placeholder="请选择活动区域">
-                  <el-option v-for="(item,i) in questions" :key="i" :label="item.name" value="shanghai"></el-option>
+                  <el-option
+                    v-for="(item, i) in questions"
+                    :key="i"
+                    :label="item.name"
+                    value="shanghai"
+                  ></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="4" style="margin-right:40px"
+            <el-col :span="4" style="margin-right: 40px"
               ><el-input
                 v-model="questionName"
                 placeholder="请输入题库名称内容"
@@ -29,25 +34,57 @@
               >搜索</el-button
             ></el-col
           >
-          <el-col  :span="3"
-            ><el-button type="primary" icon="el-icon-circle-plus-outline"
-              >添加</el-button
-            ></el-col
-          >
+          <el-col :span="3"
+            >
+            
+            <!-- <el-button type="primary" icon="el-icon-circle-plus-outline"
+              @click="dialogFormVisible = true" >添加</el-button
+            > -->
 
-          <el-col style="float: right" :span="3"
+            <el-button type="primary" icon="el-icon-circle-plus-outline"
+              @click="$router.push('/testquestionsadd')" >添加</el-button
             >
-            <el-button  icon="el-icon-upload2"
-              >导入</el-button
-            >
-            <el-button  icon="el-icon-download"
-              >导出</el-button
-            >
+            
             </el-col
           >
+
+          <el-col style="float: right" :span="4">
+            <el-button icon="el-icon-upload2" @click="dialogVisible = true"
+              >导入</el-button
+            >
+            <el-button icon="el-icon-download">导出</el-button>
+          </el-col>
         </el-row>
       </div>
-
+      <el-dialog
+        title="导入试题"
+        :visible.sync="dialogVisible"
+        width="40%"
+        :before-close="handleClose"
+      >
+        <el-upload
+          style="margin-right: 20px; display: inline-block"
+          action="#"
+          :show-file-list="false"
+          accept=".xlsx"
+          :on-success="handExcelImportSuccess"
+        >
+          <el-button type="primary" class="ml-5">上传导入</el-button>
+        </el-upload>
+        <!-- <el-button type="primary">上传导入</el-button> -->
+        <el-upload
+          style="margin-right: 20px; display: inline-block"
+          action="#"
+          :show-file-list="false"
+          accept=".xlsx"
+          :on-success="handExcelImportSuccess"
+        >
+          <el-button type="warning" @click="compontenimport"
+            >下载导入模板</el-button
+          >
+        </el-upload>
+        <!-- <el-button type="warning" @click="compontenimport">下载导入模板</el-button> -->
+      </el-dialog>
       <el-table
         ref="multipleTable"
         border
@@ -87,6 +124,33 @@
         </el-pagination>
       </div>
     </el-main>
+
+
+    <!-- 添加 -->
+        <el-dialog title="试题添加" :visible.sync="dialogFormVisible" width="30%" >
+      <el-form label-width="80px" size="small">
+        <el-form-item label="试题内容">
+          <el-input type="textarea" v-model="add.context" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="试题答案">
+          <el-input v-model="add.true" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="试题类型">
+          <el-select v-model="add.type" placeholder="请选择活动区域">
+                  <el-option
+                    v-for="(item, i) in questions"
+                    :key="i"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addSub">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -95,31 +159,29 @@ export default {
   name: "Home",
   data() {
     return {
-        form:{},
+      dialogFormVisible:false,
+      dialogVisible: false,
+      form: {},
+      add:{},
       total: 30,
       pageSize: 10,
       current: 1,
       // 题库列表
-      questions:[
+      questions: [
         {
-            id:1,
-            name:'题库1'
+          id: 1,
+          name: "单选题",
         },
         {
-            id:2,
-            name:'题库2'
-        },{
-            id:3,
-            name:'题库3'
-        },{
-            id:4,
-            name:'题库4'
-        },{
-            id:5,
-            name:'题库5'
-        }
+          id: 2,
+          name: "多选题",
+        },
+        {
+          id: 3,
+          name: "判断题",
+        },
       ],
-      questionContxt:"",
+      questionContxt: "",
       questionName: "",
       questionList: [
         {
@@ -244,6 +306,16 @@ export default {
       console.log(val);
       this.current = val;
     },
+    compontenimport() {
+      console.log("下载导入");
+    },
+    handExcelImportSuccess() {},
+    handleClose() {
+      this.dialogVisible = false
+    },
+    addSub(){
+      console.log(this.add);
+    }
   },
 };
 </script>

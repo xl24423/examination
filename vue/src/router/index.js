@@ -45,10 +45,20 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
-  path: '/register',
+    path: '/register',
     name: 'register',
     component: () => import('../views/Register.vue')
-},
+  },
+  {
+    path: '/testquestionsadd',
+    name: '添加试题',
+    component: () => import('../views/testquestionsAdd.vue')
+  },
+  {
+    path: '/examinationadd',
+    name: '添加考试',
+    component: () => import('../views/examinationAdd.vue')
+  },
 
 ]
 
@@ -72,3 +82,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+

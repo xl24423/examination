@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.xl.examination.dao.UserDao;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.service.UserService;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -84,11 +85,16 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public PageInfo<User> getAllUser(String username, Integer pageNum, Integer pageSize) {
-        log.debug(username);
+    public PageInfo<User> getAllUser(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
         List<User> allUser = userDao.findAllUser();
         PageInfo<User> userPageInfo = new PageInfo<>(allUser);
         return userPageInfo;
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userDao.selectByUserName(username);
     }
 }
 

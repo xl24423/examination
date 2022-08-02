@@ -1,10 +1,13 @@
 package cn.xl.examination.common.lang;
 
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
 @Data
+@Component
 public class Result implements Serializable {
 
 	private int code;
@@ -34,5 +37,4 @@ public class Result implements Serializable {
 		r.setData(data);
 		return r;
 	}
-
 }

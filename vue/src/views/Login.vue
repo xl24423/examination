@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div
-      style="
+        style="
         margin: 200px auto;
         background-color: #fff;
         width: 350px;
@@ -16,30 +16,30 @@
       <el-form :model="user" :rules="rules" ref="userForm">
         <el-form-item prop="username">
           <el-input
-            size="medium"
-            style="margin: 10px 0"
-            prefix-icon="el-icon-user"
-            v-model="user.username"
+              size="medium"
+              style="margin: 10px 0"
+              prefix-icon="el-icon-user"
+              v-model="user.username"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password">
           <el-input
-            size="medium"
-            style="margin: 10px 0"
-            prefix-icon="el-icon-lock"
-            show-password
-            v-model="user.password"
+              size="medium"
+              style="margin: 10px 0"
+              prefix-icon="el-icon-lock"
+              show-password
+              v-model="user.password"
           ></el-input>
         </el-form-item>
-                <el-row :span="24">
+        <el-row :span="24">
           <el-col :span="14">
             <el-form-item>
               <el-input
-                placeholder="请输入验证码"
-                size="medium"
-                style="margin: 5px 0"
-                prefix-icon="el-icon-question"
-                v-model="user.verificationCode"
+                  placeholder="请输入验证码"
+                  size="medium"
+                  style="margin: 5px 0"
+                  prefix-icon="el-icon-question"
+                  v-model="user.verificationCode"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -50,18 +50,18 @@
         </el-row>
         <el-form-item style="margin: 10px 0; text-align: right">
           <el-button
-            type="primary"
-            size="small"
-            autocomplete="off"
-            @click="login"
-            >登录</el-button
+              type="primary"
+              size="small"
+              autocomplete="off"
+              @click="login"
+          >登录</el-button
           >
           <el-button
-            type="warning"
-            size="small"
-            @click="$router.push('/register')"
-            autocomplete="off"
-            >注册</el-button
+              type="warning"
+              size="small"
+              @click="$router.push('/register')"
+              autocomplete="off"
+          >注册</el-button
           >
         </el-form-item>
       </el-form>
@@ -72,7 +72,6 @@
 <script>
 import user from "./User"
 import qs from 'qs'
-
 export default {
   name: "Login",
   data() {
@@ -104,7 +103,7 @@ export default {
       // 获取短信验证码
       // 操作
       this.imgUrl =
-        "http://www.wanghun.top/img/7c0063948b2fce5787fe356a8a69e0f7.jpg";
+          "http://www.wanghun.top/img/7c0063948b2fce5787fe356a8a69e0f7.jpg";
     },
     login() {
       this.$refs["userForm"].validate((valid) => {
@@ -115,7 +114,6 @@ export default {
               localStorage.setItem("user", JSON.stringify(response.data.data)); //存储用户信息到浏览器
               const jwt = response.headers.authorization;
               localStorage.setItem("token", jwt)
-
               setTimeout(()=>{
                 localStorage.removeItem("token")
                 localStorage.removeItem("user")
