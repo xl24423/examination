@@ -12,7 +12,7 @@ spring:
 logging:
   level:
     cn.xl.examination: debug
-dirPath: D:/upload
+
 markerhub:
   jwt:
     header: Authorization

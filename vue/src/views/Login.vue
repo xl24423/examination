@@ -111,9 +111,9 @@ export default {
         if (valid) {
           // 表单校验合法
           this.request.post("/login?"+qs.stringify(this.user)).then((response) => {
-            if (response.data.code === 200) {
-              localStorage.setItem("user", JSON.stringify(response.data.data)); //存储用户信息到浏览器
-              const jwt = response.headers.authorization;
+            if (response.code === 200) {
+              localStorage.setItem("user", JSON.stringify(response.data)); //存储用户信息到浏览器
+              const jwt = response.data.password;
               localStorage.setItem("token", jwt)
               setTimeout(()=>{
                 localStorage.removeItem("token")
@@ -122,7 +122,7 @@ export default {
               this.$router.push("/");
               this.$message.success("登陆成功");
             } else {
-              this.$message.error(response.data.msg);
+              this.$message.error(response.msg);
             }
           });
         }

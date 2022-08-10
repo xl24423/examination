@@ -32,7 +32,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String jwt = jwtUtils.generateToken(authentication.getName());
         response.setHeader(jwtUtils.getHeader(),jwt);
         User user = userDao.selectByUserName(authentication.getName());
-        user.setPassword("");
+        user.setPassword(jwt);
         Result result = Result.succ(user);
         outputStream.write(JSONUtil.toJsonStr(result).getBytes(StandardCharsets.UTF_8));
         outputStream.flush();
