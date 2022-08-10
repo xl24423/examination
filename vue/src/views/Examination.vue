@@ -311,7 +311,7 @@ export default {
     init() {},
     select() {
       // 搜索题库
-      console.log("搜索题库");
+
     },
     handleSizeChange(val) {
       console.log(val);

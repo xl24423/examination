@@ -32,6 +32,35 @@ const routes = [
         name: '考试管理',
         component: () => import('../views/Examination.vue')
       },
+      // onlineexamination
+      {
+        path: '/onlineexamination',
+        name: '考试管理',
+        component: () => import('../views/OnlineExamination.vue')
+      },
+      // prepareexam
+      {
+        path: '/prepareexam/*',
+        name: '考试准备',
+        component: () => import('../views/PrepareExam.vue')
+      },
+      {
+        path: '/startexam/*',
+        name: '考试准备',
+        component: () => import('../views/StartExam.vue')
+      }
+      ,
+      {
+        path: '/videoindex',
+        name: '考试准备',
+        component: () => import('../views/video/videoIndex.vue')
+      }
+      ,
+      {
+        path: '/videoinsert',
+        name: '考试准备',
+        component: () => import('../views/video/videoInsert.vue')
+      }
     ]
   },
   {
@@ -77,7 +106,7 @@ router.beforeEach((to, from, next) => {
   }else if (!token){
     next({path: "/login"})
   }
-  store.commit("setPath")  // 触发store的数据更新
+  // store.commit("setPath")  // 触发store的数据更新
   next()  // 放行路由
 })
 

@@ -106,6 +106,7 @@ export default {
           "http://www.wanghun.top/img/7c0063948b2fce5787fe356a8a69e0f7.jpg";
     },
     login() {
+
       this.$refs["userForm"].validate((valid) => {
         if (valid) {
           // 表单校验合法

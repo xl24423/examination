@@ -29,8 +29,11 @@ public class Resources extends Model<Resources> {
     //保存地址
     @TableField("address")
     private String address;
-    //0视频1资料
-    @TableField("type")
-    private Integer type;
+    //名称
+    @TableField("name")
+    private String name;
+    // 描述内容
+    @TableField("content")
+    private String content;
     }
 

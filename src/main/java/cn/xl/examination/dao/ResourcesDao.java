@@ -2,6 +2,8 @@ package cn.xl.examination.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import cn.xl.examination.entity.Resources;
+import org.apache.ibatis.annotations.Insert;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ResourcesDao extends BaseMapper<Resources> {
-
+    @Insert("insert into resources values(null,#{address},#{name},#{content});")
+    Integer insertOne(String address, String name, String content);
 }
 

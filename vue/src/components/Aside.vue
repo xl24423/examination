@@ -17,6 +17,17 @@
         <span slot="title">主页</span>
       </template>
     </el-menu-item>
+    <el-submenu index="1">
+      <template slot="title">
+        <i class="el-icon-s-operation"></i>
+        <span slot="title">在线考试</span>
+      </template>
+      <el-menu-item index="/onlineexamination">
+        <i class="el-icon-s-promotion"></i>
+        <span slot="title">在线考试</span>
+      </el-menu-item>
+    </el-submenu>
+
     <el-submenu index="2">
       <template slot="title">
         <i class="el-icon-menu"></i>
@@ -44,6 +55,21 @@
       <el-menu-item index="/examination">
         <i class="el-icon-notebook-1"></i>
         <span slot="title">考试管理</span>
+      </el-menu-item>
+    </el-submenu>
+
+       <el-submenu index="4">
+      <template slot="title">
+        <i class="el-icon-mobile"></i>
+        <span slot="title">视频管理</span>
+      </template>
+      <el-menu-item index="/videoindex">
+        <i class="el-icon-mobile"></i>
+        <span slot="title">视频列表</span>
+      </el-menu-item>
+      <el-menu-item index="/videoinsert">
+        <i class="el-icon-folder-add"></i>
+        <span slot="title">视频添加</span>
       </el-menu-item>
     </el-submenu>
   </el-menu>

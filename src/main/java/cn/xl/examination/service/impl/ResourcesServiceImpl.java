@@ -6,6 +6,8 @@ import cn.xl.examination.entity.Resources;
 import cn.xl.examination.service.ResourcesService;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * (Resources)表服务实现类
  *
@@ -14,6 +16,12 @@ import org.springframework.stereotype.Service;
  */
 @Service("resourcesService")
 public class ResourcesServiceImpl extends ServiceImpl<ResourcesDao, Resources> implements ResourcesService {
-
+    @Resource
+    ResourcesDao resourcesDao;
+    @Override
+    public Integer upFile(Resources resources) {
+         int i = resourcesDao.insertOne(resources.getAddress(),resources.getName(),resources.getContent());
+         return i;
+    }
 }
 

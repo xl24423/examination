@@ -61,7 +61,7 @@ function addTagImage(item){
             let tags = questions[i].tags;
             if(tags){
                 let tagImage = '/img/tags/'+tags[0].id+'.jpg';
-                console.log(tagImage);
+
                 questions[i].tagImage = tagImage;
             }
         }
