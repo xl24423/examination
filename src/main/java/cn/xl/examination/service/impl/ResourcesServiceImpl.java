@@ -4,9 +4,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.xl.examination.dao.ResourcesDao;
 import cn.xl.examination.entity.Resources;
 import cn.xl.examination.service.ResourcesService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * (Resources)表服务实现类
@@ -22,6 +26,19 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesDao, Resources> i
     public Integer upFile(Resources resources) {
          int i = resourcesDao.insertOne(resources.getAddress(),resources.getName(),resources.getContent());
          return i;
+    }
+
+    @Override
+    public PageInfo<Resources> getAllVideo(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Resources> allResource = resourcesDao.findAllResource();
+//        allResource.forEach(System.out::println);
+        return new PageInfo<>(allResource) ;
+    }
+
+    @Override
+    public Integer deleteResource(Integer id) {
+        return resourcesDao.deleteByResourceId(id);
     }
 }
 

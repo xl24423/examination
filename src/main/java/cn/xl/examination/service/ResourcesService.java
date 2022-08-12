@@ -2,6 +2,7 @@ package cn.xl.examination.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.xl.examination.entity.Resources;
+import com.github.pagehelper.PageInfo;
 import org.springframework.data.relational.core.sql.In;
 
 /**
@@ -12,5 +13,9 @@ import org.springframework.data.relational.core.sql.In;
  */
 public interface ResourcesService extends IService<Resources> {
      Integer upFile(Resources resources);
+
+    PageInfo<Resources> getAllVideo(Integer pageNum, Integer pageSize);
+
+    Integer deleteResource(Integer id);
 }
 

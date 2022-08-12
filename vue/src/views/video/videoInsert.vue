@@ -38,43 +38,46 @@ export default {
     }
   },
   methods:{
-      uploadFile (item) {
-        let formData = new FormData()
-        let file = item.raw
-        let videoName = this.name;
-        let content = this.content;
-        if (videoName=="" || content==""){
-          this.$message.error("请填写视频名称以及视频内容")
-          return;
-        }
-        const isLt1M = file.size / 1024 / 1024 < 1000;
-        if (!(file.type === 'video/x-matroska' || file.type === 'video/mp4' )) {
-          this.$message.error("只能上传[mkv,mp4]格式的文件")
-          return;
-        }
-        if (!isLt1M) {
-          this.$message.error('上传文件大小不能超过 1GB!');
-          return;
-        }
-        formData.append('file', file)
-        formData.append('videoName', videoName)
-        formData.append('content', content)
-        this.request({
-          url:"/resources/upFile", //后端提供的接口
-          method: 'post',
-          data: formData,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(data => {
-          console.log(data)
-              if (data.code===200){
-                this.$message.success(data.msg);
-              }else{
-                this.$message.error(data.msg)
-              }
-        })
+    uploadFile (item) {
+      let formData = new FormData()
+      let file = item.raw
+      let videoName = this.name;
+      console.log(videoName)
+      let content = this.content;
+      if (videoName === "" || content === "") {
+        this.$message.error("请填写视频名称以及视频内容")
+        return;
       }
+      const isLt1M = file.size / 1024 / 1024 < 1000;
+      if (!(file.type === 'video/x-matroska' || file.type === 'video/mp4')) {
+        this.$message.error("只能上传[mkv,mp4]格式的文件")
+        return;
+      }
+      if (!isLt1M) {
+        this.$message.error('上传文件大小不能超过 1GB!');
+        return;
+      }
+      formData.append('file', file)
+      formData.append('videoName', videoName)
+      formData.append('content', content)
+      this.request({
+        url: "/resources/upFile", //后端提供的接口
+        method: 'post',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(data => {
+        console.log(data)
+        if (data.code === 200) {
+          this.$message.success(data.msg);
+          this.name = ""
+          this.content = ""
+        } else {
+          this.$message.error(data.msg)
+        }
+      })
+    }
     },
 };
 </script>

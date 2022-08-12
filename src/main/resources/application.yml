@@ -9,10 +9,14 @@ spring:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
+  resources:
+    static-locations: file:D:/upload
+  mvc:
+    static-path-pattern: /static/**
 logging:
   level:
     cn.xl.examination: debug
-
+dirPath: D:/upload
 markerhub:
   jwt:
     header: Authorization

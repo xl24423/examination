@@ -13,9 +13,11 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
                 setGender(registerVO.getGender()).
                 setLocked(1).
                 setEnabled(1).
-                setRoleId(10);
+                setRoleId("10");
         int insert = userDao.insert(user);
         if (insert != 1) {
             throw new ServerException("注册失败,数据库异常");
@@ -88,6 +90,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public PageInfo<User> getAllUser(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<User> allUser = userDao.findAllUser();
+        for (User u : allUser){
+            if (u.getRoleId().equals("1")){
+                u.setRoleId("管理员");
+            }else if(u.getRoleId().equals("10")){
+                u.setRoleId("用户");
+            }
+        }
         PageInfo<User> userPageInfo = new PageInfo<>(allUser);
         return userPageInfo;
     }
@@ -95,6 +104,30 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     @Override
     public User getUserByUsername(String username) {
         return userDao.selectByUserName(username);
+    }
+
+    @Override
+    public Integer deleteById(Integer id) {
+        return userDao.deleteOne(id);
+    }
+
+    @Override
+    public void editUser(Integer id, String username, String password, String name, String tel, Integer roleId) {
+        userDao.edit(id,username,password,name,tel,roleId);
+    }
+
+    @Override
+    public PageInfo<User> searchAllUser(String username, String name, String tel, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<User> allUser = userDao.searchAllUser(username, name, tel);
+        for (User u : allUser){
+            if (u.getRoleId().equals("1")){
+                u.setRoleId("管理员");
+            }else if(u.getRoleId().equals("10")){
+                u.setRoleId("用户");
+            }
+        }
+        return new PageInfo<>(allUser);
     }
 }
 

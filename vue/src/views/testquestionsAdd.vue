@@ -6,7 +6,7 @@
           <el-input v-model="form.name"></el-input>
         </el-form-item> -->
         <el-form-item label="题目类型">
-          <el-select v-model="form.type1" placeholder="请选择活动区域">
+          <el-select v-model="form.type" placeholder="请选择活动区域">
             <el-option label="单选题" value="1"></el-option>
             <el-option label="多选题" value="2"></el-option>
             <el-option label="判断题" value="3"></el-option>

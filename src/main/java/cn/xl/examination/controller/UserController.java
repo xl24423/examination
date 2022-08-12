@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,9 +33,11 @@ public class UserController extends ApiController {
      * 服务对象
      */
     @Resource
-    private UserService userService;
+    UserService userService;
+    @Resource
+    PasswordEncoder passwordEncoder;
 
-//    /**
+    //    /**
 //     * 分页查询所有数据
 //     *
 //     * @param page 分页对象
@@ -46,63 +50,77 @@ public class UserController extends ApiController {
 //    }
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('/page')")
-    public PageInfo<User> AllUser( Integer pageNum, Integer pageSize){
-          log.debug(","+pageNum+","+pageSize);
-          return userService.getAllUser(pageNum,pageSize);
+    public PageInfo<User> AllUser(Integer pageNum, Integer pageSize) {
+        log.debug("," + pageNum + "," + pageSize);
+        return userService.getAllUser(pageNum, pageSize);
     }
 
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param id 主键
-     * @return 单条数据
-     */
-    @GetMapping("{id}")
-    public R selectOne(@PathVariable Serializable id) {
-        return success(this.userService.getById(id));
+    @DeleteMapping("/del")
+    public Result delete(Integer id, @AuthenticationPrincipal UserDetails userDetails) {
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
+            result.setAuthError();
+            return result;
+        }
+        if (id == null) {
+            result.setPathError();
+            return result;
+        }
+        Integer i = userService.deleteById(id);
+        if (i != 1) {
+            result.setDataBaseError();
+            return result;
+        }
+        result.setSuccess(userDetails);
+        result.setMsg("删除用户成功");
+        return result;
     }
 
-    /**
-     * 新增数据
-     *
-     * @param user 实体对象
-     * @return 新增结果
-     */
-    @PostMapping
-    public R insert(@RequestBody User user) {
-        return success(this.userService.save(user));
+    @PostMapping("/edit")
+    public Result edit(Integer id,
+                       String username,
+                       String password,
+                       String name,
+                       String tel,
+                       Integer roleId,
+                       @AuthenticationPrincipal UserDetails userDetails) {
+        Result result = new Result();
+        User NowUser = userService.getUserByUsername(userDetails.getUsername());
+        if (!username.equals(NowUser.getUsername()) && !NowUser.getRoleId().equals("1")) {
+            result.setAuthError();
+            return result;
+        }
+        if (roleId == null ||
+                !username.trim().matches("^.{2,10}$") ||
+                !tel.trim().matches("^1[3456789][0-9]{9}$") ||
+                !password.trim().matches("^[0-9a-zA-z._]{6,12}$") ||
+                !name.trim().matches("^.{1,5}$")
+        ) {
+            result.setPathError();
+            return result;
+        }
+        password = passwordEncoder.encode(password);
+        log.debug("这里是用户信息:" + id + "," + username + "," + password + "," + name + "," + tel + "," + roleId);
+        userService.editUser(id, username, password, name, tel, roleId);
+        result.setSuccess(userDetails);
+        result.setMsg("更新成功");
+        return result;
     }
 
-    /**
-     * 修改数据
-     *
-     * @param user 实体对象
-     * @return 修改结果
-     */
-    @PutMapping
-    public R update(@RequestBody User user) {
-        return success(this.userService.updateById(user));
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('/page')")
+    public PageInfo<User> search(String username, String name, String tel, Integer pageNum, Integer pageSize) {
+        if (username != null && username.equals("")) {
+            username = null;
+        }
+        if (name != null && name.equals("")) {
+            name = null;
+        }
+        if (tel != null && tel.equals("")) {
+            tel = null;
+        }
+        return userService.searchAllUser(username, name, tel, pageNum, pageSize);
     }
 
-    /**
-     * 删除数据
-     *
-     * @param idList 主键结合
-     * @return 删除结果
-     */
-    @DeleteMapping
-    public R delete(@RequestParam("idList") List<Long> idList) {
-        return success(this.userService.removeByIds(idList));
-    }
-    @GetMapping("/me")
-    public String me(){
-        return "me";
-    }
-    @Autowired
-    Result result;
-    @GetMapping("/derive")
-    public String daochu(){
-        return "666";
-    }
 }
 

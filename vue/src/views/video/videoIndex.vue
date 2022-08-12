@@ -5,37 +5,100 @@
       <el-col
       style="margin:10px"
         :span="5"
-        v-for="(o, index) in 8"
-        :key="index"
+        v-for="index in list"
+        :key="index.id"
       >
         <el-card :body-style="{ padding: '0px' }">
           <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
-          <video width="320" height="240" controls>
-            <source src="https://www.runoob.com/try/demo_source/movie.mp4" type="video/mp4" />
-            <source src="https://www.runoob.com/try/demo_source/movie.ogg" type="video/ogg" />
-            您的浏览器不支持 video 标签。
+          <video width="320" height="240" controls require :src="index.address+'?token='+token" >
           </video>
           <div style="padding: 14px">
-            <span>视频名称:{{from.name}}</span>
+            <span>视频名称:{{index.name}}</span>
             <div class="bottom clearfix">
-              <time class="time">{{ currentDate }}</time>
-              <el-button type="text" class="button">操作按钮</el-button>
+              <span class="text-sm-right">{{ index.content }}</span>
+              <el-popconfirm
+                  class="ml-5"
+                  confirm-button-text='确定'
+                  cancel-button-text='我再想想'
+                  icon="el-icon-info"
+                  icon-color="red"
+                  title="您确定删除吗？"
+                  @confirm="deleteResource(index.id)"
+              >
+                <el-button type="danger" slot="reference" style="float:right" >删除 <i class="el-icon-remove-outline"></i></el-button>
+              </el-popconfirm>
             </div>
           </div>
         </el-card>
       </el-col>
+
     </el-row>
+    <div class="block">
+      <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="pageNum"
+          :page-sizes="[2, 4, 8, 10]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+      </el-pagination>
+    </div>
   </el-card>
+
 </template>
 
 <script>
 export default {
   data() {
     return {
-      currentDate: new Date(),
-      from:{name:"视频1"},
+      total: 0,
+      list:[],
+      pageNum: 1,
+      pageSize: 10,
+      token:"",
     };
   },
+  created() {
+     this.token = localStorage.getItem("token");
+     this.loadAllVideo();
+  },
+  methods:{
+    loadAllVideo(){
+        this.request.get("/resources/getAll",{
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+          }
+        }).then(res=>{
+          if (res.total === 0 || res.total === null || res.total === undefined){
+              this.$message.error("该页面没有资源或服务器出错")
+          }
+          this.total = res.total;
+          this.list = res.list
+        })
+    },
+    handleSizeChange(pageSize) {
+      console.log(pageSize)
+      this.pageSize = pageSize
+      this.loadAllVideo()
+    },
+    handleCurrentChange(pageNum) {
+      console.log(pageNum)
+      this.pageNum = pageNum
+      this.loadAllVideo()
+    },
+    deleteResource:function (id) {
+        this.request.get("/resources/delete?id="+id).then(res=>{
+            if (res.code === 200){
+              this.$message.success(res.msg);
+            }else{
+              this.$message.error(res.msg)
+            }
+            this.loadAllVideo();
+        })
+    }
+  }
 };
 </script>
 
@@ -54,11 +117,6 @@ export default {
 .button {
   padding: 0;
   float: right;
-}
-
-.image {
-  width: 100%;
-  display: block;
 }
 
 .clearfix:before,

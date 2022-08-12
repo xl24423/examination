@@ -5,7 +5,9 @@ import cn.xl.examination.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import cn.xl.examination.entity.User;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,5 +34,11 @@ public interface UserDao extends BaseMapper<User> {
     User selectByPhone(String tel);
     @Select("select * from user")
     List<User> findAllUser();
+    @Delete("delete from user where id = #{id}")
+    Integer deleteOne(Integer id);
+    @Update("update user set username=#{username},password=#{password},name=#{name},tel=#{tel},role_id=#{roleId} where id = #{id}")
+    void edit(Integer id, String username, String password, String name, String tel, Integer roleId);
+    @Select("select * from user where username like CONCAT('%', #{username}, '%') or name like CONCAT('%', #{name}, '%') or tel like CONCAT('%', #{tel}, '%') ")
+    List<User> searchAllUser(String username, String name, String tel);
 }
 

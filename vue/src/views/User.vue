@@ -30,10 +30,10 @@ History
 <template>
   <div>
     <div style="margin: 10px 0">
-      <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="username"></el-input>
-      <el-input style="width: 200px" placeholder="请输入邮箱" suffix-icon="el-icon-message" class="ml-5" v-model="email"></el-input>
-      <el-input style="width: 200px" placeholder="请输入地址" suffix-icon="el-icon-position" class="ml-5" v-model="address"></el-input>
-      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
+      <el-input style="width: 200px" placeholder="请输入用户名" suffix-icon="el-icon-search" v-model="username"></el-input>
+      <el-input style="width: 200px" placeholder="请输入姓名" suffix-icon="el-icon-message" class="ml-5" v-model="name"></el-input>
+      <el-input style="width: 200px" placeholder="请输入电话" suffix-icon="el-icon-position" class="ml-5" v-model="tel"></el-input>
+      <el-button class="ml-5" type="primary" @click="loadSearch(username,name,tel)">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
 
@@ -64,6 +64,7 @@ History
       <el-table-column prop="username" label="用户名" width="140"></el-table-column>
       <el-table-column prop="name" label="姓名" width="140"></el-table-column>
       <el-table-column prop="tel" label="电话"></el-table-column>
+      <el-table-column prop="roleId" label="角色"></el-table-column>
       <el-table-column prop="createtime" label="创建时间"></el-table-column>
       <el-table-column label="操作"  width="200" align="center">
         <template slot-scope="scope">
@@ -95,32 +96,42 @@ History
     </div>
 
     <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%" >
-      <el-form label-width="80px" size="small">
-        <el-form-item label="用户名">
-          <el-input v-model="form.username" autocomplete="off"></el-input>
+      <el-form label-width="80px" size="small" :rules="rules" ref="ruleForm" :model="form">
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model.trim="form.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="form.nickname" autocomplete="off"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model.trim="form.password" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="form.email" autocomplete="off"></el-input>
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model.trim="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="form.phone" autocomplete="off"></el-input>
+        <el-form-item label="手机号" prop="tel">
+          <el-input v-model.trim="form.tel" autocomplete="off" maxlength="11"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address" autocomplete="off"></el-input>
-        </el-form-item>
+        <el-form-item label="角色" prop="roleId" required>
+          <el-select  v-model="form.roleId" autocomplete="off">
+            <el-option label="管理员" value="1"></el-option>
+            <el-option label="用户" value="10"></el-option>
+          </el-select>
+        </el-form-item >
+      <el-form-item>
+        <el-button @click="dialogFormVisible = false"
+                   type="primary"
+                   size="small"
+                   autocomplete="off" >取 消</el-button>
+        <el-button type="warning"
+                   size="small"
+                   autocomplete="off"
+                   @click="edit">确 定</el-button>
+      </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
-      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import qs from 'qs'
 export default {
   name: "User",
   data() {
@@ -130,14 +141,40 @@ export default {
       pageNum: 1,
       pageSize: 10,
       username: "",
+      password:"",
       name:"",
       tel:"",
       form: {},
+      token:"",
       dialogFormVisible: false,
       multipleSelection: [],
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" },
+        ],
+        name: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 1, max: 5, message: "长度在 1 到 5 个字符", trigger: "blur" },
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          {
+            min: 6,
+            max: 12,
+            message: "长度在 6 到 12 个字符",
+            trigger: "blur",
+          },
+        ],
+        tel:[
+          {require:true, message: "请输入手机号", trigger: "blur"},
+          {min:11, max: 11, message: "请输入正确的手机号", pattern:/^1[3456789]\d{9}$/,trigger:'blur'}
+        ],
+      },
     }
   },
   created() {
+    this.token = localStorage.getItem("token")
     this.load()
   },
   methods: {
@@ -148,18 +185,43 @@ export default {
           pageSize: this.pageSize,
         }
       }).then(res => {
-        this.tableData = res.data.list;
+        this.tableData = res.list;
         this.total = res.total
       })
     },
-    save() {
-      this.request.post("/user", this.form).then(res => {
-        if (res) {
-          this.$message.success("保存成功")
-          this.dialogFormVisible = false
-          this.load()
-        } else {
-          this.$message.error("保存失败")
+    loadSearch(username,name,tel,){
+       if (username===""&&name===""&&tel===""){
+         this.load();
+         return;
+       }
+      this.request.get("/user/search",{
+        params: {
+          username: username,
+          name: name,
+          tel: tel,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        }
+      }).then(res=>{
+        console.log(res)
+        this.total = res.total
+        this.tableData = res.list;
+      })
+    },
+    edit() {
+      this.$refs["ruleForm"].validate((valid) => {
+        console.log(qs.stringify(this.form))
+        if (valid) {
+          this.request.post("/user/edit?"+ qs.stringify(this.form)).then(res => {
+            console.log(res)
+            if (res) {
+              this.$message.success("保存成功")
+              this.dialogFormVisible = false
+              this.load()
+            } else {
+              this.$message.error("保存失败")
+            }
+          })
         }
       })
     },
@@ -172,8 +234,8 @@ export default {
       this.dialogFormVisible = true
     },
     del(id) {
-      this.request.delete("/user/" + id).then(res => {
-        if (res) {
+      this.request.delete("/user/del?id=" + id).then(res => {
+        if (res.code===200) {
           this.$message.success("删除成功")
           this.load()
         } else {
@@ -187,7 +249,7 @@ export default {
     },
     delBatch() {
       let ids = this.multipleSelection.map(v => v.id)  // [{}, {}, {}] => [1,2,3]
-      this.request.post("/user/del/batch", ids).then(res => {
+      this.request.post("/user/del/batch?idList=", ids).then(res => {
         if (res) {
           this.$message.success("批量删除成功")
           this.load()
@@ -198,22 +260,30 @@ export default {
     },
     reset() {
       this.username = ""
-      this.email = ""
-      this.address = ""
+      this.name = ""
+      this.tel = ""
       this.load()
     },
     handleSizeChange(pageSize) {
       console.log(pageSize)
       this.pageSize = pageSize
-      this.load()
+      if (this.username !== "" || this.name !== "" || this.tel !== ""){
+        this.loadSearch(this.username, this.name, this.tel);
+      }else{
+        this.load()
+      }
     },
     handleCurrentChange(pageNum) {
       console.log(pageNum)
       this.pageNum = pageNum
-      this.load()
+      if (this.username !== "" || this.name !== "" || this.tel !== ""){
+        this.loadSearch(this.username, this.name, this.tel);
+      }else {
+        this.load()
+      }
     },
     exp(){
-      window.open("http://localhost:9090/user/export")//导出
+      this.request.get("/user/export?token="+this.token)//导出
     },
     handExcelImportSuccess(){
       this.$message.success("导入成功")

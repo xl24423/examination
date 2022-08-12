@@ -42,7 +42,6 @@ public class QuestionBankController extends ApiController {
     private QuestionBankService questionBankService;
     @Resource
     private UserService userService;
-
     @GetMapping("/page")
     public PageInfo<QuestionBank> getAllQuestionBank(Integer pageNum, Integer pageSize){
         return questionBankService.getAllQuestionBank(pageNum,pageSize);
@@ -59,25 +58,26 @@ public class QuestionBankController extends ApiController {
     public R update(@RequestBody QuestionBank questionBank) {
         return success(this.questionBankService.updateById(questionBank));
     }
-    @Autowired
-    Result result;
+
     @DeleteMapping
     public Result delete(@AuthenticationPrincipal UserDetails userDetails,@RequestParam("id") Integer id,Integer pageNum, Integer pageSize) {
+        Result result = new Result();
         User user = userService.getUserByUsername(userDetails.getUsername());
-
-        if (user.getRoleId() != 1){
-            result.setCode(403);
-            result.setMsg("删除失败,你没有权限");
+        if (!user.getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        if (id == null){
+            result.setPathError();
             return result;
         }
         Integer integer = questionBankService.deleteOne(id);
         if (integer != 1){
-            result.setCode(500);
-            result.setMsg("删除失败,数据库异常");
+            result.setDataBaseError();
             return result;
         }
+        result.setSuccess(userDetails);
         result.setMsg("删除成功");
-        result.setCode(200);
         result.setData(questionBankService.getAllQuestionBank(pageNum,pageSize));
         return result;
     }

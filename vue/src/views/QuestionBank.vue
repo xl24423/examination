@@ -120,7 +120,8 @@ export default {
             pageSize: this.pageSize,
           }
         }).then(res=>{
-           this.questionList = res.data.list
+          console.log(res)
+           this.questionList = res.list
         })
     },
     del(id){
@@ -133,7 +134,7 @@ export default {
             }).then(res=>{
               if (res.data.code === 200){
                   console.log(res)
-                  this.questionList = res.data.data.list;
+                  this.questionList = res.list;
               }else {
                  alert("删除失败,请联系管理员")
               }

@@ -27,7 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       "/login",
       "/logout",
       "/favicon.ico",
-      "http://localhost:8080/login"
+      "http://localhost:8080/login",
+      "/static/**"
     };
 
     // WebSecurityConfigurerAdapter是我们需要基础的父类

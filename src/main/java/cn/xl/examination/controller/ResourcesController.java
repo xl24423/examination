@@ -10,8 +10,12 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.xl.examination.entity.Resources;
 import cn.xl.examination.service.ResourcesService;
+import com.github.pagehelper.PageInfo;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +25,7 @@ import javax.annotation.Resource;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * (Resources)表控制层
@@ -36,7 +39,6 @@ import java.util.UUID;
 public class ResourcesController extends ApiController {
     @Value("${video-path}")
     public String resourcePath;
-
     @Resource
     ResourcesService resourcesService;
     @Resource
@@ -45,14 +47,12 @@ public class ResourcesController extends ApiController {
     @PostMapping("/upFile")
     public Result upFile(@AuthenticationPrincipal UserDetails userDetails, MultipartFile file, String videoName, String content) throws IOException {
         Result result = new Result();
-        if (userService.getUserByUsername(userDetails.getUsername()).getRoleId() != 1){
-            result.setCode(401);
-            result.setMsg("你没有此权限");
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
             return result;
         }
         if (file == null || videoName.equals("") || content.equals("")){
-            result.setCode(403);
-            result.setMsg("视频或名称或描述不能为空");
+            result.setPathError();
             return result;
         }
 // 我们要确定文件保存的位置
@@ -82,20 +82,42 @@ public class ResourcesController extends ApiController {
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://localhost:9090/"+path+"/"+name;
+        String url = "http://localhost:9090/static/"+path+"/"+name;
         log.debug("回显图片的路径为:{}",url);
         Resources resources = new Resources();
         resources.setName(videoName).setContent(content).setAddress(url);
         log.debug("entity"+resources);
         Integer integer = resourcesService.upFile(resources);
         if (integer != 1){
-            result.setCode(500);
-            result.setMsg("数据库异常,请联系管理员");
+            result.setAuthError();
             return result;
         }
-        result.setCode(200);
-        result.setMsg("上传成功");
+        result.setSuccess(userDetails);
         result.setData(resources);
+        result.setMsg("上传成功");
+        return result;
+    }
+    @GetMapping("/getAll")
+    public PageInfo<Resources> getAll(Integer pageNum, Integer pageSize){
+        return resourcesService.getAllVideo(pageNum,pageSize);
+    }
+    @GetMapping("/delete")
+    public Result deleteResource(Integer id,@AuthenticationPrincipal UserDetails userDetails){
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        if (id == null){
+            result.setPathError();
+            return result;
+        }
+        Integer i = resourcesService.deleteResource(id);
+        if (i!=1){
+            result.setDataBaseError();
+        }
+        result.setSuccess(userDetails);
+        result.setMsg("删除成功");
         return result;
     }
 }

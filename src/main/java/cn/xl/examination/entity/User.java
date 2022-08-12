@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Serializable;
 
@@ -62,8 +63,8 @@ public class User extends Model<User> {
     @TableField("name")
     private String name;
     //用户身份 管理员(1) 普通员工(10)
-    @TableField("role_id")
-    private Integer roleId;
+    @TableField(value = "role_id")
+    private String roleId;
     //用户创建时间
     @TableField("createtime")
     private LocalDateTime createtime;
