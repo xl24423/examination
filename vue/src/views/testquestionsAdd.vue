@@ -9,15 +9,10 @@
           <el-select v-model="form.type" placeholder="请选择活动区域">
             <el-option label="单选题" value="1"></el-option>
             <el-option label="多选题" value="2"></el-option>
-            <el-option label="判断题" value="3"></el-option>
+
           </el-select>
         </el-form-item>
-        <el-form-item label="难度等级">
-          <el-select v-model="form.type2" placeholder="请选择活动区域">
-            <el-option label="普通" value="1"></el-option>
-            <el-option label="较难" value="2"></el-option>
-          </el-select>
-        </el-form-item>
+
         <el-form-item label="归属题库">
           <el-select v-model="form.region" placeholder="请选择活动区域">
             <el-option
