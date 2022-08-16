@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import cn.xl.examination.entity.QuestionBank;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * (QuestionBank)表服务接口
  *
@@ -16,5 +18,7 @@ public interface QuestionBankService extends IService<QuestionBank> {
     PageInfo<QuestionBank> getAllQuestionBank(Integer pageNum, Integer pageSize);
 
     Integer deleteOne(Integer id);
+
+    List<QuestionBank> getAllQuestionBankDontPage();
 }
 

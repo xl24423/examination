@@ -30,8 +30,8 @@ public class Answer extends Model<Answer> {
     @TableId(value = "id", type = IdType.AUTO)
     private String userId;
     //题目id
-    @TableField("solution_id")
-    private Integer solutionId;
+    @TableField("question_id")
+    private Integer questionId;
     //用户回答
     @TableField("user_answer")
     private String userAnswer;
@@ -39,8 +39,8 @@ public class Answer extends Model<Answer> {
     @TableField("createtime")
     private LocalDateTime createtime;
     //修改答案时间
-    @TableField("updatetime")
-    private LocalDateTime updatetime;
+    @TableField("question_bank_id")
+    private Integer questionBankId;
 
 }
 

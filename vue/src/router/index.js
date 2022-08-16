@@ -45,16 +45,6 @@ const routes = [
         component: () => import('../views/PrepareExam.vue')
       },
       {
-        path: '/ExaminationDetails/*',
-        name: '考试详情',
-        component: () => import('../views/ExaminationDetails.vue')
-      },
-      {
-        path: '/ExaminationRecord/',
-        name: '考试记录',
-        component: () => import('../views/ExaminationRecord.vue')
-      },
-      {
         path: '/startexam/*',
         name: '考试准备',
         component: () => import('../views/StartExam.vue')
@@ -98,6 +88,12 @@ const routes = [
     name: '添加考试',
     component: () => import('../views/examinationAdd.vue')
   },
+  {
+    path: '/demo',
+    name: '',
+    component: () => import('../views/demo.vue')
+  },
+
 ]
 
 const router = new VueRouter({
