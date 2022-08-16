@@ -37,5 +37,10 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
         log.debug("删除的题库id"+id);
         return questionBankDao.deleteOne(id);
     }
+
+    @Override
+    public List<QuestionBank> getAllQuestionBankDontPage() {
+        return questionBankDao.findAllQuestionBank();
+    }
 }
 

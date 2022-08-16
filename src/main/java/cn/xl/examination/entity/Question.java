@@ -1,5 +1,8 @@
 package cn.xl.examination.entity;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,6 +11,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.data.relational.core.sql.In;
 
 import java.io.Serializable;
 
@@ -15,7 +19,7 @@ import java.io.Serializable;
  * (Question)表实体类
  *
  * @author makejava
- * @since 2022-08-02 16:16:11
+ * @since 2022-08-15 10:20:34
  */
 @SuppressWarnings("serial")
 @TableName("question")
@@ -28,29 +32,38 @@ public class Question extends Model<Question> {
     //问题
     @TableField("question")
     private String question;
-    //问题解析
-    @TableField("resolution")
-    private String resolution;
     //回答A
-    @TableField("a")
-    private String a;
+    @TableField("A")
+    private String A;
     //回答B
-    @TableField("b")
-    private String b;
+    @TableField("B")
+    private String B;
     //回答C
-    @TableField("c")
-    private String c;
+    @TableField("C")
+    private String C;
     //回答D
-    @TableField("d")
-    private String d;
-    //类型(1:单选,2:多选,3:判断)
+    @TableField("D")
+    private String D;
+    //题库外键
+    @TableField("questionBankId")
+    private Integer questionBankId;
+    //题目解析
+    @TableField("questionAnalysis")
+    private String questionAnalysis;
+    //创建时间
+    @TableField("createtime")
+    private LocalDateTime createtime;
+    //单选或者多选
     @TableField("type")
     private Integer type;
-    //判断
-    @TableField("judge")
-    private String judge;
-    //题库外键
-    @TableField("question_bank_id")
-    private Integer questionBankId;
-}
+    //得分
+    @TableField("正在搜索…")
+    private Integer score;
+    //出题人id
+    @TableField("userId")
+    private Integer userId;
+    @TableField("solution")
+    private String solution;
+
+    }
 

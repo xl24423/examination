@@ -47,18 +47,6 @@ public class QuestionBankController extends ApiController {
         return questionBankService.getAllQuestionBank(pageNum,pageSize);
     }
 
-
-    /**
-     * 修改数据
-     *
-     * @param questionBank 实体对象
-     * @return 修改结果
-     */
-    @PutMapping
-    public R update(@RequestBody QuestionBank questionBank) {
-        return success(this.questionBankService.updateById(questionBank));
-    }
-
     @DeleteMapping
     public Result delete(@AuthenticationPrincipal UserDetails userDetails,@RequestParam("id") Integer id,Integer pageNum, Integer pageSize) {
         Result result = new Result();
@@ -79,6 +67,18 @@ public class QuestionBankController extends ApiController {
         result.setSuccess(userDetails);
         result.setMsg("删除成功");
         result.setData(questionBankService.getAllQuestionBank(pageNum,pageSize));
+        return result;
+    }
+    @GetMapping("/getAllQuestionBank")
+    public Result getAllQuestionBank(@AuthenticationPrincipal UserDetails userDetails){
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        List<QuestionBank> list = questionBankService.getAllQuestionBankDontPage();
+        result.setSuccess(userDetails);
+        result.setData(list);
         return result;
     }
 }

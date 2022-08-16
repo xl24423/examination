@@ -88,6 +88,11 @@ const routes = [
     name: '添加考试',
     component: () => import('../views/examinationAdd.vue')
   },
+  {
+    path: '/demo',
+    name: '',
+    component: () => import('../views/demo.vue')
+  },
 
 ]
 

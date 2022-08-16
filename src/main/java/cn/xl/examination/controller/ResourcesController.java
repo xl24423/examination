@@ -59,6 +59,7 @@ public class ResourcesController extends ApiController {
         // 文件保存的路径是 D:/upload/年/月/日
         // 先获得当前日期的字符串做路径
         String path = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDateTime.now());
+        path = "/video/" + path;
         // 确定要上传的文件夹
         File folder = new File(resourcePath,path);
         // 创建这个文件夹
@@ -82,11 +83,10 @@ public class ResourcesController extends ApiController {
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://localhost:9090/static/"+path+"/"+name;
+        String url = "http://localhost:9090/static"+path+"/"+name;
         log.debug("回显图片的路径为:{}",url);
         Resources resources = new Resources();
         resources.setName(videoName).setContent(content).setAddress(url);
-        log.debug("entity"+resources);
         Integer integer = resourcesService.upFile(resources);
         if (integer != 1){
             result.setAuthError();
