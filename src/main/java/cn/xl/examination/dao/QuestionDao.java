@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.data.relational.core.sql.In;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * (Question)表数据库访问层
@@ -16,11 +17,13 @@ import java.time.LocalDateTime;
  */
 public interface QuestionDao extends BaseMapper<Question> {
     @Insert("insert into question values(#{id},#{question},#{A},#{B},#{C},#{D},#{questionBankId},#{questionAnalysis},#{createtime},#{type},#{score},#{userId},#{solution})")
-    Integer addQuestion(Integer id, String question, String A, String B, String C, String D, Integer questionBankId,
-                        String questionAnalysis, LocalDateTime createtime, Integer type,
-                        Integer score, Integer userId,String solution
+    Integer addQuestion(Integer id, String question, String A, String B, String C, String D, String questionBankId,
+                        String questionAnalysis, LocalDateTime createtime, String type,
+                        Integer score, String userId,String solution
                         );
     @Select("select max(id) from question")
     int selectMaxId();
+    @Select("select * from question")
+    List<Question> selectAllQuestions();
 }
 

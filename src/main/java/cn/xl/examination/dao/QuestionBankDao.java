@@ -21,5 +21,7 @@ public interface QuestionBankDao extends BaseMapper<QuestionBank> {
     List<QuestionBank> findAllQuestionBank();
     @Delete("delete from question_bank where id = #{id}")
     Integer deleteOne(Integer id);
+    @Select("select name from question_bank where id = #{questionBankId}")
+    String backQuestionBankName(String questionBankId);
 }
 

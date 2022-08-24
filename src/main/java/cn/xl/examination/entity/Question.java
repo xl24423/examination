@@ -46,7 +46,7 @@ public class Question extends Model<Question> {
     private String D;
     //题库外键
     @TableField("questionBankId")
-    private Integer questionBankId;
+    private String questionBankId;
     //题目解析
     @TableField("questionAnalysis")
     private String questionAnalysis;
@@ -55,15 +55,16 @@ public class Question extends Model<Question> {
     private LocalDateTime createtime;
     //单选或者多选
     @TableField("type")
-    private Integer type;
+    private String type;
     //得分
     @TableField("正在搜索…")
     private Integer score;
     //出题人id
     @TableField("userId")
-    private Integer userId;
+    private String userId;
     @TableField("solution")
     private String solution;
-
+    @TableField(exist = false)
+    private String url;
     }
 

@@ -1,6 +1,7 @@
 package cn.xl.examination.controller;
 
 import cn.xl.examination.common.lang.Result;
+import cn.xl.examination.entity.Question;
 import cn.xl.examination.entity.QuestionImage;
 import cn.xl.examination.entity.Resources;
 import cn.xl.examination.entity.User;
@@ -9,6 +10,7 @@ import cn.xl.examination.service.UserService;
 import cn.xl.examination.vo.TableDataVO;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +24,10 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * (Question)表控制层
@@ -48,7 +50,7 @@ public class QuestionController extends ApiController {
                               String analysis,
                               String score,
                               String type,
-                              Integer bankId,
+                              String bankId,
                               String questionContent) {
         Result result = new Result();
         User user = userService.getUserByUsername(userDetails.getUsername());
@@ -77,13 +79,13 @@ public class QuestionController extends ApiController {
                 String param2 = param[2].split(":")[1];
                 myTable[i].setOption(param2.substring(1,param2.length()-1));
             }
-            n = questionService.addQuestion(questionContent,myTable,bankId,analysis,score,type,user.getId());
+            n = questionService.addQuestion(questionContent,myTable,bankId,analysis,score,type, String.valueOf(user.getId()));
         }else{
             TableDataVO[] myTable = new TableDataVO[1];
             String solution = request.getParameter("solution");
             myTable[0] = new TableDataVO();
             myTable[0].setContent(solution);
-            n = questionService.addQuestion(questionContent,myTable,bankId,analysis,score,type,user.getId());
+            n = questionService.addQuestion(questionContent,myTable,bankId,analysis,score,type, String.valueOf(user.getId()));
         }
 
         result.setSuccess(userDetails);
@@ -131,7 +133,7 @@ public class QuestionController extends ApiController {
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://localhost:9090/static"+path+"/"+name;
+        String url = "http://localhost:9090/static/image/"+path+"/"+name;
         log.debug("回显图片的路径为:{}",url);
         QuestionImage questionImage = new QuestionImage().setQuestionId(id).setImageUrl(url);
         Integer i = questionService.postResource(questionImage);
@@ -141,6 +143,52 @@ public class QuestionController extends ApiController {
         }
         result.setSuccess(userDetails);
         result.setMsg("图片保存成功");
+        return result;
+    }
+    @GetMapping("/questions")
+    public Result getAllQuestions(@AuthenticationPrincipal UserDetails userDetails,Integer pageNum, Integer pageSize){
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        PageInfo<Question> questionPageInfo = questionService.getAllQuestions(pageNum,pageSize);
+
+        result.setSuccess(userDetails);
+        result.setData(questionPageInfo);
+        return result;
+    }
+    @PostMapping("/image")
+    public Result backUrl(@AuthenticationPrincipal UserDetails userDetails, MultipartFile file) throws IOException {
+
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        if (file == null){
+            result.setPathError();
+            result.setData("文件出错为空");
+            return result;
+        }
+        File wjj = new File("D:/upload/back");
+        wjj.mkdirs();
+        File backFile = new File(wjj,file.getOriginalFilename());
+        file.transferTo(backFile);
+        //定时器
+        Timer timer = new Timer();
+
+// 10s后执行定时器，仅执行一次
+        long milliseconds = 10 * 1000;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                backFile.delete();
+            }
+
+        }, milliseconds);
+        result.setSuccess(userDetails);
+        result.setData("http://localhost:9090/static/back/"+file.getOriginalFilename());
         return result;
     }
 }

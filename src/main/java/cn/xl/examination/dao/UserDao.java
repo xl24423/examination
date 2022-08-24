@@ -40,5 +40,7 @@ public interface UserDao extends BaseMapper<User> {
     void edit(Integer id, String username, String password, String name, String tel, Integer roleId);
     @Select("select * from user where username like CONCAT('%', #{username}, '%') or name like CONCAT('%', #{name}, '%') or tel like CONCAT('%', #{tel}, '%') ")
     List<User> searchAllUser(String username, String name, String tel);
+    @Select("select username from user where id = #{userId}")
+    String backUserName(String userId);
 }
 

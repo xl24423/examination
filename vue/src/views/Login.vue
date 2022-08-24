@@ -111,6 +111,7 @@ export default {
         if (valid) {
           // 表单校验合法
           this.request.post("/login?"+qs.stringify(this.user)).then((response) => {
+            console.log(response)
             if (response.code === 200) {
               localStorage.setItem("user", JSON.stringify(response.data)); //存储用户信息到浏览器
               const jwt = response.data.password;

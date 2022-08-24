@@ -52,10 +52,7 @@
         <i class="el-icon-notebook-2"></i>
         <span slot="title">试题管理</span>
       </el-menu-item>
-      <el-menu-item index="/examination">
-        <i class="el-icon-notebook-1"></i>
-        <span slot="title">考试管理</span>
-      </el-menu-item>
+
     </el-submenu>
 
        <el-submenu index="4">

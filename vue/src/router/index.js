@@ -26,12 +26,6 @@ const routes = [
         component: () => import('../views/TestQuestions.vue')
       },
 
-      // Examination.vue
-      {
-        path: '/examination',
-        name: '考试管理',
-        component: () => import('../views/Examination.vue')
-      },
       // onlineexamination
       {
         path: '/onlineexamination',
@@ -88,12 +82,6 @@ const routes = [
     name: '添加考试',
     component: () => import('../views/examinationAdd.vue')
   },
-  {
-    path: '/demo',
-    name: '',
-    component: () => import('../views/demo.vue')
-  },
-
 ]
 
 const router = new VueRouter({
