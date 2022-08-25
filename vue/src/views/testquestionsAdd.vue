@@ -52,7 +52,16 @@
       >
         <el-button size="small" type="primary">上传问题图片</el-button>
         <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+
+
+
+
       </el-upload>
+      <div style="padding-top: 20px">
+        <el-image :key="urls" :src="urls" style="width: 200px; height: 200px" fit="fill" >
+        </el-image>
+        <span><button @click="delImage">删除</button></span>
+      </div>
 
     </el-card>
 
@@ -143,12 +152,13 @@
   </div>
 </template>
 <script>
-import qs from 'qs'
+
 
 export default {
   data() {
     return {
       files: [],
+      urls:"http://localhost:9090/static/wjz.jpg",
       option: [
         {
           label: "A",
@@ -183,12 +193,21 @@ export default {
     };
   },
   methods: {
+    delImage(){
+      this.files = [];
+      this.urls = "http://localhost:9090/static/wjz.jpg"
+    },
     handlePreview(file) {
-      console.log(file)
       if (this.files.length < 1) {
         if (file != null) {
           if (file.type != null && file.type.match("image/*")) {
-            this.files.push(file);
+            let form = new FormData();
+            form.append("file",file);
+            this.request.post("/question/image",form).then(res=>{
+              this.files.push(file);
+              this.urls = res.data;
+            })
+
           } else {
             this.$message.error("文件只支持上传图片")
             return;
@@ -257,6 +276,10 @@ export default {
         this.tableData = [];
         return;
       }
+      if (this.form.type === "3" && this.form.solution ===""){
+        this.$message.error("请选择对错")
+        return;
+      }
       if (this.isRepeat(list)) {
         this.$message.error("不可添加重复选项");
         return;
@@ -284,6 +307,7 @@ export default {
           return;
         }
       }
+
       if (this.form.type === "1"){
         if (num!==1){
           this.$message.error("单选只能有一个答案")
@@ -348,6 +372,7 @@ export default {
     },
   },
   created() {
+    this.tableData = []
     this.request.get("/questionBank/getAllQuestionBank").then(res => {
       this.question_bank = res.data;
     })

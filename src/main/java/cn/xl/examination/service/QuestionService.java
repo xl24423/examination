@@ -4,6 +4,7 @@ import cn.xl.examination.entity.QuestionImage;
 import cn.xl.examination.vo.TableDataVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.xl.examination.entity.Question;
+import com.github.pagehelper.PageInfo;
 import org.springframework.data.relational.core.sql.In;
 
 /**
@@ -14,8 +15,10 @@ import org.springframework.data.relational.core.sql.In;
  */
 public interface QuestionService extends IService<Question> {
 
-    Integer addQuestion(String questionContent, TableDataVO[] myTable, Integer bankId, String analysis, String score, String type, Integer userId);
+    Integer addQuestion(String questionContent, TableDataVO[] myTable, String bankId, String analysis, String score, String type, String userId);
 
     Integer postResource(QuestionImage questionImage);
+
+    PageInfo<Question> getAllQuestions(Integer pageNum,Integer pageSize);
 }
 

@@ -14,5 +14,7 @@ import org.apache.ibatis.annotations.Select;
 public interface QuestionImageDao extends BaseMapper<QuestionImage> {
     @Insert("insert into question_image values(#{questionId},#{imageUrl}) ")
     Integer addQuestionImage(Integer questionId, String imageUrl);
+    @Select("select image_url from question_image where question_id = #{id}")
+    String selectUrl(Integer id);
 }
 
