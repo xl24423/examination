@@ -42,5 +42,10 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
     public List<QuestionBank> getAllQuestionBankDontPage() {
         return questionBankDao.findAllQuestionBank();
     }
+
+    @Override
+    public void actExamination(String action, Integer id) {
+        questionBankDao.actExamination(action, id);
+    }
 }
 

@@ -74,7 +74,7 @@
         <i class="el-icon-question"></i>
         <span slot="title">考试详情</span>
       </template>
-      <el-menu-item index="/examinationRecord">
+      <el-menu-item index="">
         <i class="el-icon-edit-outline"></i>
         <span slot="title">考试记录</span>
       </el-menu-item>

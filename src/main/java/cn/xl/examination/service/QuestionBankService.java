@@ -20,5 +20,7 @@ public interface QuestionBankService extends IService<QuestionBank> {
     Integer deleteOne(Integer id);
 
     List<QuestionBank> getAllQuestionBankDontPage();
+
+    void actExamination(String action, Integer id);
 }
 

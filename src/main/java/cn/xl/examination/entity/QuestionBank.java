@@ -31,9 +31,9 @@ public class QuestionBank extends Model<QuestionBank> {
     //创建时间
     @TableField("createtime")
     private String createtime;
-    //包含试题
-    @TableField("list")
-    private String list;
+    //是否开始
+    @TableField("isAction")
+    private String isAction;
 
 
 }
