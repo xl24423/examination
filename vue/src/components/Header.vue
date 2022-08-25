@@ -66,9 +66,7 @@ export default {
         : {},
     };
   },
-  mounted: {
-    
-  },
+
   methods: {
     // collapse() {
     //   //this.$parent.$parent.$parent.$parent.collapse()  //通过4个$parent找到父组件,从而调用期折叠方法

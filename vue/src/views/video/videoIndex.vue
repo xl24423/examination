@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <el-button style="margin:10px" type="primary" @click="$router.push('/videoinsert')"> <i class="el-icon-plus"></i> 添加视频</el-button>
+    <el-button style="margin:10px" type="primary" @click="$router.push('/ videoinsert')"> <i class="el-icon-plus"></i> 添加视频</el-button>
     <el-row>
       <el-col
       style="margin:10px"

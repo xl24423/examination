@@ -25,12 +25,15 @@ const routes = [
         name: '试题管理',
         component: () => import('../views/TestQuestions.vue')
       },
-
-      // onlineexamination
       {
         path: '/onlineexamination',
-        name: '考试管理',
+        name: '试题管理',
         component: () => import('../views/OnlineExamination.vue')
+      },
+      {
+        path: '/ExaminationRecord',
+        name: '考试记录',
+        component: () => import('../views/ExaminationRecord.vue')
       },
       // prepareexam
       {
@@ -77,11 +80,8 @@ const routes = [
     name: '添加试题',
     component: () => import('../views/testquestionsAdd.vue')
   },
-  {
-    path: '/examinationadd',
-    name: '添加考试',
-    component: () => import('../views/examinationAdd.vue')
-  },
+
+
 ]
 
 const router = new VueRouter({

@@ -6,14 +6,8 @@
           <el-form ref="form" :model="form">
             <el-col :span="3">
               <el-form-item v-model="form.region">
-                <el-select v-model="form.region" placeholder="题库类型">
-                  <el-option
-                      v-for="(item, i) in questions"
-                      :key="i"
-                      :label="item.name"
-                      value="shanghai"
-                  ></el-option>
-                </el-select>
+
+
               </el-form-item>
             </el-col>
             <el-col :span="4" style="margin-right: 20px"
@@ -23,10 +17,10 @@
             ></el-input>
             </el-col>
           </el-form>
-          <el-col :span="3" style="margin: 0 20px"
-          ><el-button type="primary" icon="el-icon-question" @click="select"
+
+          <el-button type="primary" icon="el-icon-question" @click="select"
           >搜索</el-button
-          ></el-col
+
           >
         </el-row>
       </div>
@@ -40,12 +34,12 @@
           :data="questionList"
           style="width: 100%"
       >
-        <el-table-column label="考试名称" prop="name">
+        <el-table-column label="id" prop="id">
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           <!-- {{type}} -->
         </el-table-column>
 
-        <el-table-column prop="context" label="考试类型"> </el-table-column>
+        <el-table-column prop="name" label="用户名"> </el-table-column>
         <el-table-column prop="timetype" label="考试时间">
         </el-table-column>
         <el-table-column prop="username" label="答题人姓名" >

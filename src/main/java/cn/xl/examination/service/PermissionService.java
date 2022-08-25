@@ -3,6 +3,7 @@ package cn.xl.examination.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.xl.examination.entity.Permission;
 
+
 /**
  * (Permission)表服务接口
  *
