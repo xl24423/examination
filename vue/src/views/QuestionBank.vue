@@ -40,6 +40,7 @@
               <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
             </el-popconfirm>
             <el-button type="warning" @click="selectAll(scope.row)">题库详情</el-button>
+            <el-button :type="scope.row.type" @click="action(scope.row)">{{scope.row.isAction}}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -102,6 +103,8 @@ export default {
         {
           name: "2",
           createtime: "3",
+          isAction:"开启",
+          type:"primary"
         },
         ]
     };
@@ -113,6 +116,17 @@ export default {
   },
 
   methods: {
+    action(row){
+       if (row.isAction === "关闭"){
+         row.isAction = "开启";
+         row.type = "primary"
+         this.request.get("/questionBank/act?action=false&id="+row.id);
+       }else{
+         row.isAction = "关闭";
+         row.type = "info"
+         this.request.get("/questionBank/act?action=true&id="+row.id);
+       }
+    },
     init() {
         this.request.get("/questionBank/page",{
           params: {
@@ -120,8 +134,17 @@ export default {
             pageSize: this.pageSize,
           }
         }).then(res=>{
-          console.log(res)
            this.questionList = res.list
+           let list = this.questionList;
+           for (let i=0;i<list.length;i++){
+             if (list[i].isAction === "true"){
+                 list[i].type = "info";
+                 list[i].isAction = "关闭";
+             }else{
+               list[i].type = "primary";
+               list[i].isAction = "开启";
+             }
+           }
         })
     },
     del(id){

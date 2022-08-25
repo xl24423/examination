@@ -5,6 +5,8 @@ import cn.xl.examination.entity.QuestionBank;
 import lombok.Data;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +25,7 @@ public interface QuestionBankDao extends BaseMapper<QuestionBank> {
     Integer deleteOne(Integer id);
     @Select("select name from question_bank where id = #{questionBankId}")
     String backQuestionBankName(String questionBankId);
+    @Update("update question_bank set isAction=#{action} where id = #{id}")
+    void actExamination(String action, Integer id);
 }
 

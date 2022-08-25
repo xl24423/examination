@@ -69,6 +69,20 @@
         <span slot="title">视频添加</span>
       </el-menu-item>
     </el-submenu>
+    <el-submenu index="5">
+      <template slot="title">
+        <i class="el-icon-question"></i>
+        <span slot="title">考试详情</span>
+      </template>
+      <el-menu-item index="">
+        <i class="el-icon-edit-outline"></i>
+        <span slot="title">考试记录</span>
+      </el-menu-item>
+      <el-menu-item index="">
+        <i class="el-icon-document"></i>
+        <span slot="title">通过名单</span>
+      </el-menu-item>
+    </el-submenu>
   </el-menu>
 </template>
 

@@ -81,5 +81,10 @@ public class QuestionBankController extends ApiController {
         result.setData(list);
         return result;
     }
+    @GetMapping("/act")
+    public void actExamination(String action, Integer id){
+        log.debug(action+","+id);
+        questionBankService.actExamination(action, id);
+    }
 }
 
