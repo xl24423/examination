@@ -4,18 +4,6 @@
       <div style="margin-bottom: 20px">
         <el-row :span="24">
           <el-form ref="form" :model="form">
-            <el-col :span="3">
-              <el-form-item v-model="form.region">
-                <el-select v-model="form.region" placeholder="开放类型">
-                  <el-option
-                    v-for="(item, i) in questions"
-                    :key="i"
-                    :label="item.name"
-                    value="shanghai"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
             <el-col :span="4" style="margin-right: 20px"
               ><el-input
                 v-model="questionName"
@@ -44,13 +32,10 @@
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           <!-- {{type}} -->
         </el-table-column>
-
-        <el-table-column prop="context" label="考试类型"> </el-table-column>
-        <el-table-column prop="timetype" label="考试时间" show-overflow-tooltip>
-        </el-table-column>
-        <el-table-column prop="timenumber" label="考试时长"> </el-table-column>
-        <el-table-column prop="all" label="考试总分"> </el-table-column>
-        <el-table-column prop="Pass" label="及格线"> </el-table-column>
+        <el-table-column prop="time" label="考试时长"> </el-table-column>
+        <el-table-column prop="count" label="考试总分"> </el-table-column>
+        <el-table-column prop="pass" label="及格线"> </el-table-column>
+        <el-table-column prop="admin" label="出题人"> </el-table-column>
         <el-table-column label="操作" show-overflow-tooltip>
           <template slot-scope="scope">
             <el-button
@@ -122,7 +107,7 @@ export default {
       add: {},
       total: 30,
       pageSize: 10,
-      current: 1,
+      pageNum: 1,
       // 题库列表
       questions: [
         {
@@ -140,27 +125,7 @@ export default {
       ],
       questionContxt: "",
       questionName: "",
-      questionList: [
-        {
-          id: 1,
-          name: "演示考试",
-          type: "完全公开",
-          timetype: "不限时",
-          timenumber: "30分钟",
-          all: "100",
-          Pass: 60,
-        },
-        {
-          id: 222222,
-
-          name: "演示考试",
-          type: "完全公开",
-          timetype: "不限时",
-          timenumber: "30分钟",
-          all: "100",
-          Pass: 60,
-        },
-      ],
+      questionList: [],
     };
   },
 
@@ -170,7 +135,18 @@ export default {
   },
 
   methods: {
-    init() {},
+    init() {
+      this.request.get("/questionBank/actionExam",{
+        params:{
+          pageNum:this.pageNum,
+          pageSize:this.pageSize
+        }
+      }).then(res=>{
+          if (res.code===200){
+            this.questionList = res.data.list;
+          }
+      })
+    },
     select() {
 
     },
@@ -180,7 +156,7 @@ export default {
     },
     handleCurrentChange(val) {
       console.log(val);
-      this.current = val;
+      this.pageNum = val;
     },
     compontenimport() {
       console.log("下载导入");

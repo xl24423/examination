@@ -22,5 +22,13 @@ public interface QuestionBankService extends IService<QuestionBank> {
     List<QuestionBank> getAllQuestionBankDontPage();
 
     void actExamination(String action, Integer id);
+
+    PageInfo<QuestionBank> actionExam(Integer pageNum, Integer pageSize);
+
+    void addQuestionBank(String username, String title, String time);
+
+    QuestionBank selectQuestionBankByName(String title);
+
+    QuestionBank selectOne(Integer id);
 }
 

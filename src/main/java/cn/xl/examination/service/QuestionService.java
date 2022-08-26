@@ -7,6 +7,8 @@ import cn.xl.examination.entity.Question;
 import com.github.pagehelper.PageInfo;
 import org.springframework.data.relational.core.sql.In;
 
+import java.util.List;
+
 /**
  * (Question)表服务接口
  *
@@ -20,5 +22,9 @@ public interface QuestionService extends IService<Question> {
     Integer postResource(QuestionImage questionImage);
 
     PageInfo<Question> getAllQuestions(Integer pageNum,Integer pageSize);
+
+    Integer deleteByQuestionBankId(Integer id);
+
+    List<Question> backExamQuestions(Integer id);
 }
 

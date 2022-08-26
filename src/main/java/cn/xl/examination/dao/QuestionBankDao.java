@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import cn.xl.examination.entity.QuestionBank;
 import lombok.Data;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -27,5 +29,9 @@ public interface QuestionBankDao extends BaseMapper<QuestionBank> {
     String backQuestionBankName(String questionBankId);
     @Update("update question_bank set isAction=#{action} where id = #{id}")
     void actExamination(String action, Integer id);
+    @Insert("insert into question_bank values(null,#{title},#{now},'false',#{time},#{username})")
+    void addQuestionBank(String username, String title, String time, LocalDateTime now);
+    @Select("select * from question_bank where name = #{title}")
+    QuestionBank selectQuestionBankByName(String title);
 }
 

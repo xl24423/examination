@@ -103,15 +103,15 @@
           style="width: 100%"
       >
         <el-table-column type="selection"></el-table-column>
-        <el-table-column label="题目类型" width="100px" prop="type">
+        <el-table-column label="题目类型"  prop="type" min-width="30%">
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           <!-- {{type}} -->
         </el-table-column>
 
-        <el-table-column prop="question" label="题目内容"></el-table-column>
-        <el-table-column prop="questionBankId" label="所属题库"></el-table-column>
-        <el-table-column prop="score" label="分值"></el-table-column>
-        <el-table-column prop="solution" label="答案"></el-table-column>
+        <el-table-column prop="question" label="题目内容" min-width="200%"></el-table-column>
+        <el-table-column prop="questionBankId" label="所属题库" min-width="50%"></el-table-column>
+        <el-table-column prop="score" label="分值" min-width="30%"></el-table-column>
+        <el-table-column prop="solution" label="答案" min-width="60%"></el-table-column>
         <el-table-column label="图片">
           <template slot-scope="scope">
           <div>
@@ -122,13 +122,13 @@
         </el-table-column>
         <el-table-column
             prop="createtime"
-            width="250px"
+            width="150px"
             label="创建时间"
             show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="userId" label="创建人"></el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column prop="userId" label="创建人" ></el-table-column>
+        <el-table-column label="操作" width="200" align="center" >
           <template slot-scope="scope">
             <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
             <el-popconfirm

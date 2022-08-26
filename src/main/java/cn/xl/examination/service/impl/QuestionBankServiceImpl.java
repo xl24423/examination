@@ -1,5 +1,6 @@
 package cn.xl.examination.service.impl;
 
+import cn.xl.examination.dao.QuestionDao;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -11,6 +12,8 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -46,6 +49,48 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
     @Override
     public void actExamination(String action, Integer id) {
         questionBankDao.actExamination(action, id);
+    }
+
+    @Resource
+    QuestionDao questionDao;
+
+    @Override
+    public PageInfo<QuestionBank> actionExam(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<QuestionBank> questionBanks = questionBankDao.findAllQuestionBank();
+        for (QuestionBank q : questionBanks){
+             Integer count = questionDao.countScore(q.getId());
+             if (count == null){
+                count = 0;
+             }
+            q.setCount(String.valueOf(count));
+            Integer pass = count * 6 / 10;
+            q.setPass(String.valueOf(pass));
+        }
+        PageInfo<QuestionBank> pageInfo = new PageInfo<>(questionBanks);
+        return pageInfo;
+    }
+
+    @Override
+    public void addQuestionBank(String username, String title, String time) {
+        questionBankDao.addQuestionBank(username,title,time, LocalDateTime.now());
+    }
+
+    @Override
+    public QuestionBank selectQuestionBankByName(String title) {
+        return questionBankDao.selectQuestionBankByName(title);
+    }
+
+    @Override
+    public QuestionBank selectOne(Integer id) {
+        QuestionBank questionBank =  questionBankDao.selectById(id);
+        Integer count = questionDao.countScore(questionBank.getId());
+        if (count == null){
+            count = 0 ;
+        }
+        questionBank.setCount(String.valueOf(count));
+        questionBank.setPass(String.valueOf(count*6/10));
+        return questionBank;
     }
 }
 

@@ -121,6 +121,14 @@ public class UserController extends ApiController {
         }
         return userService.searchAllUser(username, name, tel, pageNum, pageSize);
     }
+    @GetMapping("/me")
+    public Result backNowUser(@AuthenticationPrincipal UserDetails userDetails){
+        Result result = new Result();
+        User userByUsername = userService.getUserByUsername(userDetails.getUsername());
+        result.setSuccess(userDetails);
+        result.setData(userByUsername);
+        return result;
+    }
 
 }
 

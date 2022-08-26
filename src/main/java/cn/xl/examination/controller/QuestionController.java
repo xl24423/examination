@@ -191,5 +191,13 @@ public class QuestionController extends ApiController {
         result.setData("http://localhost:9090/static/back/"+file.getOriginalFilename());
         return result;
     }
+    @GetMapping("/exam")
+    public Result backExamQuestions(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+        Result result = new Result();
+        List<Question> questions = questionService.backExamQuestions(id);
+        result.setSuccess(userDetails);
+        result.setData(questions);
+        return result;
+    }
 }
 

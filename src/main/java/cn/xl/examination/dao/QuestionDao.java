@@ -2,6 +2,7 @@ package cn.xl.examination.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import cn.xl.examination.entity.Question;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.data.relational.core.sql.In;
@@ -25,5 +26,13 @@ public interface QuestionDao extends BaseMapper<Question> {
     int selectMaxId();
     @Select("select * from question")
     List<Question> selectAllQuestions();
+    @Select("select sum(score) from question q left join question_bank qb on q.question_bank_id = qb.id where\n" +
+            "qb.id = #{id}")
+    Integer countScore(Integer id);
+    @Delete("delete from question where question_bank_id = #{id}")
+    Integer deleteByQuestionBankId(Integer id);
+    @Select("select * from question q left join question_bank qb on q.question_bank_id = qb.id where\n" +
+            "qb. id = #{id}")
+    List<Question> backExamQuestions(Integer id);
 }
 

@@ -133,5 +133,15 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
         }
         return new PageInfo<>(questions);
     }
+
+    @Override
+    public Integer deleteByQuestionBankId(Integer id) {
+        return questionDao.deleteByQuestionBankId(id);
+    }
+
+    @Override
+    public List<Question> backExamQuestions(Integer id) {
+        return questionDao.backExamQuestions(id);
+    }
 }
 

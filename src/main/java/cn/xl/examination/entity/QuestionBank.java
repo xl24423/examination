@@ -34,6 +34,19 @@ public class QuestionBank extends Model<QuestionBank> {
     //是否开始
     @TableField("isAction")
     private String isAction;
+    // 考试时长
+    @TableField("time")
+    private String time;
+    // 考试总分
+    @TableField(exist = false)
+    private String count;
+    // 及格分数
+    @TableField(exist = false)
+    private String pass;
+    // 出题人
+    @TableField("admin")
+    private String admin;
+
 
 
 }
