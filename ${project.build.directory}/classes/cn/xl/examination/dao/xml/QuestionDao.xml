@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xl.examination.dao.dao.QuestionDao">
+
+    <resultMap type="cn.xl.examination.dao.entity.Question" id="QuestionMap">
+        <result property="id" column="id" jdbcType=""/>
+        <result property="question" column="question" jdbcType=""/>
+        <result property="a" column="A" jdbcType=""/>
+        <result property="b" column="B" jdbcType=""/>
+        <result property="c" column="C" jdbcType=""/>
+        <result property="d" column="D" jdbcType=""/>
+        <result property="questionBankId" column="question_bank_id" jdbcType=""/>
+        <result property="questionAnalysis" column="question_analysis" jdbcType=""/>
+        <result property="createtime" column="createtime" jdbcType=""/>
+        <result property="type" column="type" jdbcType=""/>
+        <result property="score" column="score" jdbcType=""/>
+        <result property="userId" column="user_id" jdbcType=""/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into examination.question(question, A, B, C, D, question_bank_id, question_analysis, createtime, type, score, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.question}, #{entity.a}, #{entity.b}, #{entity.c}, #{entity.d}, #{entity.questionBankId}, #{entity.questionAnalysis}, #{entity.createtime}, #{entity.type}, #{entity.score}, #{entity.userId})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into examination.question(question, A, B, C, D, question_bank_id, question_analysis, createtime, type, score, user_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.question}, #{entity.a}, #{entity.b}, #{entity.c}, #{entity.d}, #{entity.questionBankId}, #{entity.questionAnalysis}, #{entity.createtime}, #{entity.type}, #{entity.score}, #{entity.userId})
+        </foreach>
+        on duplicate key update
+         question = values(question) , A = values(A) , B = values(B) , C = values(C) , D = values(D) , question_bank_id = values(question_bank_id) , question_analysis = values(question_analysis) , createtime = values(createtime) , type = values(type) , score = values(score) , user_id = values(user_id)     </insert>
+
+</mapper>
+
