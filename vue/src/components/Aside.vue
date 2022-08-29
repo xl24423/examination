@@ -1,5 +1,5 @@
 <template>
-  <el-menu :default-openeds="['1', '3']" style="min-height: 100%; overflow-x: hidden"
+  <el-menu :default-openeds="['']" style="min-height: 100%; overflow-x: hidden"
            background-color="rgb(48, 65, 86)"
            text-color="#fff"
            active-text-color="#ffd04b"
@@ -33,6 +33,10 @@
         <i class="el-icon-menu"></i>
         <span slot="title">系统管理</span>
       </template>
+      <el-menu-item index="/examine">
+        <i class="el-icon-s-check"></i>
+        <span slot="title">用户审核</span>
+      </el-menu-item>
       <el-menu-item index="/user">
         <i class="el-icon-s-custom"></i>
         <span slot="title">用户管理</span>
@@ -55,7 +59,7 @@
 
     </el-submenu>
 
-       <el-submenu index="4">
+    <el-submenu index="4">
       <template slot="title">
         <i class="el-icon-mobile"></i>
         <span slot="title">视频管理</span>
@@ -74,11 +78,11 @@
         <i class="el-icon-question"></i>
         <span slot="title">考试详情</span>
       </template>
-      <el-menu-item index="">
+      <el-menu-item index="ExaminationRecord">
         <i class="el-icon-edit-outline"></i>
         <span slot="title">考试记录</span>
       </el-menu-item>
-      <el-menu-item index="">
+      <el-menu-item index="Passlist">
         <i class="el-icon-document"></i>
         <span slot="title">通过名单</span>
       </el-menu-item>

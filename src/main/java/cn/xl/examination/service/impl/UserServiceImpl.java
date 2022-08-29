@@ -38,7 +38,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     private UserDao userDao;
     @Autowired
     private CompanyDao companyDao;
-    @Value("${dirPath}")
+    @Value("${certificatePath}")
     private String path;
 
     @Override
@@ -47,7 +47,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             throw new ServiceException("两次密码不一致");
         }
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("invite_code", registerVO.getInviteCode());
+        queryWrapper.eq("invite_code", registerVO.getInvite());
         Company company = companyDao.selectOne(queryWrapper);
         if (company == null) {
             throw new ServiceException("邀请码不存在");
@@ -56,30 +56,33 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         if (user != null) {
             throw new ServiceException("用户名已存在");
         }
-        user = userDao.selectByPhone(registerVO.getTel());
+        user = userDao.selectByPhone(registerVO.getPhone());
         if (user != null) {
             throw new ServiceException("手机号已存在");
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String pwd = passwordEncoder.encode(registerVO.getPassword());
-        String originalFilename = registerVO.getPicture().getOriginalFilename();
+        String originalFilename = registerVO.getFile().getOriginalFilename();
         String end = originalFilename.substring(originalFilename.lastIndexOf("."));
         String newName = UUID.randomUUID() + end;
-        registerVO.getPicture().transferTo(new File(path + "/" + newName));
+        File file = new File(path + newName);
+        file.mkdirs();
+        registerVO.getFile().transferTo(file);
         user = new User();
         user.setName(registerVO.getName()).
                 setUsername(registerVO.getUsername()).
                 setPassword(pwd).
-                setCheck(0).   // 未审核为 0
+                setIsCheck(0).   // 未审核为 0
                 setCreatetime(LocalDateTime.now()).
-                setCertificateUrl(path + "/" + newName).
-                setInviteCode(registerVO.getInviteCode()).
-                setCompanyId(company.getId()).
-                setMajorType(registerVO.getMajorType()).
+                setCertificateUrl("http://localhost:9090/static/certificate/"+ newName).
+                setInviteCode(registerVO.getInvite()).
+                setCompanyId(String.valueOf(company.getId())).
+                setMajorType(registerVO.getMajor()).
                 setGender(registerVO.getGender()).
                 setLocked(1).
                 setEnabled(1).
-                setRoleId("10");
+                setRoleId("10")
+                .setTel(registerVO.getPhone());
         int insert = userDao.insert(user);
         if (insert != 1) {
             throw new ServerException("注册失败,数据库异常");

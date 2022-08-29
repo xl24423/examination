@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,9 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] URL_WHITELIST={
       "/login",
       "/logout",
+      "/user/register",
       "/favicon.ico",
       "http://localhost:8080/login",
-      "/static/**"
+      "/static/**",
+      "/resources/image",
     };
 
     // WebSecurityConfigurerAdapter是我们需要基础的父类
@@ -61,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     // 配置页面权限的方法
+    @ExceptionHandler
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()

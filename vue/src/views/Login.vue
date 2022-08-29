@@ -106,28 +106,31 @@ export default {
           "http://www.wanghun.top/img/7c0063948b2fce5787fe356a8a69e0f7.jpg";
     },
     login() {
-
-      this.$refs["userForm"].validate((valid) => {
-        if (valid) {
-          // 表单校验合法
-          this.request.post("/login?"+qs.stringify(this.user)).then((response) => {
-            console.log(response)
-            if (response.code === 200) {
-              localStorage.setItem("user", JSON.stringify(response.data)); //存储用户信息到浏览器
-              const jwt = response.data.password;
-              localStorage.setItem("token", jwt)
-              setTimeout(()=>{
-                localStorage.removeItem("token")
-                localStorage.removeItem("user")
-              },1000*86400)
-              this.$router.push("/");
-              this.$message.success("登陆成功");
-            } else {
-              this.$message.error(response.msg);
-            }
-          });
-        }
-      });
+      try{
+        this.$refs["userForm"].validate((valid) => {
+          if (valid) {
+            // 表单校验合法
+            this.request.post("/login?"+qs.stringify(this.user)).then((response) => {
+              console.log(response)
+              if (response.code === 200) {
+                localStorage.setItem("user", JSON.stringify(response.data)); //存储用户信息到浏览器
+                const jwt = response.data.password;
+                localStorage.setItem("token", jwt)
+                setTimeout(()=>{
+                  localStorage.removeItem("token")
+                  localStorage.removeItem("user")
+                },1000*86400)
+                this.$router.push("/");
+                this.$message.success("登陆成功");
+              } else {
+                this.$message.error(response.msg);
+              }
+            });
+          }
+        });
+      }catch (error){
+        console.log(error)
+      }
     },
   },
 };

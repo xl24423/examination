@@ -158,39 +158,7 @@ public class QuestionController extends ApiController {
         result.setData(questionPageInfo);
         return result;
     }
-    @PostMapping("/image")
-    public Result backUrl(@AuthenticationPrincipal UserDetails userDetails, MultipartFile file) throws IOException {
 
-        Result result = new Result();
-        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
-            result.setAuthError();
-            return result;
-        }
-        if (file == null){
-            result.setPathError();
-            result.setData("文件出错为空");
-            return result;
-        }
-        File wjj = new File("D:/upload/back");
-        wjj.mkdirs();
-        File backFile = new File(wjj,file.getOriginalFilename());
-        file.transferTo(backFile);
-        //定时器
-        Timer timer = new Timer();
-
-// 10s后执行定时器，仅执行一次
-        long milliseconds = 10 * 1000;
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                backFile.delete();
-            }
-
-        }, milliseconds);
-        result.setSuccess(userDetails);
-        result.setData("http://localhost:9090/static/back/"+file.getOriginalFilename());
-        return result;
-    }
     @GetMapping("/exam")
     public Result backExamQuestions(@AuthenticationPrincipal UserDetails userDetails, Integer id){
         Result result = new Result();

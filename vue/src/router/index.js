@@ -35,6 +35,7 @@ const routes = [
         name: '考试记录',
         component: () => import('../views/ExaminationRecord.vue')
       },
+
       // prepareexam
       {
         path: '/prepareexam/*',
@@ -49,15 +50,25 @@ const routes = [
       ,
       {
         path: '/videoindex',
-        name: '考试准备',
+        name: '视频',
         component: () => import('../views/video/videoIndex.vue')
       }
       ,
       {
         path: '/videoinsert',
-        name: '考试准备',
+        name: '视频2',
         component: () => import('../views/video/videoInsert.vue')
-      }
+      },
+      // {
+      //   path: '/passlist',
+      //   name: '通过名单',
+      //   component: () => import('../views/Passlist.vue')
+      // },
+      // {
+      //   path:'/examine',
+      //   name:"用户审核",
+      //   component: () => import('../views/Examine.vue')
+      // },
     ]
   },
   {
@@ -82,6 +93,7 @@ const routes = [
   },
 
 
+
 ]
 
 const router = new VueRouter({
@@ -104,4 +116,3 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
-

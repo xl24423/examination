@@ -33,5 +33,7 @@ public interface QuestionBankDao extends BaseMapper<QuestionBank> {
     void addQuestionBank(String username, String title, String time, LocalDateTime now);
     @Select("select * from question_bank where name = #{title}")
     QuestionBank selectQuestionBankByName(String title);
+    @Select("select * from question_bank where isAction = 'true'")
+    List<QuestionBank> findAllUserQuestionBank();
 }
 

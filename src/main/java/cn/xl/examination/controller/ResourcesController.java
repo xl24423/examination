@@ -59,7 +59,6 @@ public class ResourcesController extends ApiController {
         // 文件保存的路径是 D:/upload/年/月/日
         // 先获得当前日期的字符串做路径
         String path = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDateTime.now());
-        path = "/video/" + path;
         // 确定要上传的文件夹
         File folder = new File(resourcePath,path);
         // 创建这个文件夹
@@ -83,7 +82,7 @@ public class ResourcesController extends ApiController {
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://localhost:9090/static"+path+"/"+name;
+        String url = "http://localhost:9090/static/"+path+"/"+name;
         log.debug("回显图片的路径为:{}",url);
         Resources resources = new Resources();
         resources.setName(videoName).setContent(content).setAddress(url);
@@ -118,6 +117,34 @@ public class ResourcesController extends ApiController {
         }
         result.setSuccess(userDetails);
         result.setMsg("删除成功");
+        return result;
+    }
+    @PostMapping("/image")
+    public Result backUrl(MultipartFile file) throws IOException {
+        Result result = new Result();
+        if (file == null){
+            result.setPathError();
+            result.setData("文件出错为空");
+            return result;
+        }
+        File wjj = new File("D:/upload/back");
+        wjj.mkdirs();
+        File backFile = new File(wjj,file.getOriginalFilename());
+        file.transferTo(backFile);
+        //定时器
+        Timer timer = new Timer();
+
+// 10s后执行定时器，仅执行一次
+        long milliseconds = 10 * 1000;
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                backFile.delete();
+            }
+
+        }, milliseconds);
+        result.setCode(200);
+        result.setData("http://localhost:9090/static/back/"+file.getOriginalFilename());
         return result;
     }
 }

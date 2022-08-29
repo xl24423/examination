@@ -1,32 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Marketplace
-Explore
-
-@xl24423
-xl24423
-/
-examination
-Public
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-examination/vue/src/views/User.vue
-@xl24423
-xl24423 登录与跳转主页面完成
-Latest commit 680a581 4 days ago
-History
-1 contributor
-205 lines (196 sloc)  6.56 KB
-
 <template>
   <div>
     <div style="margin: 10px 0">
@@ -63,10 +34,13 @@ History
       <el-table-column prop="id" label="ID" width="80"></el-table-column>
       <el-table-column prop="username" label="用户名" width="140"></el-table-column>
       <el-table-column prop="name" label="姓名" width="140"></el-table-column>
-      <el-table-column prop="tel" label="电话"></el-table-column>
-      <el-table-column prop="roleId" label="角色"></el-table-column>
-      <el-table-column prop="createtime" label="创建时间"></el-table-column>
+      <el-table-column prop="tel" label="电话" width="140"></el-table-column>
+      <el-table-column prop="roleId" label="角色" width="100"></el-table-column>
+      <el-table-column prop="major" label="专业"></el-table-column>
+      <el-table-column prop="certificate" label="证书" width="100"></el-table-column>
+      <el-table-column prop="createtime" label="创建时间" width="100"></el-table-column>
       <el-table-column label="操作"  width="200" align="center">
+
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
           <el-popconfirm
@@ -82,6 +56,14 @@ History
           </el-popconfirm>
         </template>
       </el-table-column>
+      <el-table-column prop="enable" label="启用" width="100">
+        <el-switch
+            v-model="value"
+            active-color="#13ce66"
+            inactive-color="#ff4949">
+        </el-switch>
+      </el-table-column>
+
     </el-table>
     <div style="padding: 10px 0">
       <el-pagination
@@ -115,16 +97,16 @@ History
             <el-option label="用户" value="10"></el-option>
           </el-select>
         </el-form-item >
-      <el-form-item>
-        <el-button @click="dialogFormVisible = false"
-                   type="primary"
-                   size="small"
-                   autocomplete="off" >取 消</el-button>
-        <el-button type="warning"
-                   size="small"
-                   autocomplete="off"
-                   @click="edit">确 定</el-button>
-      </el-form-item>
+        <el-form-item>
+          <el-button @click="dialogFormVisible = false"
+                     type="primary"
+                     size="small"
+                     autocomplete="off" >取 消</el-button>
+          <el-button type="warning"
+                     size="small"
+                     autocomplete="off"
+                     @click="edit">确 定</el-button>
+        </el-form-item>
       </el-form>
     </el-dialog>
   </div>
@@ -190,10 +172,10 @@ export default {
       })
     },
     loadSearch(username,name,tel,){
-       if (username===""&&name===""&&tel===""){
-         this.load();
-         return;
-       }
+      if (username===""&&name===""&&tel===""){
+        this.load();
+        return;
+      }
       this.request.get("/user/search",{
         params: {
           username: username,

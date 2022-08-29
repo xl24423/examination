@@ -57,7 +57,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
     @Override
     public PageInfo<QuestionBank> actionExam(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-        List<QuestionBank> questionBanks = questionBankDao.findAllQuestionBank();
+        List<QuestionBank> questionBanks = questionBankDao.findAllUserQuestionBank();
         for (QuestionBank q : questionBanks){
              Integer count = questionDao.countScore(q.getId());
              if (count == null){

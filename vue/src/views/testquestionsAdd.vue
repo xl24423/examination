@@ -203,7 +203,7 @@ export default {
           if (file.type != null && file.type.match("image/*")) {
             let form = new FormData();
             form.append("file",file);
-            this.request.post("/question/image",form).then(res=>{
+            this.request.post("/resources/image",form).then(res=>{
               this.files.push(file);
               this.urls = res.data;
             })

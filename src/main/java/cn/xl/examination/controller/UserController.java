@@ -3,6 +3,7 @@ package cn.xl.examination.controller;
 import cn.xl.examination.common.lang.Result;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.service.UserService;
+import cn.xl.examination.vo.RegisterVO;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.github.pagehelper.PageInfo;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -121,12 +123,23 @@ public class UserController extends ApiController {
         }
         return userService.searchAllUser(username, name, tel, pageNum, pageSize);
     }
+
     @GetMapping("/me")
-    public Result backNowUser(@AuthenticationPrincipal UserDetails userDetails){
+    public Result backNowUser(@AuthenticationPrincipal UserDetails userDetails) {
         Result result = new Result();
         User userByUsername = userService.getUserByUsername(userDetails.getUsername());
         result.setSuccess(userDetails);
         result.setData(userByUsername);
+        return result;
+    }
+
+    @PostMapping("/register")
+    public Result register(RegisterVO registerVO) throws IOException {
+        log.debug("注册的信息" + registerVO);
+        Result result = new Result();
+        userService.register(registerVO);
+        result.setCode(200);
+        result.setMsg("注册成功");
         return result;
     }
 

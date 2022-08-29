@@ -32,7 +32,6 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesDao, Resources> i
     public PageInfo<Resources> getAllVideo(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<Resources> allResource = resourcesDao.findAllResource();
-//        allResource.forEach(System.out::println);
         return new PageInfo<>(allResource) ;
     }
 

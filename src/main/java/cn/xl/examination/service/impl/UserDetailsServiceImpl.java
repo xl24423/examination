@@ -27,10 +27,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         log.debug("用户名"+username);
         User user = userDao.selectByUserName(username);
         if (user == null) {
-            throw new ServiceException("用户不存在");
+            throw new ServiceException("用户或密码错误");
         }
-        if (user.getCheck()==0){
+        if (user.getIsCheck()==0){
             throw new ServiceException("用户未审核");
+        }
+        if (user.getLocked()==0){
+            throw new ServiceException("用户已锁定");
+        }
+        if (user.getEnabled()==0){
+            throw new ServiceException("用户已被封禁");
         }
         List<Permission> permissions = userDao.selectPermissionByUserId(user.getId());
         String[] arr = new String[permissions.size()];

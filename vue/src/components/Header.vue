@@ -1,5 +1,5 @@
 <template>
-  <div style="line-height: 60px; display: flex">
+  <div style="line-height: 60px; display: flex;" >
     <div style="flex: 1">
       <span
         :class="collapseBtnClass"

@@ -39,6 +39,11 @@ export default {
   },
   methods:{
     uploadFile (item) {
+      let user = JSON.parse(localStorage.getItem("user"));
+      if (user.roleId !== "1"){
+        this.$message.error("你没有权限这么做")
+        return;
+      }
       let formData = new FormData()
       let file = item.raw
       let videoName = this.name;

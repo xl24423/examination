@@ -40,7 +40,7 @@ public class User extends Model<User> {
     private String password;
     //0女1男
     @TableField("gender")
-    private Integer gender;
+    private String gender;
     //电话
     @TableField("tel")
     private String tel;
@@ -49,7 +49,7 @@ public class User extends Model<User> {
     private String inviteCode;
     //企业id, 对应company表
     @TableField("company_id")
-    private Integer companyId;
+    private String companyId;
     //电工证书保存地址
     @TableField("certificate_url")
     private String certificateUrl;
@@ -57,8 +57,8 @@ public class User extends Model<User> {
     @TableField("major_type")
     private String majorType;
     //审核 0通过1未通过
-    @TableField("check")
-    private Integer check;
+    @TableField("isCheck")
+    private Integer isCheck;
     //真实姓名
     @TableField("name")
     private String name;
@@ -69,7 +69,7 @@ public class User extends Model<User> {
     @TableField("createtime")
     private LocalDateTime createtime;
     //用户是否封号 (1)可用 (0)封号
-    @TableField("enable")
+    @TableField("enabled")
     private Integer enabled;
     //用户是否锁定 (1)可用 (0)锁定
     @TableField("locked")
