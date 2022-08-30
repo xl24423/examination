@@ -73,7 +73,6 @@ export default {
           'Content-Type': 'multipart/form-data'
         }
       }).then(data => {
-        console.log(data)
         if (data.code === 200) {
           this.$message.success(data.msg);
           this.name = ""

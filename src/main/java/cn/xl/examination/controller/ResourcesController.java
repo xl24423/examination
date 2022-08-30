@@ -47,6 +47,7 @@ public class ResourcesController extends ApiController {
     @PostMapping("/upFile")
     public Result upFile(@AuthenticationPrincipal UserDetails userDetails, MultipartFile file, String videoName, String content) throws IOException {
         Result result = new Result();
+        System.out.println(userDetails);
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
             result.setAuthError();
             return result;

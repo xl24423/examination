@@ -1,4 +1,4 @@
-<template  >
+<template>
 
   <div>
     <div style="margin: 10px 0; ">
@@ -12,7 +12,7 @@
     </div>
 
     <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
-              @selection-change="handleSelectionChange" max-height="500" >
+              @selection-change="handleSelectionChange" max-height="500">
       <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column prop="id" label="ID" width="50"></el-table-column>
       <el-table-column prop="username" label="用户名" width="100"></el-table-column>
@@ -95,9 +95,15 @@ export default {
           pageSize: this.pageSize,
         }
       }).then(res => {
-        this.tableData = res.list;
-        this.total = res.total
-      })
+            if (res.code === 200) {
+              this.tableData = res.list;
+              this.total = res.total
+            } else {
+              this.$message.error(res.msg)
+            }
+
+          }
+      )
     },
     loadSearch(username, name, tel,) {
       if (username === "" && name === "" && tel === "") {

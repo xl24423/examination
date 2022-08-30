@@ -39,12 +39,12 @@
                   size="medium"
                   style="margin: 5px 0"
                   prefix-icon="el-icon-question"
-                  v-model="user.verificationCode"
+                  v-model="user.randCode"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6" style="margin-left: 10px">
-            <img :src="imgUrl" width="100px" height="46px" alt="" />
+            <img id="CreateCheckCode" :src="imageUrl"  @click="Reload()" width="100px" height="46px" alt="" />
             <!-- <el-button @click="init()">获取短信</el-button> -->
           </el-col>
         </el-row>
@@ -76,7 +76,7 @@ export default {
   name: "Login",
   data() {
     return {
-      imgUrl:"",
+      imageUrl: "",
       user: {},
       rules: {
         username: [
@@ -99,19 +99,21 @@ export default {
     this.init()
   },
   methods: {
+    Reload() {
+      localStorage.setItem("codeId",Math.random())
+      let item = localStorage.getItem("codeId");
+      document.getElementById("CreateCheckCode").src = "http://localhost:9090/checkCode?codeId=" + item
+    },
     init() {
-      // 获取短信验证码
-      // 操作
-      this.imgUrl =
-          "http://www.wanghun.top/img/7c0063948b2fce5787fe356a8a69e0f7.jpg";
+      localStorage.setItem("codeId",Math.random())
+      this.imageUrl = "http://localhost:9090/checkCode?codeId="+localStorage.getItem("codeId");
     },
     login() {
-      try{
+      this.user.id = localStorage.getItem("codeId");
         this.$refs["userForm"].validate((valid) => {
           if (valid) {
             // 表单校验合法
             this.request.post("/login?"+qs.stringify(this.user)).then((response) => {
-              console.log(response)
               if (response.code === 200) {
                 localStorage.setItem("user", JSON.stringify(response.data)); //存储用户信息到浏览器
                 const jwt = response.data.password;
@@ -128,9 +130,6 @@ export default {
             });
           }
         });
-      }catch (error){
-        console.log(error)
-      }
     },
   },
 };

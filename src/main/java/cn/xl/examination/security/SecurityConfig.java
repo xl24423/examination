@@ -25,14 +25,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String[] URL_WHITELIST = {
-            "/login",
-            "/logout",
-            "/user/register",
+            "/login",       // 登陆接口
+            "/logout",      // 登出接口
+            "/user/register",            // 注册接口
             "/favicon.ico",
-            "http://localhost:8080/login",
-            "/static/**",
-            "/resources/image",
-            "/major/allMajor"
+            "http://localhost:8080/login",      // 登陆页面
+            "/static/**",           // 静态资源路径
+            "/resources/image",     // 回显上传的图片
+            "/major/allMajor",      // 获取所有专业
+            "/checkCode"            // 获取验证码
     };
 
     // WebSecurityConfigurerAdapter是我们需要基础的父类
@@ -55,17 +56,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager());
         return jwtAuthenticationFilter;
     }
-
     @Autowired
     private LoginFailureHandler loginFailureHandler;
     @Autowired
-    private LoginSuccessHandler loginSuccessHandler;
+    LoginSuccessHandler loginSuccessHandler;
 
     @Autowired
-    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
-    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
+    JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    @Autowired
+    VerifyCodeFilter verifyCodeFilter;
     // 配置页面权限的方法
     @ExceptionHandler
     @Override
@@ -87,6 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 //配置自定义过滤器
                 .and()
+                .addFilterBefore(verifyCodeFilter,UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
