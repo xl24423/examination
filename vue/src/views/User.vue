@@ -30,16 +30,23 @@
     </div>
 
     <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"  @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="id" label="ID" width="80"></el-table-column>
-      <el-table-column prop="username" label="用户名" width="140"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="140"></el-table-column>
-      <el-table-column prop="tel" label="电话" width="140"></el-table-column>
+      <el-table-column type="selection" width="50"></el-table-column>
+      <el-table-column prop="id" label="ID" width="50"></el-table-column>
+      <el-table-column prop="username" label="用户名" width="100"></el-table-column>
+      <el-table-column prop="name" label="姓名" width="110"></el-table-column>
+      <el-table-column prop="tel" label="电话" width="110"></el-table-column>
       <el-table-column prop="roleId" label="角色" width="100"></el-table-column>
-      <el-table-column prop="major" label="专业"></el-table-column>
-      <el-table-column prop="certificate" label="证书" width="100"></el-table-column>
-      <el-table-column prop="createtime" label="创建时间" width="100"></el-table-column>
-      <el-table-column label="操作"  width="200" align="center">
+      <el-table-column prop="majorType" label="专业"></el-table-column>
+      <el-table-column prop="certificate" label="证书" width="100">
+        <template slot-scope="scope">
+          <div>
+            <el-image :key="scope.row.certificateUrl" :src="scope.row.certificateUrl" style="width: 100%; height: 100%" fit="fill" :preview-src-list="[scope.row.certificateUrl]" >
+            </el-image>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createtime" label="创建时间" width="150"></el-table-column>
+      <el-table-column label="操作"  width="180" align="center">
 
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
@@ -56,7 +63,7 @@
           </el-popconfirm>
         </template>
       </el-table-column>
-      <el-table-column prop="enable" label="启用" width="100">
+      <el-table-column prop="enable" label="启用" width="70">
         <el-switch
             v-model="value"
             active-color="#13ce66"

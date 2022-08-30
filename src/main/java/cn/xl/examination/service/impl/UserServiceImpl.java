@@ -99,6 +99,19 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
             }else if(u.getRoleId().equals("10")){
                 u.setRoleId("用户");
             }
+            if (u.getMajorType()!=null){
+                switch (u.getMajorType()) {
+                    case "1":
+                        u.setMajorType("并网调度协议练习人员");
+                        break;
+                    case "2":
+                        u.setMajorType("变电站运维人员");
+                        break;
+                    case "3":
+                        u.setMajorType("停送电联系人员");
+                        break;
+                }
+            }
         }
         PageInfo<User> userPageInfo = new PageInfo<>(allUser);
         return userPageInfo;
