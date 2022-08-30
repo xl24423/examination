@@ -28,5 +28,13 @@ public interface UserService extends IService<User> {
     void editUser(Integer id,String username, String password, String name, String tel, Integer roleId);
 
     PageInfo<User> searchAllUser(String username, String name, String tel,Integer pageNum,Integer pageSize);
+
+    Integer enableUser(Integer id);
+
+    PageInfo<User> AllCheckUser(Integer pageNum, Integer pageSize);
+
+    PageInfo<User> searchAllCheckUser(String username, String name, String tel, Integer pageNum, Integer pageSize);
+
+    Integer checkUser(Integer id);
 }
 

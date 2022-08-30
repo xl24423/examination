@@ -142,6 +142,57 @@ public class UserController extends ApiController {
         result.setMsg("注册成功");
         return result;
     }
-
+    @PostMapping("/enable")
+    public Result enableUser(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        Integer i = userService.enableUser(id);
+        if (i!=1){
+            result.setDataBaseError();
+            return result;
+        }
+        result.setSuccess(userDetails);
+        result.setMsg("操作启用用户成功");
+        return result;
+    }
+    @GetMapping("/checkPage")
+    @PreAuthorize("hasAuthority('/page')")
+    public PageInfo<User> AllCheckUser(Integer pageNum, Integer pageSize) {
+        log.debug("," + pageNum + "," + pageSize);
+        return userService.AllCheckUser(pageNum, pageSize);
+    }
+    @GetMapping("/checkSearch")
+    @PreAuthorize("hasAuthority('/page')")
+    public PageInfo<User> checkSearch(String username, String name, String tel, Integer pageNum, Integer pageSize) {
+        if (username != null && username.equals("")) {
+            username = null;
+        }
+        if (name != null && name.equals("")) {
+            name = null;
+        }
+        if (tel != null && tel.equals("")) {
+            tel = null;
+        }
+        return userService.searchAllCheckUser(username, name, tel, pageNum, pageSize);
+    }
+    @PostMapping("/check")
+    public Result checkUser(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        Integer checkUser = userService.checkUser(id);
+        if (checkUser != 1){
+            result.setDataBaseError();
+            return result;
+        }
+        result.setSuccess(userDetails);
+        result.setMsg("审核完成");
+        return result;
+    }
 }
 

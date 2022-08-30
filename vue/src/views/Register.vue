@@ -80,9 +80,7 @@
         </el-form-item>
         <el-form-item label="角色" prop="major" required style="margin-top: 15px">
           <el-select value v-model="user.major">
-            <el-option value="1" label="并网调度协议练习人员"></el-option>
-            <el-option value="2" label="变电站运维人员"></el-option>
-            <el-option value="3" label="停送电联系人员"></el-option>
+            <el-option :value="m.id" :label="m.major" v-for="m in majors"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="性别" prop="gender" required style="margin-top: 15px">
@@ -137,6 +135,7 @@ export default {
   name: "Login",
   data() {
     return {
+      majors: [],
       files: [],
       url: "http://localhost:9090/static/dgpz.jpg",
       user: {},
@@ -187,14 +186,25 @@ export default {
             pattern: "^[1][3-9][0-9]{9}$"
           },
         ],
-        major: [{required: true, message: "请选择角色", trigger: "blur"},],
+        major: [{required: true, message: "请选择专业", trigger: "blur"},],
         gender: [{required: true, message: "请选择性别", trigger: "blur"},]
       },
     };
   },
   created() {
+    this.initMajor()
   },
   methods: {
+    initMajor() {
+      this.request.get("/major/allMajor").then(res => {
+        if (res.code === 200) {
+          this.majors = res.data;
+        } else {
+          this.$message.error(res.msg)
+        }
+
+      })
+    },
     handlePreview(file) {
       this.files[0] = file;
       let form = new FormData();
@@ -231,17 +241,17 @@ export default {
           form.append("major", this.user.major)
           form.append("gender", this.user.gender)
           form.append("file", this.files[0])
-          this.request.post("/user/register",form).then((res) => {
+          this.request.post("/user/register", form).then((res) => {
             console.log(res)
             if (res.code === 200) {
               this.$message.success(res.msg);
               this.$router.push("/login")
             }
-          }).catch(e=>{
+          }).catch(e => {
             console.log(e)
-              if (e.response.data.code!==200){
-                this.$message.error(e.response.data.msg)
-              }
+            if (e.response.data.code !== 200) {
+              this.$message.error(e.response.data.msg)
+            }
           })
         }
       });

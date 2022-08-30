@@ -7,11 +7,9 @@ import cn.xl.examination.entity.User;
 import cn.xl.examination.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -35,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user.getLocked()==0){
             throw new ServiceException("用户已锁定");
         }
-        if (user.getEnabled()==0){
+        if (user.getEnable()==0){
             throw new ServiceException("用户已被封禁");
         }
         List<Permission> permissions = userDao.selectPermissionByUserId(user.getId());
@@ -55,7 +53,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 username(user.getUsername()).
                 password(user.getPassword()).
                 accountLocked(user.getLocked()==0).
-                disabled(user.getEnabled()==0).
+                disabled(user.getEnable()==0).
                 authorities(arr).build();
         return build;
     }

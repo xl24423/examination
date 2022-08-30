@@ -19,6 +19,7 @@
         </el-row>
       </div>
       <el-table
+        max-height="480"
         ref="multipleTable"
         border
         :header-cell-class-name="'headerBg'"
@@ -144,6 +145,7 @@ export default {
       }).then(res=>{
           if (res.code===200){
             this.questionList = res.data.list;
+            this.total = res.data.total
           }
       })
     },
@@ -153,10 +155,12 @@ export default {
     handleSizeChange(val) {
       console.log(val);
       this.pageSize = val;
+      this.init()
     },
     handleCurrentChange(val) {
       console.log(val);
       this.pageNum = val;
+      this.init()
     },
     compontenimport() {
       console.log("下载导入");

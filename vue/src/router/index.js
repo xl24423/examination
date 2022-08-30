@@ -64,11 +64,11 @@ const routes = [
       //   name: '通过名单',
       //   component: () => import('../views/Passlist.vue')
       // },
-      // {
-      //   path:'/examine',
-      //   name:"用户审核",
-      //   component: () => import('../views/Examine.vue')
-      // },
+      {
+        path:'/examine',
+        name:"用户审核",
+        component: () => import('../views/Examine.vue')
+      },
     ]
   },
   {

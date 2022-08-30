@@ -95,6 +95,7 @@
         <!-- <el-button type="warning" @click="compontenimport">下载导入模板</el-button> -->
       </el-dialog>
       <el-table
+          max-height="470"
           ref="multipleTable"
           border
           :header-cell-class-name="'headerBg'"

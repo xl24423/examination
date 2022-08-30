@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.relational.core.sql.In;
 
 import java.io.Serializable;
 
@@ -69,10 +70,10 @@ public class User extends Model<User> {
     @TableField("createtime")
     private LocalDateTime createtime;
     //用户是否封号 (1)可用 (0)封号
-    @TableField("enabled")
-    private Integer enabled;
+    @TableField("enable")
+    private Integer enable;
     //用户是否锁定 (1)可用 (0)锁定
     @TableField("locked")
     private Integer locked;
-    }
+}
 

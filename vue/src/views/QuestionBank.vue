@@ -30,7 +30,7 @@
       </div>
 
       <el-table ref="multipleTable" border :header-cell-class-name="'headerBg'" :stripe="true" :data="questionList"
-                style="width: 100%">
+                style="width: 100%" max-height="480">
         <el-table-column type="selection"></el-table-column>
         <el-table-column label="题库名称" prop="name"></el-table-column>
         <el-table-column prop="createtime" label="创建时间" show-overflow-tooltip></el-table-column>
@@ -60,7 +60,7 @@
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="current"
+            :current-page="pageNum"
             :page-sizes="[10,15, 20, 30]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
@@ -145,6 +145,7 @@ export default {
       }).then(res => {
         if (res.code === 200) {
           this.questionList = res.data.list
+          this.total = res.data.total
           let list = this.questionList;
           for (let i = 0; i < list.length; i++) {
             if (list[i].isAction === "true") {
@@ -179,10 +180,12 @@ export default {
     handleSizeChange(val) {
       console.log(val);
       this.pageSize = val
+      this.init();
     },
     handleCurrentChange(val) {
       console.log(val);
       this.pageNum = val
+      this.init();
     },
     addSub() {
       this.request.get("/user/me").then(res => {

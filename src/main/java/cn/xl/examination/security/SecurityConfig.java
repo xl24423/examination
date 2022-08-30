@@ -24,14 +24,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String[] URL_WHITELIST={
-      "/login",
-      "/logout",
-      "/user/register",
-      "/favicon.ico",
-      "http://localhost:8080/login",
-      "/static/**",
-      "/resources/image",
+    private static final String[] URL_WHITELIST = {
+            "/login",
+            "/logout",
+            "/user/register",
+            "/favicon.ico",
+            "http://localhost:8080/login",
+            "/static/**",
+            "/resources/image",
+            "/major/allMajor"
     };
 
     // WebSecurityConfigurerAdapter是我们需要基础的父类
@@ -41,12 +42,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 下面的配置是让我们编写的UserDetailsServiceImpl类生效的
     @Autowired(required = false)
     private UserDetailsServiceImpl userDetailsService;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 让Spring-Security框架进行登录操作时
         // 调用我们编写的userDetailsService中的方法
         auth.userDetailsService(userDetailsService);
     }
+
     @Bean
     JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager());
@@ -86,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
     /*  解决前端跨域的问题*/
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

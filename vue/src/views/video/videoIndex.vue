@@ -1,4 +1,4 @@
-<template>
+<template >
   <el-card>
     <el-button style="margin:10px" type="primary" @click="$router.push('/videoinsert')"> <i class="el-icon-plus"></i> 添加视频</el-button>
     <el-row>
@@ -8,7 +8,7 @@
         v-for="index in list"
         :key="index.id"
       >
-        <el-card :body-style="{ padding: '0px' }">
+        <el-card :body-style="{ padding: '0px',}" >
           <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
           <video width="320" height="240" controls require :src="index.address+'?token='+token" >
           </video>
