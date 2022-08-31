@@ -109,6 +109,7 @@ export default {
       this.imageUrl = "http://localhost:9090/checkCode?codeId="+localStorage.getItem("codeId");
     },
     login() {
+      localStorage.removeItem("token")
       this.user.id = localStorage.getItem("codeId");
         this.$refs["userForm"].validate((valid) => {
           if (valid) {

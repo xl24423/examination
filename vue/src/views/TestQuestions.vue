@@ -103,7 +103,6 @@
           :data="questionList"
           style="width: 100%"
       >
-        <el-table-column type="selection"></el-table-column>
         <el-table-column label="题目类型"  prop="type" min-width="30%">
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           <!-- {{type}} -->
@@ -113,9 +112,9 @@
         <el-table-column prop="questionBankId" label="所属题库" min-width="50%"></el-table-column>
         <el-table-column prop="score" label="分值" min-width="30%"></el-table-column>
         <el-table-column prop="solution" label="答案" min-width="60%"></el-table-column>
-        <el-table-column label="图片">
-          <template slot-scope="scope">
-          <div>
+        <el-table-column label="图片" min-width="40%">
+          <template slot-scope="scope" >
+          <div >
             <el-image :key="scope.row.url" :src="scope.row.url" style="width: 50px; height: 50px" fit="fill" :preview-src-list="[scope.row.url]" >
             </el-image>
           </div>

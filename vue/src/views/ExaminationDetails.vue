@@ -2,7 +2,6 @@
 <template>
   <div>
     <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"  @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55"></el-table-column>
 
       <el-table-column prop="TopicType" label="题目类型(单选 多选)" width="140"></el-table-column>
       <el-table-column prop="option1" label="A"></el-table-column>

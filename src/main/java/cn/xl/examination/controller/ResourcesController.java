@@ -98,8 +98,11 @@ public class ResourcesController extends ApiController {
         return result;
     }
     @GetMapping("/getAll")
-    public PageInfo<Resources> getAll(Integer pageNum, Integer pageSize){
-        return resourcesService.getAllVideo(pageNum,pageSize);
+    public Result getAll(Integer pageNum, Integer pageSize){
+        Result result = new Result();
+        result.setCode(200);
+        result.setData(resourcesService.getAllVideo(pageNum,pageSize));
+        return result;
     }
     @GetMapping("/delete")
     public Result deleteResource(Integer id,@AuthenticationPrincipal UserDetails userDetails){

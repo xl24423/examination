@@ -193,8 +193,12 @@ export default {
           pageSize: this.pageSize,
         }
       }).then(res => {
-        this.tableData = res.list;
-        this.total = res.total
+          if (res.code === 200){
+            this.tableData = res.data.list;
+            this.total = res.data.total
+          }else{
+            this.$message.error(res.msg)
+          }
       })
     },
     loadSearch(username, name, tel,) {

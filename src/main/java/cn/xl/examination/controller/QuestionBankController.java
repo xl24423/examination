@@ -45,6 +45,7 @@ public class QuestionBankController extends ApiController {
     private UserService userService;
 
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('/questionBank/*')")
     public Result getAllQuestionBank(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize) {
         Result result = new Result();
         User user = userService.getUserByUsername(userDetails.getUsername());
@@ -60,6 +61,7 @@ public class QuestionBankController extends ApiController {
     QuestionService questionService;
     @DeleteMapping
     @Transactional
+    @PreAuthorize("hasAuthority('/questionBank/*')")
     public Result delete(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("id") Integer id) {
         Result result = new Result();
         User user = userService.getUserByUsername(userDetails.getUsername());
@@ -76,17 +78,14 @@ public class QuestionBankController extends ApiController {
             result.setDataBaseError();
             return result;
         }
-        integer = questionService.deleteByQuestionBankId(id);
-        if (integer != 1) {
-            result.setDataBaseError();
-            return result;
-        }
+        questionService.deleteByQuestionBankId(id);
         result.setSuccess(userDetails);
         result.setMsg("删除成功");
         return result;
     }
 
     @GetMapping("/getAllQuestionBank")
+    @PreAuthorize("hasAuthority('/questionBank/*')")
     public Result getAllQuestionBank(@AuthenticationPrincipal UserDetails userDetails) {
         Result result = new Result();
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
@@ -101,6 +100,7 @@ public class QuestionBankController extends ApiController {
 
     // 开启关闭考试功能
     @GetMapping("/act")
+    @PreAuthorize("hasAuthority('/questionBank/*')")
     public void actExamination(@AuthenticationPrincipal UserDetails userDetails, String action, Integer id) {
         User user = userService.getUserByUsername(userDetails.getUsername());
         if (!user.getRoleId().equals("1")) {
@@ -110,6 +110,7 @@ public class QuestionBankController extends ApiController {
     }
     // 学生开始考试
     @GetMapping("/actionExam")
+    @PreAuthorize("hasAuthority('/questionBank/action')")
     public Result actionExam(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize){
         Result result = new Result();
         PageInfo<QuestionBank> questionBankPageInfo = questionBankService.actionExam(pageNum,pageSize);
@@ -118,6 +119,7 @@ public class QuestionBankController extends ApiController {
         return result;
     }
     @GetMapping("/add")
+    @PreAuthorize("hasAuthority('/questionBank/*')")
     public Result addQuestionBank(@AuthenticationPrincipal UserDetails userDetails, String title, String time)
     {
         Result result = new Result();
@@ -136,6 +138,7 @@ public class QuestionBankController extends ApiController {
         return result;
     }
     @GetMapping("/selectOne")
+    @PreAuthorize("hasAuthority('/questionBank/action')")
     public Result selectOne(@AuthenticationPrincipal UserDetails userDetails, Integer id){
         Result result = new Result();
         QuestionBank questionBank = questionBankService.selectOne(id);

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.relational.core.sql.In;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/question")
 @Slf4j
+@PreAuthorize("hasAuthority('/question/*')")
 public class QuestionController extends ApiController {
     @Resource
     UserService userService;

@@ -51,13 +51,17 @@ public class UserController extends ApiController {
 //        return success(this.userService.page(page, new QueryWrapper<>(user)));
 //    }
     @GetMapping("/page")
-    @PreAuthorize("hasAuthority('/page')")
-    public PageInfo<User> AllUser(Integer pageNum, Integer pageSize) {
+    @PreAuthorize("hasAuthority('/user/*')")
+    public Result AllUser(Integer pageNum, Integer pageSize) {
         log.debug("," + pageNum + "," + pageSize);
-        return userService.getAllUser(pageNum, pageSize);
+        Result result = new Result();
+        result.setCode(200);
+        result.setData(userService.getAllUser(pageNum, pageSize));
+        return result;
     }
 
     @DeleteMapping("/del")
+    @PreAuthorize("hasAuthority('/user/*')")
     public Result delete(Integer id, @AuthenticationPrincipal UserDetails userDetails) {
         Result result = new Result();
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
@@ -79,6 +83,7 @@ public class UserController extends ApiController {
     }
 
     @PostMapping("/edit")
+    @PreAuthorize("hasAuthority('/user/*')")
     public Result edit(Integer id,
                        String username,
                        String password,
@@ -111,7 +116,7 @@ public class UserController extends ApiController {
 
     @GetMapping("/search")
     @PreAuthorize("hasAuthority('/page')")
-    public PageInfo<User> search(String username, String name, String tel, Integer pageNum, Integer pageSize) {
+    public Result search(String username, String name, String tel, Integer pageNum, Integer pageSize) {
         if (username != null && username.equals("")) {
             username = null;
         }
@@ -121,7 +126,10 @@ public class UserController extends ApiController {
         if (tel != null && tel.equals("")) {
             tel = null;
         }
-        return userService.searchAllUser(username, name, tel, pageNum, pageSize);
+        Result result = new Result();
+        result.setCode(200);
+        result.setData(userService.searchAllUser(username, name, tel, pageNum, pageSize));
+        return result;
     }
 
     @GetMapping("/me")
@@ -143,6 +151,7 @@ public class UserController extends ApiController {
         return result;
     }
     @PostMapping("/enable")
+    @PreAuthorize("hasAuthority('/user/*')")
     public Result enableUser(@AuthenticationPrincipal UserDetails userDetails, Integer id){
         Result result = new Result();
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
@@ -159,14 +168,17 @@ public class UserController extends ApiController {
         return result;
     }
     @GetMapping("/checkPage")
-    @PreAuthorize("hasAuthority('/page')")
-    public PageInfo<User> AllCheckUser(Integer pageNum, Integer pageSize) {
+    @PreAuthorize("hasAuthority('/user/*')")
+    public Result AllCheckUser(Integer pageNum, Integer pageSize) {
         log.debug("," + pageNum + "," + pageSize);
-        return userService.AllCheckUser(pageNum, pageSize);
+        Result result = new Result();
+        result.setCode(200);
+        result.setData(userService.AllCheckUser(pageNum, pageSize));
+        return result;
     }
     @GetMapping("/checkSearch")
-    @PreAuthorize("hasAuthority('/page')")
-    public PageInfo<User> checkSearch(String username, String name, String tel, Integer pageNum, Integer pageSize) {
+    @PreAuthorize("hasAuthority('/user/*')")
+    public Result checkSearch(String username, String name, String tel, Integer pageNum, Integer pageSize) {
         if (username != null && username.equals("")) {
             username = null;
         }
@@ -176,9 +188,13 @@ public class UserController extends ApiController {
         if (tel != null && tel.equals("")) {
             tel = null;
         }
-        return userService.searchAllCheckUser(username, name, tel, pageNum, pageSize);
+        Result result = new Result();
+        result.setCode(200);
+        result.setData(userService.searchAllCheckUser(username, name, tel, pageNum, pageSize));
+        return result;
     }
     @PostMapping("/check")
+    @PreAuthorize("hasAuthority('/user/*')")
     public Result checkUser(@AuthenticationPrincipal UserDetails userDetails, Integer id){
         Result result = new Result();
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){

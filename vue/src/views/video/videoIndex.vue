@@ -72,11 +72,11 @@ export default {
           }
         }).then(res=>{
           if (res.code === 200){
-            if (res.total === 0 || res.total === null || res.total === undefined){
+            if (res.data.total === 0 || res.data.total === null || res.data.total === undefined){
               this.$message.error("该页面没有资源或服务器出错")
             }
-            this.total = res.total;
-            this.list = res.list
+            this.total = res.data.total;
+            this.list = res.data.list
           }else{
             this.$message.error(res.msg)
           }

@@ -31,7 +31,6 @@
 
       <el-table ref="multipleTable" border :header-cell-class-name="'headerBg'" :stripe="true" :data="questionList"
                 style="width: 100%" max-height="480">
-        <el-table-column type="selection"></el-table-column>
         <el-table-column label="题库名称" prop="name"></el-table-column>
         <el-table-column prop="createtime" label="创建时间" show-overflow-tooltip></el-table-column>
         <el-table-column label="操作">

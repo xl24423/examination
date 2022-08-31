@@ -13,7 +13,6 @@
 
     <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
               @selection-change="handleSelectionChange" max-height="500">
-      <el-table-column type="selection" width="50"></el-table-column>
       <el-table-column prop="id" label="ID" width="50"></el-table-column>
       <el-table-column prop="username" label="用户名" width="100"></el-table-column>
       <el-table-column prop="name" label="姓名" width="110"></el-table-column>
@@ -96,8 +95,8 @@ export default {
         }
       }).then(res => {
             if (res.code === 200) {
-              this.tableData = res.list;
-              this.total = res.total
+              this.tableData = res.data.list;
+              this.total = res.data.total
             } else {
               this.$message.error(res.msg)
             }
