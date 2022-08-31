@@ -39,7 +39,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/question")
 @Slf4j
-@PreAuthorize("hasAuthority('/question/*')")
+
 public class QuestionController extends ApiController {
     @Resource
     UserService userService;
@@ -47,6 +47,7 @@ public class QuestionController extends ApiController {
     QuestionService questionService;
 
     @PostMapping("/questionAdd")
+    @PreAuthorize("hasAuthority('/question/*')")
     public Result questionAdd(HttpServletRequest request,
             @AuthenticationPrincipal UserDetails userDetails,
                               String analysis,
@@ -97,6 +98,7 @@ public class QuestionController extends ApiController {
     @Value("${image-path}")
     String resourcePath;
     @PostMapping("/resource")
+    @PreAuthorize("hasAuthority('/question/*')")
     public Result postResource(@AuthenticationPrincipal UserDetails userDetails, Integer id, MultipartFile file) throws IOException {
         Result result = new Result();
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
