@@ -1,18 +1,25 @@
 package cn.xl.examination.controller;
 
+import cn.hutool.json.JSONUtil;
 import cn.xl.examination.common.lang.Result;
+import cn.xl.examination.dao.QuestionDao;
+import cn.xl.examination.dao.QuestionImageDao;
 import cn.xl.examination.entity.Question;
 import cn.xl.examination.entity.QuestionImage;
 import cn.xl.examination.entity.Resources;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.service.QuestionService;
 import cn.xl.examination.service.UserService;
+import cn.xl.examination.vo.OptionVO;
+import cn.xl.examination.vo.QuestionVO;
 import cn.xl.examination.vo.TableDataVO;
 import com.baomidou.mybatisplus.extension.api.ApiController;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
+import net.sf.json.util.JSONUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,7 +56,7 @@ public class QuestionController extends ApiController {
     @PostMapping("/questionAdd")
     @PreAuthorize("hasAuthority('/question/*')")
     public Result questionAdd(HttpServletRequest request,
-            @AuthenticationPrincipal UserDetails userDetails,
+                              @AuthenticationPrincipal UserDetails userDetails,
                               String analysis,
                               String score,
                               String type,
@@ -65,47 +72,49 @@ public class QuestionController extends ApiController {
         JSONArray tableDataVOS = JSONArray.fromObject(tableData);
         String s = tableDataVOS.toString();
         Integer n;
-        if (!s.equals("[]")){
+        if (!s.equals("[]")) {
             s = s.substring(2);
-            s = s.substring(0,s.length()-2);
+            s = s.substring(0, s.length() - 2);
             String[] arr = s.split("},\\{");
             TableDataVO[] myTable = new TableDataVO[arr.length];
-            for (int i=0;i<arr.length;i++){
+            for (int i = 0; i < arr.length; i++) {
                 myTable[i] = new TableDataVO();
                 String[] param = arr[i].split(",");
                 String param0 = param[0].split(":")[1];
-                if ( param0.equals("true")){
+                if (param0.equals("true")) {
                     myTable[i].setType(true);
                 }
                 String param1 = param[1].split(":")[1];
-                myTable[i].setContent(param1.substring(1,param1.length()-1));
+                myTable[i].setContent(param1.substring(1, param1.length() - 1));
                 String param2 = param[2].split(":")[1];
-                myTable[i].setOption(param2.substring(1,param2.length()-1));
+                myTable[i].setOption(param2.substring(1, param2.length() - 1));
             }
-            n = questionService.addQuestion(questionContent,myTable,bankId,analysis,score,type, String.valueOf(user.getId()));
-        }else{
+            n = questionService.addQuestion(questionContent, myTable, bankId, analysis, score, type, String.valueOf(user.getId()));
+        } else {
             TableDataVO[] myTable = new TableDataVO[1];
             String solution = request.getParameter("solution");
             myTable[0] = new TableDataVO();
             myTable[0].setContent(solution);
-            n = questionService.addQuestion(questionContent,myTable,bankId,analysis,score,type, String.valueOf(user.getId()));
+            n = questionService.addQuestion(questionContent, myTable, bankId, analysis, score, type, String.valueOf(user.getId()));
         }
 
         result.setSuccess(userDetails);
         result.setData(n);
         return result;
     }
+
     @Value("${image-path}")
     String resourcePath;
+
     @PostMapping("/resource")
     @PreAuthorize("hasAuthority('/question/*')")
     public Result postResource(@AuthenticationPrincipal UserDetails userDetails, Integer id, MultipartFile file) throws IOException {
         Result result = new Result();
-        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
             result.setAuthError();
             return result;
         }
-        if (file == null){
+        if (file == null) {
             result.setPathError();
             result.setData("文件出错为空");
             return result;
@@ -115,7 +124,7 @@ public class QuestionController extends ApiController {
         // 先获得当前日期的字符串做路径
         String path = DateTimeFormatter.ofPattern("yyyy/MM/dd").format(LocalDateTime.now());
         // 确定要上传的文件夹
-        File folder = new File(resourcePath,path);
+        File folder = new File(resourcePath, path);
         // 创建这个文件夹
         folder.mkdirs();
         // 下面要确定上传的文件名
@@ -123,8 +132,8 @@ public class QuestionController extends ApiController {
         String fileName = file.getOriginalFilename();
         fileName = fileName.substring(fileName.lastIndexOf("."));
         System.out.println(fileName);
-        String name = UUID.randomUUID().toString()+fileName;
-        File newFile = new File(folder,name);
+        String name = UUID.randomUUID().toString() + fileName;
+        File newFile = new File(folder, name);
 //        Timer timer = new Timer();
 //        timer.schedule(new TimerTask() {
 //            @Override
@@ -132,16 +141,16 @@ public class QuestionController extends ApiController {
 //                newFile.delete();
 //            }
 //        }, 10 * 1000);       // 设置定时删除
-        log.debug("文件上传到:{}",newFile.getAbsolutePath());
+        log.debug("文件上传到:{}", newFile.getAbsolutePath());
         file.transferTo(newFile);
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://localhost:9090/static/image/"+path+"/"+name;
-        log.debug("回显图片的路径为:{}",url);
+        String url = "http://192.168.5.153:9090/static/image/" + path + "/" + name;
+        log.debug("回显图片的路径为:{}", url);
         QuestionImage questionImage = new QuestionImage().setQuestionId(id).setImageUrl(url);
         Integer i = questionService.postResource(questionImage);
-        if (i!=1){
+        if (i != 1) {
             result.setDataBaseError();
             return result;
         }
@@ -149,26 +158,63 @@ public class QuestionController extends ApiController {
         result.setMsg("图片保存成功");
         return result;
     }
+
     @GetMapping("/questions")
-    public Result getAllQuestions(@AuthenticationPrincipal UserDetails userDetails,Integer pageNum, Integer pageSize){
+    @PreAuthorize("hasAuthority('/question/*')")
+    public Result getAllQuestions(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize) {
         Result result = new Result();
-        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
             result.setAuthError();
             return result;
         }
-        PageInfo<Question> questionPageInfo = questionService.getAllQuestions(pageNum,pageSize);
+        PageInfo<Question> questionPageInfo = questionService.getAllQuestions(pageNum, pageSize);
 
         result.setSuccess(userDetails);
         result.setData(questionPageInfo);
         return result;
     }
 
+    @Resource
+    QuestionImageDao questionImageDao;
+
     @GetMapping("/exam")
-    public Result backExamQuestions(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+    public Result backExamQuestions(@AuthenticationPrincipal UserDetails userDetails, Integer id) {
         Result result = new Result();
-        List<Question> questions = questionService.backExamQuestions(id);
+        Question[] questions = questionService.backExamQuestions(id);
+        List<QuestionVO> questionVOS = new ArrayList<>(questions.length);
+        String url;
+        for (Question q : questions) {
+
+            if (q.getType().equals("1") || q.getType().equals("2")) {
+                List<OptionVO> list = new ArrayList<>();
+                if (q.getA().length() != 0) {
+                    list.add(new OptionVO(q.getA(), "A"));
+                }
+                if (q.getB().length() != 0) {
+                    list.add(new OptionVO(q.getB(), "B"));
+                }
+                if (q.getC().length() != 0) {
+                    list.add(new OptionVO(q.getC(), "C"));
+                }
+                if (q.getD().length() != 0) {
+                    list.add(new OptionVO(q.getD(), "D"));
+                }
+                OptionVO[] optionVOS = new OptionVO[list.size()];
+                list.toArray(optionVOS);
+                url = questionImageDao.selectUrl(q.getId());
+                questionVOS.add(new QuestionVO(q.getId(),q.getType(), q.getQuestion(), "", optionVOS, url));
+            } else {
+                OptionVO[] optionVOS = new OptionVO[2];
+                optionVOS[0] = new OptionVO("对", "true");
+                optionVOS[1] = new OptionVO("错", "false");
+                url = questionImageDao.selectUrl(q.getId());
+                questionVOS.add(new QuestionVO(q.getId(),q.getType(), q.getQuestion(), "", optionVOS, url));
+            }
+
+
+        }
         result.setSuccess(userDetails);
-        result.setData(questions);
+        result.setData(questionVOS);
         return result;
     }
 }

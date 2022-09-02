@@ -2,6 +2,7 @@ package cn.xl.examination.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import cn.xl.examination.entity.Exam;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ExamDao extends BaseMapper<Exam> {
-
+    @Select("select * from exam where username=#{username} and bank_id = #{bankId}")
+    Integer isExam(String username, Integer bankId);
 }
 

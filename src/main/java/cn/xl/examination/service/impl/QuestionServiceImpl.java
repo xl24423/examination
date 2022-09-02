@@ -140,8 +140,13 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
     }
 
     @Override
-    public List<Question> backExamQuestions(Integer id) {
+    public Question[] backExamQuestions(Integer id) {
         return questionDao.backExamQuestions(id);
+    }
+
+    @Override
+    public Question[] countScore(Integer bankId) {
+        return questionDao.selectByQuestionBankId(bankId);
     }
 }
 

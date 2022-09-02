@@ -41,13 +41,23 @@
           <template slot-scope="scope">
             <el-button
               type="primary"
-              @click="$router.push('/prepareexam/' + scope.row.id)"
+              @click="jump(scope.row.id)"
             >
               <i class="el-icon-position"></i> 去考试</el-button
             >
           </template>
         </el-table-column>
       </el-table>
+      <el-dialog
+          title="提示"
+          :visible.sync="ExamVisible"
+          width="30%">
+        <span>你已经考过这门考试,您确定要重新考试吗?</span>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="ExamVisible = false">取 消</el-button>
+    <el-button type="primary" @click="ExamVisible = false">确 定</el-button>
+  </span>
+      </el-dialog>
 
       <!-- 分页 -->
       <div class="block" style="margin-top: 10px">
@@ -55,7 +65,7 @@
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-          :current-page="current"
+          :current-page="pageNum"
           :page-sizes="[10, 15, 20, 30]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
@@ -102,6 +112,7 @@ export default {
   name: "Home",
   data() {
     return {
+      ExamVisible:false,
       dialogFormVisible: false,
       dialogVisible: false,
       form: {},
@@ -136,6 +147,19 @@ export default {
   },
 
   methods: {
+    jump(id){
+      console.log(id)
+      this.request.get("/exam/isExam?id="+id).then(res=>{
+        console.log(res)
+        if (res.code===200){
+          if (res.data){
+            this.ExamVisible = true;
+          }
+        }else {
+          this.$message.error("当前服务器异常,请稍后再试")
+        }
+      })
+    },
     init() {
       this.request.get("/questionBank/actionExam",{
         params:{

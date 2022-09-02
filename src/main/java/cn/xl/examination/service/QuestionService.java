@@ -25,6 +25,8 @@ public interface QuestionService extends IService<Question> {
 
     Integer deleteByQuestionBankId(Integer id);
 
-    List<Question> backExamQuestions(Integer id);
+    Question[] backExamQuestions(Integer id);
+
+    Question[] countScore(Integer bankId);
 }
 

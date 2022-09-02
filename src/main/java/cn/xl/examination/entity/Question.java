@@ -3,6 +3,7 @@ package cn.xl.examination.entity;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import cn.xl.examination.vo.OptionVO;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -14,6 +15,7 @@ import lombok.experimental.Accessors;
 import org.springframework.data.relational.core.sql.In;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (Question)表实体类
@@ -57,7 +59,7 @@ public class Question extends Model<Question> {
     @TableField("type")
     private String type;
     //得分
-    @TableField("正在搜索…")
+    @TableField("score")
     private Integer score;
     //出题人id
     @TableField("userId")

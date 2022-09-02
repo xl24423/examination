@@ -33,7 +33,7 @@ public class Answer extends Model<Answer> {
     private String userId;
     //题目id
     @TableField("question_id")
-    private Integer questionId;
+    private String questionId;
     //用户回答
     @TableField("user_answer")
     private String userAnswer;
@@ -42,7 +42,7 @@ public class Answer extends Model<Answer> {
     private LocalDateTime createtime;
     //修改答案时间
     @TableField("question_bank_id")
-    private Integer questionBankId;
+    private String questionBankId;
 
 }
 

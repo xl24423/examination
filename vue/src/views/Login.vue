@@ -102,11 +102,11 @@ export default {
     Reload() {
       localStorage.setItem("codeId",Math.random())
       let item = localStorage.getItem("codeId");
-      document.getElementById("CreateCheckCode").src = "http://localhost:9090/checkCode?codeId=" + item
+      document.getElementById("CreateCheckCode").src = "http://192.168.5.153:9090/checkCode?codeId=" + item
     },
     init() {
       localStorage.setItem("codeId",Math.random())
-      this.imageUrl = "http://localhost:9090/checkCode?codeId="+localStorage.getItem("codeId");
+      this.imageUrl = "http://192.168.5.153:9090/checkCode?codeId="+localStorage.getItem("codeId");
     },
     login() {
       localStorage.removeItem("token")

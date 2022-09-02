@@ -74,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
                 setPassword(pwd).
                 setIsCheck(0).   // 未审核为 0
                 setCreatetime(LocalDateTime.now()).
-                setCertificateUrl("http://localhost:9090/static/certificate/" + newName).
+                setCertificateUrl("http://192.168.5.153:9090/static/certificate/" + newName).
                 setInviteCode(registerVO.getInvite()).
                 setCompanyId(String.valueOf(company.getId())).
                 setMajorType(registerVO.getMajor()).

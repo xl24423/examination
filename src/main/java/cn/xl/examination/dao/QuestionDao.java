@@ -31,8 +31,10 @@ public interface QuestionDao extends BaseMapper<Question> {
     Integer countScore(Integer id);
     @Delete("delete from question where question_bank_id = #{id}")
     Integer deleteByQuestionBankId(Integer id);
-    @Select("select * from question q left join question_bank qb on q.question_bank_id = qb.id where\n" +
-            "qb. id = #{id}")
-    List<Question> backExamQuestions(Integer id);
+    @Select("select q.id,q.question,q.a,q.b,q.c,q.d,q.type from question q left join question_bank qb on q.question_bank_id = qb.id where\n" +
+            "qb.id = #{id}")
+    Question[] backExamQuestions(Integer id);
+    @Select("select * from question where question_bank_id = #{bankId}")
+    Question[] selectByQuestionBankId(Integer bankId);
 }
 

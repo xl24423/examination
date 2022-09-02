@@ -1,7 +1,10 @@
 package cn.xl.examination.service;
 
+import cn.xl.examination.vo.AnswerVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cn.xl.examination.entity.Exam;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -12,5 +15,8 @@ import cn.xl.examination.entity.Exam;
  */
 public interface ExamService extends IService<Exam> {
 
+    Boolean IsExam(String username, Integer bankId);
+
+    Integer post(Integer bankId, String username, LocalDateTime starTime, Integer count);
 }
 

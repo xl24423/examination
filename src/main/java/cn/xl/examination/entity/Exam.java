@@ -29,14 +29,20 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class Exam extends Model<Exam> {
     //id
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    @TableField("bank_id")
+    private Integer bank_id;
     //开始时间
     @TableField("startdate")
     private LocalDateTime startdate;
     //结束时间
     @TableField("enddate")
     private LocalDateTime enddate;
+    //用户名
+    @TableField("username")
+    private String username;
+    //成绩
+    @TableField("count")
+    private Integer count;
 
     }
 

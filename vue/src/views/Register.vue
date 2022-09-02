@@ -137,7 +137,7 @@ export default {
     return {
       majors: [],
       files: [],
-      url: "http://localhost:9090/static/dgpz.jpg",
+      url: "http://192.168.5.153:9090/static/dgpz.jpg",
       user: {},
       rules: {
         username: [

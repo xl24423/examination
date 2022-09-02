@@ -1,5 +1,6 @@
 package cn.xl.examination.security;
 
+import cn.xl.examination.controller.ExceptionControllerAdvice;
 import cn.xl.examination.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/logout",      // 登出接口
             "/user/register",            // 注册接口
             "/favicon.ico",
-            "http://localhost:8080/login",      // 登陆页面
+            "http://192.168.5.153:8080/login",      // 登陆页面
             "/static/**",           // 静态资源路径
             "/resources/image",     // 回显上传的图片
             "/major/allMajor",      // 获取所有专业
@@ -67,13 +68,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     JwtAccessDeniedHandler jwtAccessDeniedHandler;
     @Autowired
     VerifyCodeFilter verifyCodeFilter;
+
     // 配置页面权限的方法
     @ExceptionHandler
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()  // 设置禁用防跨域攻击
-                .formLogin().loginPage("http://localhost:8080/login").loginProcessingUrl("/login")
+                .formLogin().loginPage("http://192.168.5.153:8080/login").loginProcessingUrl("/login")
                 .usernameParameter("username").passwordParameter("password")
                 .successHandler(loginSuccessHandler).failureHandler(loginFailureHandler)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)       // 禁用session

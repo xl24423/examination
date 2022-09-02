@@ -19,12 +19,16 @@
       <el-table-column prop="tel" label="电话" width="110"></el-table-column>
       <el-table-column prop="roleId" label="角色" width="100"></el-table-column>
       <el-table-column prop="majorType" label="专业"></el-table-column>
-      <el-table-column prop="certificate" label="证书" width="100">
+      <el-table-column prop="certificate" label="证书" width="80">
         <template slot-scope="scope">
-          <div>
-            <el-image :key="scope.row.certificateUrl" :src="scope.row.certificateUrl" style="width: 50px; height: 50px"
+          <div class="block" >
+            <el-image :key="scope.row.certificateUrl" :src="scope.row.certificateUrl"  style="width: 80px; height: 50px"
                       fit="fill" :preview-src-list="[scope.row.certificateUrl]">
+              <div slot="error" class="image-slot">
+                <i class="el-icon-picture-outline"></i>
+              </div>
             </el-image>
+
           </div>
         </template>
       </el-table-column>

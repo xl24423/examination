@@ -5,7 +5,7 @@ server:
     include-message: always
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/examination?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    url: jdbc:mysql://192.168.5.153:3306/examination?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
     username: root
     password: xl2442356950...
   servlet:
@@ -31,3 +31,4 @@ mybatis:
 
 video-path: "D:/upload/video/"
 image-path: "D:/upload/image/"
+
