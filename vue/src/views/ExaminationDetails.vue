@@ -76,7 +76,6 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res=>{
-        console.log(res)
         this.total = res.total
         this.tableData = res.list;
       })
