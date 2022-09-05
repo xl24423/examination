@@ -30,5 +30,7 @@ public interface QuestionBankService extends IService<QuestionBank> {
     QuestionBank selectQuestionBankByName(String title);
 
     QuestionBank selectOne(Integer id);
+
+    String getTime(Integer id);
 }
 

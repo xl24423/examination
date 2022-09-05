@@ -146,6 +146,19 @@ public class QuestionBankController extends ApiController {
         result.setData(questionBank);
         return result;
     }
+    @GetMapping("/time")
+    public Result getTime(Integer id){
+        Result result = new Result();
+        String t = questionBankService.getTime(id);
+        if (t==null || t.equals("") || t.length()<1){
+            result.setDataBaseError();
+            return result;
+        }
+        Integer time = Integer.parseInt(t);
+        result.setCode(200);
+        result.setData(time);
+        return result;
+    }
 
 }
 

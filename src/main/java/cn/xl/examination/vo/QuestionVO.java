@@ -16,4 +16,16 @@ public class QuestionVO {
     private String value;
     private OptionVO[] option;
     private String url;
+    private Integer score;
+    private String analysis;
+    private String solution;
+
+    public QuestionVO(Integer id, String type, String question, String value, OptionVO[] option, String url) {
+        this.id = id;
+        this.type = type;
+        this.question = question;
+        this.value = value;
+        this.option = option;
+        this.url = url;
+    }
 }

@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import cn.xl.examination.common.lang.Result;
 import cn.xl.examination.entity.Answer;
 import cn.xl.examination.entity.Question;
+import cn.xl.examination.entity.User;
 import cn.xl.examination.exception.ServiceException;
 import cn.xl.examination.service.AnswerService;
 import cn.xl.examination.service.QuestionService;
@@ -17,7 +18,9 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.xl.examination.entity.Exam;
 import cn.xl.examination.service.ExamService;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -61,9 +64,9 @@ public class ExamController extends ApiController {
         AnswerVO[] answerList = jsonObject.get("answerList", AnswerVO[].class);
         Long starTime = jsonObject.get("starTime", Long.class);
         Integer bankId = jsonObject.get("bankId", Integer.class);
-
+        starTime+=28800000;
         LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(starTime / 1000, 0, ZoneOffset.UTC);
-
+        log.debug("开始时间"+localDateTime);
         Boolean isNull = examService.IsExam(userDetails.getUsername(), bankId);
         if (isNull) {
             Integer i = answerService.post(userService.getUserByUsername(userDetails.getUsername()).getId(), answerList, bankId);
@@ -103,6 +106,30 @@ public class ExamController extends ApiController {
         Boolean aBoolean = examService.IsExam(userDetails.getUsername(), bankId);
         result.setCode(200);
         result.setData(aBoolean);
+        return result;
+    }
+    @PostMapping("/deleteExam")
+    @Transactional
+    public void delete(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+        examService.delete(userDetails.getUsername(),id);
+        Integer userId = userService.getUserByUsername(userDetails.getUsername()).getId();
+        answerService.deleteByUserId(userId,id);
+    }
+    @GetMapping("/myExam")
+    public Result myExam(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize){
+        Result result = new Result();
+        User user = userService.getUserByUsername(userDetails.getUsername());
+        PageInfo<Exam> examPageInfo = examService.myExam(user, pageNum, pageSize);
+        result.setSuccess(userDetails);
+        result.setData(examPageInfo);
+        return result;
+    }
+    @GetMapping("/oneDetail")
+    public Result oneDetail(String username, Integer bankId){
+        Result result = new Result();
+        Exam exam = examService.oneDetail(username,bankId);
+        result.setCode(200);
+        result.setData(exam);
         return result;
     }
 }

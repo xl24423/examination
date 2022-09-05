@@ -28,5 +28,7 @@ public interface QuestionService extends IService<Question> {
     Question[] backExamQuestions(Integer id);
 
     Question[] countScore(Integer bankId);
+
+    Question[] backQuestionsDetails(Integer id);
 }
 

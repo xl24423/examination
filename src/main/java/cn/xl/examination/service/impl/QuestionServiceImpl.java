@@ -148,5 +148,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
     public Question[] countScore(Integer bankId) {
         return questionDao.selectByQuestionBankId(bankId);
     }
+
+    @Override
+    public Question[] backQuestionsDetails(Integer id) {
+        return questionDao.backQuestionsDetails(id);
+    }
 }
 

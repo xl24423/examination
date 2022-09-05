@@ -36,5 +36,7 @@ public interface QuestionDao extends BaseMapper<Question> {
     Question[] backExamQuestions(Integer id);
     @Select("select * from question where question_bank_id = #{bankId}")
     Question[] selectByQuestionBankId(Integer bankId);
+    @Select("select * from question q left join question_bank qb on q.question_bank_id = qb.id where qb.id = #{id}")
+    Question[] backQuestionsDetails(Integer id);
 }
 

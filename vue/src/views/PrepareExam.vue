@@ -45,7 +45,7 @@
       ><i class="el-icon-position"></i> 开始考试
       </el-button
       >
-      <el-button style="padding: 10px 20px; font-size: 22px">返回</el-button>
+      <el-button style="padding: 10px 20px; font-size: 22px" @click="$router.push('/onlineexamination')">返回</el-button>
     </div>
   </div>
 </template>
@@ -60,6 +60,7 @@ export default {
   methods: {
     init() {
       let id = location.pathname.split("/")[2];
+      this.request.post("/exam/deleteExam?id="+id)
       this.request.get("/questionBank/selectOne", {
         params: {
           id: id

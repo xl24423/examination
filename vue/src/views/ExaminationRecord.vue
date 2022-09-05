@@ -31,25 +31,26 @@
           :cell-style="{ textAlign: 'center' }"
           :header-cell-style="{ textAlign: 'center' }"
           :stripe="true"
-          :data="questionList"
+          :data="ExamList"
           style="width: 100%"
       >
-        <el-table-column label="id" prop="id">
+        <el-table-column label="试卷名称" prop="examName">
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           <!-- {{type}} -->
         </el-table-column>
 
-        <el-table-column prop="name" label="用户名"> </el-table-column>
-        <el-table-column prop="timetype" label="考试时间">
+        <el-table-column prop="username" label="用户名"> </el-table-column>
+        <el-table-column prop="startdate" label="考试时间">
         </el-table-column>
         <el-table-column prop="username" label="答题人姓名" >
         </el-table-column>
-        <el-table-column prop="all" label="考试总分"> </el-table-column>
+        <el-table-column prop="count" label="考试得分"> </el-table-column>
+        <el-table-column prop="sum" label="考试总分"> </el-table-column>
         <el-table-column label="操作" show-overflow-tooltip>
           <template slot-scope="scope">
             <el-button
                 type="primary"
-                @click="$router.push('/ExaminationDetails/' + scope.row.id)"
+                @click="$router.push('/ExaminationDetails/' + scope.row.username+'/'+scope.row.bankId)"
             >
               <i class="el-icon-position"></i> 详情</el-button
             >
@@ -63,7 +64,7 @@
         <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
-            :current-page="current"
+            :current-page="pageNum"
             :page-sizes="[10, 15, 20, 30]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
@@ -87,31 +88,11 @@ export default {
       add: {},
       total: 30,
       pageSize: 10,
-      current: 1,
+      pageNum: 1,
 
       questionContxt: "",
       questionName: "",
-      questionList: [
-        {
-          id: 1,
-          name: "",
-          type: "",
-          timetype: "",
-          timenumber: "",
-          all: "",
-          Pass: 60,
-        },
-        {
-          id: 222222,
-
-          name: "",
-          type: "",
-          timetype: "",
-          timenumber: "",
-          all: "",
-          Pass: 60,
-        },
-      ],
+      ExamList: [],
     };
   },
 
@@ -121,7 +102,25 @@ export default {
   },
 
   methods: {
-    init() {},
+    init() {
+      this.request.get("/exam/myExam",{
+        params:{
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        }
+      }).then(res=>{
+          if (res.code === 200){
+            if (res.data.total !== 0){
+              this.total = res.data.total;
+              this.ExamList = res.data.list;
+            }else {
+              this.$message.error("你还没有考试记录")
+            }
+          }else{
+            this.$message.error(res.msg)
+          }
+      })
+    },
     select() {
 
     },

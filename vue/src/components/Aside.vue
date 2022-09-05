@@ -1,4 +1,4 @@
-<template>
+<template id="aside">
   <el-menu :default-openeds="['']" style="min-height: 100%;min-width: 200px; overflow-x: hidden;"
            background-color="rgb(48, 65, 86)"
            text-color="#fff"
@@ -100,6 +100,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+#aside{
+  overflow-y: scroll;
+}
 </style>

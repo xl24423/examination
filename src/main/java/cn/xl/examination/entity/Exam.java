@@ -30,7 +30,7 @@ import java.io.Serializable;
 public class Exam extends Model<Exam> {
     //id
     @TableField("bank_id")
-    private Integer bank_id;
+    private Integer bankId;
     //开始时间
     @TableField("startdate")
     private LocalDateTime startdate;
@@ -43,6 +43,15 @@ public class Exam extends Model<Exam> {
     //成绩
     @TableField("count")
     private Integer count;
+    //试卷名称
+    @TableField(exist = false)
+    private String examName;
+    //试卷总分
+    @TableField(exist = false)
+    private Integer sum;
+    //用时 / (分)
+    @TableField(exist = false)
+    private Integer minute;
 
     }
 

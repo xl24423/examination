@@ -48,5 +48,10 @@ public class AnswerServiceImpl extends ServiceImpl<AnswerDao, Answer> implements
     public Answer[] countScore(Integer id, Integer bankId) {
         return answerDao.countScore(id,bankId);
     }
+
+    @Override
+    public void deleteByUserId(Integer userId, Integer id) {
+        answerDao.deleteByUserId(userId,id);
+    }
 }
 

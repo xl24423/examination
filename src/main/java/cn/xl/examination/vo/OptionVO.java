@@ -10,4 +10,11 @@ import lombok.NoArgsConstructor;
 public class OptionVO {
     String label;
     String value;
+
+    public OptionVO(String label, String value) {
+        this.label = label;
+        this.value = value;
+    }
+
+    Boolean current;
 }

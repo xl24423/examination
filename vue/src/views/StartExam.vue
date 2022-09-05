@@ -8,14 +8,15 @@
     <div class="answer-container">
       <!-- 考试结束蒙版 -->
       <div v-if="countDown === '考试已经结束'" class="mock">
-        <el-button type="info" round>考试已经结束</el-button>
+        <el-button type="info" round @click="postExam">考试已经结束,已为你自动交卷,点击查看详情</el-button>
       </div>
       <!-- 答题卡 -->
       <div class="answer-sheet-box">
         <!-- 标题 -->
         <div class="answer-sheet-title">答题卡</div>
-        <el-tag type="info">未作答</el-tag>
-        <el-tag type="success">已作答</el-tag>
+        <el-tag type="info" style="background-color: #909399;color: white" >未作答</el-tag>
+        <el-tag type="success" style="background-color: #67C23A;color: white">已作答</el-tag>
+        <el-tag type="warning" style="background-color: #E6A23C; color: white">当前题目</el-tag>
         <div v-for="(item, index) in questionInfoList" :key="index">
           <div class="answer-sheet-title">{{ item.text }}</div>
           <div>
@@ -114,7 +115,8 @@ import {formateTimeStamp} from '@/utils/tools.js'
 export default {
   data() {
     return {
-      starTime: '',
+      time: 0,   // 考试时间
+      starTime: '', // 考试开始时间
       previewFlag: false, //预览弹框
       dialogVisible: false,
       questionInfoList: [
@@ -145,16 +147,30 @@ export default {
       currentElIndex: 0, // 当前个数
       currentQuestionType: 1, // 当前问题类型 1:单选 2判断 3多选
       answerList: [],
-      answerVO:{},
+      answerVO: {},
     }
   },
+  created() {
+
+  },
   mounted() {
-    this.starTime = new Date().getTime()
-    this.$nextTick(() => {
-      this.mistiming();
-    })
+    window.addEventListener("load", () => {
+      this.$message.error("请勿刷新或退出,否则将不会保存你的答题信息")
+    });
     let id = location.pathname.split("/")[2]
+    this.starTime = new Date().getTime()
+    this.request.get("/questionBank/time?id=" + id).then(res => {
+      if (res.code === 200) {
+        this.time = res.data * 60;
+        this.$nextTick(() => {
+          this.mistiming();
+        })
+      } else {
+        this.$message.error(res.msg)
+      }
+    })
     this.request.get("/question/exam?id=" + id).then(res => {
+      console.log(res)
       if (res.code === 200) {
         this.total = res.data.length;
         let q = res.data;
@@ -181,6 +197,30 @@ export default {
 
   },
   methods: {
+    // stopF5Refresh() {
+    //   document.onkeydown = function (e) {
+    //     var evt = window.event || e;
+    //     var code = evt.keyCode || evt.which;
+    //     //屏蔽F1---F11
+    //     if (code > 111 && code < 123) {
+    //       if (evt.preventDefault) {
+    //         evt.preventDefault();
+    //       } else {
+    //         evt.keyCode = 0;
+    //         evt.returnValue = false;
+    //       }
+    //     }
+    //   };
+    //   //禁止鼠标右键菜单
+    //   document.oncontextmenu = function () {
+    //     return false;
+    //   };
+    //   //阻止后退的所有动作，包括 键盘、鼠标手势等产生的后退动作。
+    //   history.pushState(null, null, window.location.href);
+    //   window.addEventListener("popstate", function () {
+    //  history.pushState(null, null, window.location.href);
+    //   });
+    // },
     jump(item, index) {
       if (item !== 0 || index !== 0) {
         this.showLastBtn = true;
@@ -363,6 +403,10 @@ export default {
       }
 
     },
+    postExamAndPush() {
+      this.postExam();
+      this.$router.push("/ExaminationRecord");
+    },
     postExam() {
       this.answerList = []
       this.questionInfoList.forEach((item, index) => {
@@ -398,13 +442,12 @@ export default {
       this.answerVO.answerList = this.answerList;
       this.answerVO.starTime = this.starTime
       this.answerVO.bankId = location.pathname.split("/")[2]
-      this.request.post("/exam", JSON.stringify(this.answerVO), {headers: {'Content-Type': 'application/json;charset=UTF-8'}}).
-      then(res => {
-        if (res.code===200){
+      this.request.post("/exam", JSON.stringify(this.answerVO), {headers: {'Content-Type': 'application/json;charset=UTF-8'}}).then(res => {
+        if (res.code === 200) {
           this.$message.success(res.msg)
           this.$router.push("/ExaminationRecord")
         }
-      }).catch(e=>{
+      }).catch(e => {
         this.$message.error(e.response.data.msg);
         this.$router.push("/onlineexamination")
       })
@@ -422,7 +465,7 @@ export default {
     ,
 // 考试倒计时
     mistiming() {
-      var timeStamp = 500 //秒
+      var timeStamp = this.time //秒
       this.times = formateTimeStamp(timeStamp);
       const str = `${this.times.hour}时${this.times.min}分${this.times.seconds}秒`
       this.countDown = str;
@@ -437,7 +480,11 @@ export default {
           clearInterval(TimeDown);
         }
       }, 1000)
-    }
+    },
+
+  },
+  beforeDestroyed() {
+
   }
 }
 ;
@@ -530,5 +577,11 @@ export default {
 .preview-dialog .img-box {
   max-height: 400px;
   overflow: hidden;
+}
+
+/deep/.el-button span {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
 }
 </style>

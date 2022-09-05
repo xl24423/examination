@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from "@/store";
-
+import { Message } from "element-ui";
 Vue.use(VueRouter)
 
 const routes = [
@@ -27,7 +27,7 @@ const routes = [
       },
       {
         path: '/onlineexamination',
-        name: '试题管理',
+        name: '在线考试',
         component: () => import('../views/OnlineExamination.vue')
       },
       {
@@ -69,6 +69,12 @@ const routes = [
         name:"用户审核",
         component: () => import('../views/Examine.vue')
       },
+      {
+        path:'/ExaminationDetails/*',
+        name:"考试详情",
+        component: () => import('../views/ExaminationDetails.vue')
+      },
+
     ]
   },
   {

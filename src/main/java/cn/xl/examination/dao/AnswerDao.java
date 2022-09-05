@@ -2,6 +2,7 @@ package cn.xl.examination.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import cn.xl.examination.entity.Answer;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.data.relational.core.sql.In;
@@ -20,5 +21,9 @@ public interface AnswerDao extends BaseMapper<Answer> {
      Integer insertBatch(List<Answer> answers);
      @Select("select * from answer where user_id = #{id} and question_bank_id = #{bankId}")
      Answer[] countScore(Integer id, Integer bankId);
+    @Delete("delete from answer where user_id = #{userId} and question_bank_id=#{id}")
+    void deleteByUserId(Integer userId, Integer id);
+    @Select("select * from answer where question_bank_id = #{id} and user_id = #{userId} ")
+    List<Answer> selectByIdAndUserId(Integer id, Integer userId);
 }
 

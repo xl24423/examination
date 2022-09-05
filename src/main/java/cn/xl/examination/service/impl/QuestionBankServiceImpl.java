@@ -92,5 +92,10 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
         questionBank.setPass(String.valueOf(count*6/10));
         return questionBank;
     }
+
+    @Override
+    public String getTime(Integer id) {
+        return questionBankDao.getTime(id);
+    }
 }
 

@@ -1,13 +1,9 @@
 package cn.xl.examination.controller;
 
-import cn.hutool.json.JSONUtil;
 import cn.xl.examination.common.lang.Result;
-import cn.xl.examination.dao.QuestionDao;
+import cn.xl.examination.dao.AnswerDao;
 import cn.xl.examination.dao.QuestionImageDao;
-import cn.xl.examination.entity.Question;
-import cn.xl.examination.entity.QuestionImage;
-import cn.xl.examination.entity.Resources;
-import cn.xl.examination.entity.User;
+import cn.xl.examination.entity.*;
 import cn.xl.examination.service.QuestionService;
 import cn.xl.examination.service.UserService;
 import cn.xl.examination.vo.OptionVO;
@@ -176,7 +172,8 @@ public class QuestionController extends ApiController {
 
     @Resource
     QuestionImageDao questionImageDao;
-
+    @Resource
+    AnswerDao answerDao;
     @GetMapping("/exam")
     public Result backExamQuestions(@AuthenticationPrincipal UserDetails userDetails, Integer id) {
         Result result = new Result();
@@ -210,8 +207,65 @@ public class QuestionController extends ApiController {
                 url = questionImageDao.selectUrl(q.getId());
                 questionVOS.add(new QuestionVO(q.getId(),q.getType(), q.getQuestion(), "", optionVOS, url));
             }
-
-
+        }
+        result.setSuccess(userDetails);
+        result.setData(questionVOS);
+        return result;
+    }
+    @GetMapping("/examRecode")
+    public Result backExamRecodeQuestions(@AuthenticationPrincipal UserDetails userDetails, Integer id) {
+        Result result = new Result();
+        Question[] questions = questionService.backQuestionsDetails(id);
+        List<QuestionVO> questionVOS = new ArrayList<>(questions.length);
+        String url;
+        List<Answer> answers = answerDao.selectByIdAndUserId(id,userService.getUserByUsername(userDetails.getUsername()).getId());
+        Map<Integer,String> map = new HashMap<>();
+        for (Answer answer : answers) {
+            map.put(Integer.valueOf(answer.getQuestionId()),answer.getUserAnswer());
+        }
+        for (Question q : questions) {
+            if (q.getType().equals("1") || q.getType().equals("2")) {
+                List<OptionVO> list = new ArrayList<>();
+                if (q.getA().length() != 0) {
+                    list.add(new OptionVO(q.getA(), "A"));
+                }
+                if (q.getB().length() != 0) {
+                    list.add(new OptionVO(q.getB(), "B"));
+                }
+                if (q.getC().length() != 0) {
+                    list.add(new OptionVO(q.getC(), "C"));
+                }
+                if (q.getD().length() != 0) {
+                    list.add(new OptionVO(q.getD(), "D"));
+                }
+                OptionVO[] optionVOS = new OptionVO[list.size()];
+                list.toArray(optionVOS);
+                String ans = map.get(q.getId()); // 获取 map 中用户的回答
+                    List<String> splits = new ArrayList<>(Arrays.asList(ans.split(",")));
+                    if (splits.contains("A")){
+                        optionVOS[0].setCurrent(true);
+                    } if (splits.contains("B")){
+                        optionVOS[1].setCurrent(true);
+                    } if (splits.contains("C")){
+                        optionVOS[2].setCurrent(true);
+                    } if (splits.contains("D")){
+                        optionVOS[3].setCurrent(true);
+                    }
+                url = questionImageDao.selectUrl(q.getId());
+                questionVOS.add(new QuestionVO(q.getId(),q.getType(), q.getQuestion(), map.get(q.getId()), optionVOS, url,q.getScore(),q.getQuestionAnalysis(),q.getSolution()));
+            } else {
+                OptionVO[] optionVOS = new OptionVO[2];
+                optionVOS[0] = new OptionVO("对", "true");
+                optionVOS[1] = new OptionVO("错", "false");
+                String ans = map.get(q.getId());
+                if (ans.equals("true")){
+                    optionVOS[0].setCurrent(true);
+                }else if (ans.equals("false")){
+                    optionVOS[1].setCurrent(true);
+                }
+                url = questionImageDao.selectUrl(q.getId());
+                questionVOS.add(new QuestionVO(q.getId(),q.getType(), q.getQuestion(), map.get(q.getId()), optionVOS, url,q.getScore(),q.getQuestionAnalysis(),q.getSolution()));
+            }
         }
         result.setSuccess(userDetails);
         result.setData(questionVOS);

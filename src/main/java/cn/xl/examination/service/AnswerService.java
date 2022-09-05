@@ -17,5 +17,7 @@ public interface AnswerService extends IService<Answer> {
     Integer post(Integer userId, AnswerVO[] answerList, Integer bankId);
 
     Answer[] countScore(Integer id, Integer bankId);
+
+    void deleteByUserId(Integer userId, Integer id);
 }
 

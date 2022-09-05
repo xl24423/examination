@@ -68,5 +68,7 @@ public class Question extends Model<Question> {
     private String solution;
     @TableField(exist = false)
     private String url;
+    @TableField(exist = false)
+    private String userAnswer;
     }
 
