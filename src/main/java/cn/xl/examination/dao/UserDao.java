@@ -64,5 +64,7 @@ public interface UserDao extends BaseMapper<User> {
     List<User> searchAllCheckUser(String username, String name, String tel);
     @Update("update user set isCheck = 1 where id = #{id}")
     Integer checkUser(Integer id);
+    @Select("update user set username=#{username},name=#{name},tel=#{tel},role_id=#{roleId} where id = #{id}")
+    void editNotpassword(Integer id, String username, String name, String tel, Integer roleId);
 }
 

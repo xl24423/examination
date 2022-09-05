@@ -157,7 +157,7 @@ export default {
           {min: 1, max: 5, message: "长度在 1 到 5 个字符", trigger: "blur"},
         ],
         password: [
-          {required: true, message: "请输入密码", trigger: "blur"},
+          {required: false, message: "请输入密码", trigger: "blur"},
           {
             min: 6,
             max: 12,
@@ -219,8 +219,8 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res => {
-        this.total = res.total
-        this.tableData = res.list;
+        this.total = res.data.total
+        this.tableData = res.data.list;
       })
     },
     edit() {

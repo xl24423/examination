@@ -89,7 +89,7 @@ public class UserController extends ApiController {
                        String password,
                        String name,
                        String tel,
-                       Integer roleId,
+                       String roleId,
                        @AuthenticationPrincipal UserDetails userDetails) {
         Result result = new Result();
         User NowUser = userService.getUserByUsername(userDetails.getUsername());
@@ -100,22 +100,34 @@ public class UserController extends ApiController {
         if (roleId == null ||
                 !username.trim().matches("^.{2,10}$") ||
                 !tel.trim().matches("^1[3456789][0-9]{9}$") ||
-                !password.trim().matches("^[0-9a-zA-z._]{6,12}$") ||
                 !name.trim().matches("^.{1,5}$")
         ) {
             result.setPathError();
             return result;
         }
-        password = passwordEncoder.encode(password);
-        log.debug("这里是用户信息:" + id + "," + username + "," + password + "," + name + "," + tel + "," + roleId);
-        userService.editUser(id, username, password, name, tel, roleId);
+        if(roleId.equals("管理员")){
+            roleId = "1";
+        }else if(roleId.equals("用户")){
+            roleId = "10";
+        }
+        log.debug("密码"+password);
+        if (password != null) {
+            if (!password.trim().matches("^[0-9a-zA-z._]{6,12}$")) {
+                result.setPathError();
+                return result;
+            }
+            password = passwordEncoder.encode(password);
+        }
+            log.debug("这里是用户信息:" + id + "," + username + "," + password + "," + name + "," + tel + "," + roleId);
+            userService.editUser(id, username, password, name, tel, Integer.valueOf(roleId));
+
         result.setSuccess(userDetails);
         result.setMsg("更新成功");
         return result;
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAuthority('/page')")
+    @PreAuthorize("hasAuthority('/user/*')")
     public Result search(String username, String name, String tel, Integer pageNum, Integer pageSize) {
         if (username != null && username.equals("")) {
             username = null;

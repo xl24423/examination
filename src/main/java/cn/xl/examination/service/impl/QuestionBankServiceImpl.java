@@ -97,5 +97,15 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
     public String getTime(Integer id) {
         return questionBankDao.getTime(id);
     }
+
+    @Override
+    public QuestionBank likeName(String name) {
+        return questionBankDao.likeName(name);
+    }
+
+    @Override
+    public QuestionBank actionExamSearch(String name) {
+        return questionBankDao.actionExamSearch(name);
+    }
 }
 

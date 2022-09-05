@@ -14,10 +14,10 @@
           </el-form>
           <el-col :span="3" style="margin: 0 20px"
           >
-            <el-button type="primary" icon="el-icon-question" @click="select"
+            <el-button type="primary" icon="el-icon-question" @click="select(questionName)"
             >搜索
-            </el-button
-            >
+            </el-button>
+            <el-button type="warning" @click="reset">重置</el-button>
           </el-col
           >
         </el-row>
@@ -70,6 +70,7 @@
       <div class="block" style="margin-top: 10px">
         <!-- <span class="demonstration">完整功能</span> -->
         <el-pagination
+            :disabled="IsSearch"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
@@ -119,6 +120,7 @@ export default {
   name: "Home",
   data() {
     return {
+      IsSearch: false,
       jumpId: 0,
       ExamVisible: false,
       dialogFormVisible: false,
@@ -128,21 +130,6 @@ export default {
       total: 30,
       pageSize: 10,
       pageNum: 1,
-      // 题库列表
-      questions: [
-        {
-          id: 1,
-          name: "单选题",
-        },
-        {
-          id: 2,
-          name: "多选题",
-        },
-        {
-          id: 3,
-          name: "判断题",
-        },
-      ],
       questionContxt: "",
       questionName: "",
       questionList: [],
@@ -170,6 +157,7 @@ export default {
       })
     },
     init() {
+      this.IsSearch = false;
       this.request.get("/questionBank/actionExam", {
         params: {
           pageNum: this.pageNum,
@@ -184,8 +172,28 @@ export default {
         }
       })
     },
-    select() {
-
+    select(questionName) {
+       if (questionName !==""){
+         this.IsSearch = true;
+         this.request.get("/questionBank/actionExamSearch?name="+questionName).then(res=>{
+            if (res.code === 200){
+              if (res.data !== null){
+                this.total = 1;
+                this.questionList =[];
+                this.questionList.push(res.data);
+              }else{
+                this.total = 0;
+                this.questionList = [];
+              }
+            }
+         })
+       }else{
+         this.init();
+       }
+    },
+    reset(){
+      this.questionName = "";
+      this.init();
     },
     handleSizeChange(val) {
       console.log(val);

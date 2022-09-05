@@ -11,13 +11,14 @@
           :key="index.id"
       >
         <el-card :body-style="{ padding: '0px',}">
-          <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
-          <video width="320" height="240" controls require :src="index.address+'?token='+token"
-                 :id="'videobox'+index.id"
-                 @mousemove="mousemove(index)"
-                 @mouseout="mouseout(index)"
-          >
-          </video>
+          <div>
+            <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
+            <video controls require :src="index.address+'?token='+token"
+                   style="width: 100%; height: 100%; object-fit: fill"
+                   :id="'videobox'+index.id"
+            >
+            </video>
+          </div>
           <div style="padding: 14px">
             <span>视频名称:{{ index.name }}</span>
             <div class="bottom clearfix">
@@ -59,6 +60,7 @@
 export default {
   data() {
     return {
+      isPlay:true,
       total: 0,
       list: [],
       pageNum: 1,
@@ -71,15 +73,6 @@ export default {
     this.loadAllVideo();
   },
   methods: {
-    mouseout(index){
-      var video = document.getElementById("videobox"+index.id);
-      video.pause();
-
-    },
-    mousemove(index) {
-      var video = document.getElementById("videobox"+index.id);
-      video.play();
-    },
     loadAllVideo() {
       this.request.get("/resources/getAll", {
         params: {
@@ -149,5 +142,9 @@ export default {
 .clearfix:after {
   clear: both;
 }
+video {
+  display: block;
+}
+
 </style>
 

@@ -12,10 +12,9 @@
           </el-col>
           <el-col :span="3" style="margin: 0 20px"
           >
-            <el-button type="primary" icon="el-icon-question"
-            >搜索
-            </el-button
-            >
+            <el-button type="primary" icon="el-icon-question" @click="search(questionName)">搜索
+            </el-button>
+            <el-button type="warning" @click="reset">重置</el-button>
           </el-col
           >
           <el-col style="float: right" :span="3"
@@ -46,7 +45,6 @@
             >
               <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
             </el-popconfirm>
-            <el-button type="warning" @click="selectAll(scope.row)">题库详情</el-button>
             <el-button :type="scope.row.type" @click="action(scope.row)">{{ scope.row.isAction }}</el-button>
           </template>
         </el-table-column>
@@ -57,6 +55,7 @@
       <div class="block" style="margin-top:10px;">
         <!-- <span class="demonstration">完整功能</span> -->
         <el-pagination
+            :disabled="questionName!==''"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
@@ -175,7 +174,10 @@ export default {
         }
       })
     },
-
+    reset(){
+      this.questionName = "";
+      this.init();
+    },
     handleSizeChange(val) {
       console.log(val);
       this.pageSize = val
@@ -209,7 +211,36 @@ export default {
         }
       })
     },
-
+    search(name) {
+      if (name!==""){
+        this.request.get("/questionBank/selectByName?name=" + name).then(res => {
+          if (res.code === 200){
+            this.questionList = [];
+            if (res.data !== null) {
+              this.questionList.push(res.data)
+              this.total = 1;
+            } else {
+              this.questionList = [];
+              this.total = 0;
+            }
+            let list = this.questionList;
+            for (let i = 0; i < list.length; i++) {
+              if (list[i].isAction === "true") {
+                list[i].type = "info";
+                list[i].isAction = "关闭";
+              } else {
+                list[i].type = "primary";
+                list[i].isAction = "开启";
+              }
+            }
+          }else{
+            this.$message.error(res.msg)
+          }
+        })
+      }else{
+       this.init();
+      }
+    }
   },
 };
 </script>

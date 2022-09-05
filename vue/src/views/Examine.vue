@@ -122,8 +122,8 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res => {
-        this.total = res.total
-        this.tableData = res.list;
+        this.total = res.data.total
+        this.tableData = res.data.list;
       })
     },
     check(id) {

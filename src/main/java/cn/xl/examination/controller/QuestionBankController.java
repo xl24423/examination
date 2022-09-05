@@ -118,6 +118,16 @@ public class QuestionBankController extends ApiController {
         result.setData(questionBankPageInfo);
         return result;
     }
+    // 学生开始考试搜索
+    @GetMapping("/actionExamSearch")
+    @PreAuthorize("hasAuthority('/questionBank/action')")
+    public Result actionExamSearch(@AuthenticationPrincipal UserDetails userDetails,String name){
+        Result result = new Result();
+        QuestionBank questionBank = questionBankService.actionExamSearch(name);
+        result.setSuccess(userDetails);
+        result.setData(questionBank);
+        return result;
+    }
     @GetMapping("/add")
     @PreAuthorize("hasAuthority('/questionBank/*')")
     public Result addQuestionBank(@AuthenticationPrincipal UserDetails userDetails, String title, String time)
@@ -157,6 +167,15 @@ public class QuestionBankController extends ApiController {
         Integer time = Integer.parseInt(t);
         result.setCode(200);
         result.setData(time);
+        return result;
+    }
+    @GetMapping("/selectByName")
+    @PreAuthorize("hasAuthority('/questionBank/*')")
+    public Result selectByName(String name){
+        Result result = new Result();
+        QuestionBank questionBank = questionBankService.likeName(name);
+        result.setCode(200);
+        result.setData(questionBank);
         return result;
     }
 

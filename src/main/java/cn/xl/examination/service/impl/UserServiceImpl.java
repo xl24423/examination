@@ -110,7 +110,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     @Override
     public void editUser(Integer id, String username, String password, String name, String tel, Integer roleId) {
-        userDao.edit(id, username, password, name, tel, roleId);
+        if (password == null){
+            userDao.editNotpassword(id, username , name, tel, roleId);
+        }else{
+            userDao.edit(id, username, password, name, tel, roleId);
+        }
     }
 
     @Override
