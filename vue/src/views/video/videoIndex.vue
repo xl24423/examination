@@ -1,19 +1,25 @@
-<template >
+<template>
   <el-card>
-    <el-button style="margin:10px" type="primary" @click="$router.push('/videoinsert')"> <i class="el-icon-plus"></i> 添加视频</el-button>
+    <el-button style="margin:10px" type="primary" @click="$router.push('/videoinsert')"><i class="el-icon-plus"></i>
+      添加视频
+    </el-button>
     <el-row>
       <el-col
-      style="margin:10px"
-        :span="5"
-        v-for="index in list"
-        :key="index.id"
+          style="margin:10px"
+          :span="5"
+          v-for="index in list"
+          :key="index.id"
       >
-        <el-card :body-style="{ padding: '0px',}" >
+        <el-card :body-style="{ padding: '0px',}">
           <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
-          <video width="320" height="240" controls require :src="index.address+'?token='+token" >
+          <video width="320" height="240" controls require :src="index.address+'?token='+token"
+                 :id="'videobox'+index.id"
+                 @mousemove="mousemove(index)"
+                 @mouseout="mouseout(index)"
+          >
           </video>
           <div style="padding: 14px">
-            <span>视频名称:{{index.name}}</span>
+            <span>视频名称:{{ index.name }}</span>
             <div class="bottom clearfix">
               <span class="text-sm-right">{{ index.content }}</span>
               <el-popconfirm
@@ -25,7 +31,8 @@
                   title="您确定删除吗？"
                   @confirm="deleteResource(index.id)"
               >
-                <el-button type="danger" slot="reference" style="float:right" >删除 <i class="el-icon-remove-outline"></i></el-button>
+                <el-button type="danger" slot="reference" style="float:right">删除 <i class="el-icon-remove-outline"></i>
+                </el-button>
               </el-popconfirm>
             </div>
           </div>
@@ -53,35 +60,44 @@ export default {
   data() {
     return {
       total: 0,
-      list:[],
+      list: [],
       pageNum: 1,
       pageSize: 10,
-      token:"",
+      token: "",
     };
   },
   created() {
-     this.token = localStorage.getItem("token");
-     this.loadAllVideo();
+    this.token = localStorage.getItem("token");
+    this.loadAllVideo();
   },
-  methods:{
-    loadAllVideo(){
-        this.request.get("/resources/getAll",{
-          params: {
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          }
-        }).then(res=>{
-          if (res.code === 200){
-            if (res.data.total === 0 || res.data.total === null || res.data.total === undefined){
-              this.$message.error("该页面没有资源或服务器出错")
-            }
-            this.total = res.data.total;
-            this.list = res.data.list
-          }else{
-            this.$message.error(res.msg)
-          }
+  methods: {
+    mouseout(index){
+      var video = document.getElementById("videobox"+index.id);
+      video.pause();
 
-        })
+    },
+    mousemove(index) {
+      var video = document.getElementById("videobox"+index.id);
+      video.play();
+    },
+    loadAllVideo() {
+      this.request.get("/resources/getAll", {
+        params: {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+        }
+      }).then(res => {
+        if (res.code === 200) {
+          if (res.data.total === 0 || res.data.total === null || res.data.total === undefined) {
+            this.$message.error("该页面没有资源或服务器出错")
+          }
+          this.total = res.data.total;
+          this.list = res.data.list
+        } else {
+          this.$message.error(res.msg)
+        }
+
+      })
     },
     handleSizeChange(pageSize) {
       console.log(pageSize)
@@ -93,15 +109,15 @@ export default {
       this.pageNum = pageNum
       this.loadAllVideo()
     },
-    deleteResource:function (id) {
-        this.request.get("/resources/delete?id="+id).then(res=>{
-            if (res.code === 200){
-              this.$message.success(res.msg);
-            }else{
-              this.$message.error(res.msg)
-            }
-            this.loadAllVideo();
-        })
+    deleteResource: function (id) {
+      this.request.get("/resources/delete?id=" + id).then(res => {
+        if (res.code === 200) {
+          this.$message.success(res.msg);
+        } else {
+          this.$message.error(res.msg)
+        }
+        this.loadAllVideo();
+      })
     }
   }
 };
