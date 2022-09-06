@@ -64,9 +64,9 @@ public class ExamController extends ApiController {
         AnswerVO[] answerList = jsonObject.get("answerList", AnswerVO[].class);
         Long starTime = jsonObject.get("starTime", Long.class);
         Integer bankId = jsonObject.get("bankId", Integer.class);
-        starTime+=28800000;
+        starTime += 28800000;
         LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(starTime / 1000, 0, ZoneOffset.UTC);
-        log.debug("开始时间"+localDateTime);
+        log.debug("开始时间" + localDateTime);
         Boolean isNull = examService.IsExam(userDetails.getUsername(), bankId);
         if (isNull) {
             Integer i = answerService.post(userService.getUserByUsername(userDetails.getUsername()).getId(), answerList, bankId);
@@ -108,15 +108,17 @@ public class ExamController extends ApiController {
         result.setData(aBoolean);
         return result;
     }
+
     @PostMapping("/deleteExam")
     @Transactional
-    public void delete(@AuthenticationPrincipal UserDetails userDetails, Integer id){
-        examService.delete(userDetails.getUsername(),id);
+    public void delete(@AuthenticationPrincipal UserDetails userDetails, Integer id) {
+        examService.delete(userDetails.getUsername(), id);
         Integer userId = userService.getUserByUsername(userDetails.getUsername()).getId();
-        answerService.deleteByUserId(userId,id);
+        answerService.deleteByUserId(userId, id);
     }
+
     @GetMapping("/myExam")
-    public Result myExam(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize){
+    public Result myExam(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize) {
         Result result = new Result();
         User user = userService.getUserByUsername(userDetails.getUsername());
         PageInfo<Exam> examPageInfo = examService.myExam(user, pageNum, pageSize);
@@ -124,10 +126,11 @@ public class ExamController extends ApiController {
         result.setData(examPageInfo);
         return result;
     }
+
     @GetMapping("/oneDetail")
-    public Result oneDetail(String username, Integer bankId){
+    public Result oneDetail(String username, Integer bankId) {
         Result result = new Result();
-        Exam exam = examService.oneDetail(username,bankId);
+        Exam exam = examService.oneDetail(username, bankId);
         result.setCode(200);
         result.setData(exam);
         return result;

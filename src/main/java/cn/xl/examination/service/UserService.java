@@ -25,7 +25,7 @@ public interface UserService extends IService<User> {
 
     Integer deleteById(Integer id);
 
-    void editUser(Integer id,String username, String password, String name, String tel, Integer roleId);
+    void editUser(Integer id,String username, String password, String name, String tel,Integer major, Integer roleId);
 
     PageInfo<User> searchAllUser(String username, String name, String tel,Integer pageNum,Integer pageSize);
 

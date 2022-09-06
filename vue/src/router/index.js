@@ -97,11 +97,12 @@ const routes = [
     name: '添加试题',
     component: () => import('../views/testquestionsAdd.vue')
   },
-
-
-
+  {
+    path:'/testquestionsEdit/*',
+    name:"试题详情",
+    component: () => import('../views/testquestionsEdit.vue')
+  },
 ]
-
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,

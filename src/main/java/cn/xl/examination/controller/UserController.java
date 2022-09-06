@@ -89,6 +89,7 @@ public class UserController extends ApiController {
                        String password,
                        String name,
                        String tel,
+                       String major,
                        String roleId,
                        @AuthenticationPrincipal UserDetails userDetails) {
         Result result = new Result();
@@ -105,12 +106,12 @@ public class UserController extends ApiController {
             result.setPathError();
             return result;
         }
-        if(roleId.equals("管理员")){
+        if (roleId.equals("管理员")) {
             roleId = "1";
-        }else if(roleId.equals("用户")){
+        } else if (roleId.equals("用户")) {
             roleId = "10";
         }
-        log.debug("密码"+password);
+        log.debug("密码" + password);
         if (password != null) {
             if (!password.trim().matches("^[0-9a-zA-z._]{6,12}$")) {
                 result.setPathError();
@@ -118,8 +119,8 @@ public class UserController extends ApiController {
             }
             password = passwordEncoder.encode(password);
         }
-            log.debug("这里是用户信息:" + id + "," + username + "," + password + "," + name + "," + tel + "," + roleId);
-            userService.editUser(id, username, password, name, tel, Integer.valueOf(roleId));
+        log.debug("这里是用户信息:" + id + "," + username + "," + password + "," + name + "," + tel + "," + major + "," + roleId);
+        userService.editUser(id, username, password, name, tel, Integer.valueOf(major),Integer.valueOf(roleId));
 
         result.setSuccess(userDetails);
         result.setMsg("更新成功");
@@ -162,16 +163,17 @@ public class UserController extends ApiController {
         result.setMsg("注册成功");
         return result;
     }
+
     @PostMapping("/enable")
     @PreAuthorize("hasAuthority('/user/*')")
-    public Result enableUser(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+    public Result enableUser(@AuthenticationPrincipal UserDetails userDetails, Integer id) {
         Result result = new Result();
-        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
             result.setAuthError();
             return result;
         }
         Integer i = userService.enableUser(id);
-        if (i!=1){
+        if (i != 1) {
             result.setDataBaseError();
             return result;
         }
@@ -179,6 +181,7 @@ public class UserController extends ApiController {
         result.setMsg("操作启用用户成功");
         return result;
     }
+
     @GetMapping("/checkPage")
     @PreAuthorize("hasAuthority('/user/*')")
     public Result AllCheckUser(Integer pageNum, Integer pageSize) {
@@ -188,6 +191,7 @@ public class UserController extends ApiController {
         result.setData(userService.AllCheckUser(pageNum, pageSize));
         return result;
     }
+
     @GetMapping("/checkSearch")
     @PreAuthorize("hasAuthority('/user/*')")
     public Result checkSearch(String username, String name, String tel, Integer pageNum, Integer pageSize) {
@@ -205,16 +209,17 @@ public class UserController extends ApiController {
         result.setData(userService.searchAllCheckUser(username, name, tel, pageNum, pageSize));
         return result;
     }
+
     @PostMapping("/check")
     @PreAuthorize("hasAuthority('/user/*')")
-    public Result checkUser(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+    public Result checkUser(@AuthenticationPrincipal UserDetails userDetails, Integer id) {
         Result result = new Result();
-        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
             result.setAuthError();
             return result;
         }
         Integer checkUser = userService.checkUser(id);
-        if (checkUser != 1){
+        if (checkUser != 1) {
             result.setDataBaseError();
             return result;
         }

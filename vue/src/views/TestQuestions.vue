@@ -26,7 +26,7 @@
             <el-col :span="4"
             >
               <el-input
-                  v-model="questionContxt"
+                  v-model="questionContext"
                   placeholder="请输入内容"
                   @click.native="handleClick"
               ></el-input>
@@ -54,46 +54,8 @@
 
           </el-col
           >
-
-          <el-col style="float: right" :span="4">
-            <el-button icon="el-icon-upload2" @click="dialogVisible = true"
-            >导入
-            </el-button
-            >
-            <el-button icon="el-icon-download">导出</el-button>
-          </el-col>
         </el-row>
       </div>
-      <el-dialog
-          title="导入试题"
-          :visible.sync="dialogVisible"
-          width="40%"
-          :before-close="handleClose"
-      >
-        <el-upload
-            style="margin-right: 20px; display: inline-block"
-            action="#"
-            :show-file-list="false"
-            accept=".xlsx"
-            :on-success="handExcelImportSuccess"
-        >
-          <el-button type="primary" class="ml-5">上传导入</el-button>
-        </el-upload>
-        <!-- <el-button type="primary">上传导入</el-button> -->
-        <el-upload
-            style="margin-right: 20px; display: inline-block"
-            action="#"
-            :show-file-list="false"
-            accept=".xlsx"
-            :on-success="handExcelImportSuccess"
-        >
-          <el-button type="warning" @click="compontenimport"
-          >下载导入模板
-          </el-button
-          >
-        </el-upload>
-        <!-- <el-button type="warning" @click="compontenimport">下载导入模板</el-button> -->
-      </el-dialog>
       <el-table
           max-height="470"
           ref="multipleTable"
@@ -103,7 +65,7 @@
           :data="questionList"
           style="width: 100%"
       >
-        <el-table-column label="题目类型"  prop="type" min-width="30%">
+        <el-table-column label="题目类型" prop="type" min-width="30%" :formatter="stateFormat">
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           <!-- {{type}} -->
         </el-table-column>
@@ -114,8 +76,8 @@
         <el-table-column prop="solution" label="答案" min-width="60%"></el-table-column>
         <el-table-column prop="url" label="图片" width="80">
           <template slot-scope="scope">
-            <div class="block" >
-              <el-image :key="scope.row.url" :src="scope.row.url"  style="width: 80px; height: 50px"
+            <div class="block">
+              <el-image :key="scope.row.url" :src="scope.row.url" style="width: 80px; height: 50px"
                         fit="fill" :preview-src-list="[scope.row.url]">
                 <div slot="error" class="image-slot">
                   <i class="el-icon-picture-outline"></i>
@@ -132,10 +94,10 @@
             show-overflow-tooltip
         >
         </el-table-column>
-        <el-table-column prop="userId" label="创建人" ></el-table-column>
-        <el-table-column label="操作" width="200" align="center" >
+        <el-table-column prop="userId" label="创建人"></el-table-column>
+        <el-table-column label="操作" width="200" align="center">
           <template slot-scope="scope">
-            <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
+            <el-button type="success" @click="handleEdit(scope.row.id)">编辑 <i class="el-icon-edit"></i></el-button>
             <el-popconfirm
                 class="ml-5"
                 confirm-button-text='确定'
@@ -176,17 +138,15 @@ export default {
   name: "Home",
   data() {
     return {
-      prop:[{url:""}],
-      questionList:[],
+      prop: [{url: ""}],
+      questionList: [],
       dialogFormVisible: false,
-      dialogVisible: false,
-      form: {
-      },
+      form: {},
       add: {},
       total: 30,
       pageSize: 10,
       pageNum: 1,
-      region:"",
+      region: "",
       // 题库列表
       questions: [
         {
@@ -202,7 +162,7 @@ export default {
           name: "判断题",
         },
       ],
-      questionContxt: "",
+      questionContext: "",
       questionName: "",
     };
   },
@@ -213,6 +173,18 @@ export default {
   },
 
   methods: {
+    stateFormat(row, column) {
+      if (row.type === "1") {
+        return "单选题";
+      } else if (row.type === "2") {
+        return "多选题";
+      } else if (row.type === "3") {
+        return "判断题";
+      }
+    },
+    handleEdit(id) {
+      this.$router.push("/testquestionsEdit/" + id)
+    },
     init() {
       this.request.get("/question/questions", {
         params: {
@@ -229,32 +201,41 @@ export default {
       })
     },
     select() {
-      // 搜索题库
-      console.log("搜索题库");
+      let questionName = this.questionName;
+      let region = this.region;
+      let questionContext = this.questionContext
+      if (questionName === "" && region === "" && questionContext === "") {
+        this.init();
+      } else {
+        this.request.get("/question/search", {
+          params: {
+            questionName: questionName,
+            region: region,
+            questionContext: questionContext,
+            pageNum: this.pageNum,
+            pageSize: this.pageSize
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            this.total = res.data.total;
+            this.questionList = res.data.list;
+          } else {
+            this.$message.error(res.msg);
+          }
+        })
+      }
     },
     handleSizeChange(val) {
-      console.log(val);
       this.pageSize = val;
+      if (this.questionName!=="" || this.region !=="" || this.questionContext)
       this.init();
     },
     handleCurrentChange(val) {
-      console.log(val);
       this.pageNum = val;
       this.init();
     },
-    compontenimport() {
-      console.log("下载导入");
-    },
-    handExcelImportSuccess() {
-    },
-    handleClose() {
-      this.dialogVisible = false
-    },
-    addSub() {
-      console.log(this.add);
-    },
     handleClick() {
-      this.questionContxt = ""
+      this.questionContext = ""
       this.questionName = ""
       this.region = ""
     }

@@ -82,36 +82,6 @@
         </el-pagination>
       </div>
     </el-main>
-
-    <!-- 添加 -->
-    <el-dialog title="试题添加" :visible.sync="dialogFormVisible" width="30%">
-      <el-form label-width="80px" size="small">
-        <el-form-item label="试题内容">
-          <el-input
-              type="textarea"
-              v-model="add.context"
-              autocomplete="off"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="试题答案">
-          <el-input v-model="add.true" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="试题类型">
-          <el-select v-model="add.type" placeholder="请选择活动区域">
-            <el-option
-                v-for="(item, i) in questions"
-                :key="i"
-                :label="item.name"
-                :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addSub">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -124,13 +94,11 @@ export default {
       jumpId: 0,
       ExamVisible: false,
       dialogFormVisible: false,
-      dialogVisible: false,
       form: {},
       add: {},
       total: 30,
       pageSize: 10,
       pageNum: 1,
-      questionContxt: "",
       questionName: "",
       questionList: [],
     };
@@ -196,25 +164,12 @@ export default {
       this.init();
     },
     handleSizeChange(val) {
-      console.log(val);
       this.pageSize = val;
       this.init()
     },
     handleCurrentChange(val) {
-      console.log(val);
       this.pageNum = val;
       this.init()
-    },
-    compontenimport() {
-      console.log("下载导入");
-    },
-    handExcelImportSuccess() {
-    },
-    handleClose() {
-      this.dialogVisible = false;
-    },
-    addSub() {
-      console.log(this.add);
     },
   },
 };

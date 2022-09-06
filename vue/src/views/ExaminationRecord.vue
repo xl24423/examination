@@ -1,19 +1,19 @@
 <template>
   <div>
     <el-main style="min-width: 1050px">
-      <div style="margin-bottom: 20px">
+      <div style="margin-bottom: 20px" v-if="role==='1'">
         <el-row :span="24">
           <el-form ref="form" :model="form">
-            <el-col :span="3">
-              <el-form-item v-model="form.region">
-
-
-              </el-form-item>
+            <el-col :span="4" style="margin-right: 20px"
+            ><el-input
+                v-model="name"
+                placeholder="请输入答题人姓名"
+            ></el-input>
             </el-col>
             <el-col :span="4" style="margin-right: 20px"
             ><el-input
-                v-model="questionName"
-                placeholder="请输入答题人姓名"
+                v-model="questionBankName"
+                placeholder="请输入试卷名称"
             ></el-input>
             </el-col>
           </el-form>
@@ -23,7 +23,7 @@
 
           >
         </el-row>
-      </div>
+      </div  >
       <el-table
           ref="multipleTable"
           border
@@ -82,26 +82,33 @@ export default {
   name: "Home",
   data() {
     return {
-      dialogFormVisible: false,
-      dialogVisible: false,
+      role: "",
       form: {},
-      add: {},
-      total: 30,
+      total: 0,
       pageSize: 10,
       pageNum: 1,
-
-      questionContxt: "",
-      questionName: "",
+      questionBankName: "",
+      name: "",
       ExamList: [],
     };
   },
 
   created() {
+    this.roleCheck();
     // console.log("11");
     this.init();
   },
 
   methods: {
+    roleCheck(){
+      this.request.get("user/me").then(res=>{
+        if (res.code===200){
+          this.role = res.data.roleId;
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
     init() {
       this.request.get("/exam/myExam",{
         params:{
@@ -125,17 +132,10 @@ export default {
 
     },
     handleSizeChange(val) {
-      console.log(val);
       this.pageSize = val;
     },
     handleCurrentChange(val) {
-      console.log(val);
       this.current = val;
-    },
-
-    handExcelImportSuccess() {},
-    handleClose() {
-      this.dialogVisible = false;
     },
 
   },

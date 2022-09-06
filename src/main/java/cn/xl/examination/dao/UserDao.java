@@ -42,8 +42,8 @@ public interface UserDao extends BaseMapper<User> {
     @Delete("delete from user where id = #{id}")
     Integer deleteOne(Integer id);
 
-    @Update("update user set username=#{username},password=#{password},name=#{name},tel=#{tel},role_id=#{roleId} where id = #{id}")
-    void edit(Integer id, String username, String password, String name, String tel, Integer roleId);
+    @Update("update user set username=#{username},password=#{password},name=#{name},tel=#{tel},major_type=#{major},role_id=#{roleId} where id = #{id}")
+    void edit(Integer id, String username, String password, String name, String tel, Integer major,Integer roleId);
 
     @Select("select * from user where isCheck = 1 and username like CONCAT('%', #{username}, '%') or name like CONCAT('%', #{name}, '%') or tel like CONCAT('%', #{tel}, '%')  ")
     List<User> searchAllUser(String username, String name, String tel);
@@ -64,7 +64,7 @@ public interface UserDao extends BaseMapper<User> {
     List<User> searchAllCheckUser(String username, String name, String tel);
     @Update("update user set isCheck = 1 where id = #{id}")
     Integer checkUser(Integer id);
-    @Select("update user set username=#{username},name=#{name},tel=#{tel},role_id=#{roleId} where id = #{id}")
-    void editNotpassword(Integer id, String username, String name, String tel, Integer roleId);
+    @Select("update user set username=#{username},name=#{name},tel=#{tel},major_type=#{major},role_id=#{roleId} where id = #{id}")
+    void editNotpassword(Integer id, String username, String name, String tel, Integer major, Integer roleId);
 }
 

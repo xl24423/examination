@@ -112,7 +112,6 @@ export default {
   },
 
   created() {
-    // console.log("11");
     this.init();
   },
 
@@ -179,12 +178,10 @@ export default {
       this.init();
     },
     handleSizeChange(val) {
-      console.log(val);
       this.pageSize = val
       this.init();
     },
     handleCurrentChange(val) {
-      console.log(val);
       this.pageNum = val
       this.init();
     },

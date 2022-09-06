@@ -23,7 +23,9 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.ServerException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -94,8 +96,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         PageHelper.startPage(pageNum, pageSize);
         List<User> allUser = userDao.findAllUser();
         allUser = handMajor(allUser);
-        PageInfo<User> userPageInfo = new PageInfo<>(allUser);
-        return userPageInfo;
+        return convey(allUser);
     }
 
     @Override
@@ -109,11 +110,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     }
 
     @Override
-    public void editUser(Integer id, String username, String password, String name, String tel, Integer roleId) {
-        if (password == null){
-            userDao.editNotpassword(id, username , name, tel, roleId);
-        }else{
-            userDao.edit(id, username, password, name, tel, roleId);
+    public void editUser(Integer id, String username, String password, String name, String tel, Integer major, Integer roleId) {
+        if (password == null) {
+            userDao.editNotpassword(id, username, name, tel, major, roleId);
+        } else {
+            userDao.edit(id, username, password, name, tel, major, roleId);
         }
     }
 
@@ -122,7 +123,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
         PageHelper.startPage(pageNum, pageSize);
         List<User> allUser = userDao.searchAllUser(username, name, tel);
         allUser = handMajor(allUser);
-        return new PageInfo<>(allUser);
+        return convey(allUser);
     }
 
     @Override
@@ -136,17 +137,27 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public PageInfo<User> AllCheckUser(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<User> allUser = userDao.findAllCheckUser();
+        return convey(allUser);
+    }
+
+    private PageInfo<User> convey(List<User> allUser) {
+        List<Company> companies = companyDao.selectList(null);
+        Map<Integer, String> map = new HashMap<>();
+        for (Company c : companies) {
+            map.put(c.getId(), c.getName());
+        }
+        for (User u : allUser) {
+            u.setCompanyId(map.get(Integer.parseInt(u.getCompanyId())));
+        }
         allUser = handMajor(allUser);
-        PageInfo<User> userPageInfo = new PageInfo<>(allUser);
-        return userPageInfo;
+        return new PageInfo<>(allUser);
     }
 
     @Override
     public PageInfo<User> searchAllCheckUser(String username, String name, String tel, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<User> allUser = userDao.searchAllCheckUser(username, name, tel);
-        allUser = handMajor(allUser);
-        return new PageInfo<>(allUser);
+        return convey(allUser);
     }
 
     @Override

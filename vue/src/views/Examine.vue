@@ -19,6 +19,8 @@
       <el-table-column prop="tel" label="电话" width="110"></el-table-column>
       <el-table-column prop="roleId" label="角色" width="100"></el-table-column>
       <el-table-column prop="majorType" label="专业"></el-table-column>
+      <el-table-column prop="gender" label="性别" :formatter="stateFormat" width="50"></el-table-column>
+      <el-table-column prop="companyId" label="公司"></el-table-column>
       <el-table-column prop="certificate" label="证书" width="80">
         <template slot-scope="scope">
           <div class="block" >
@@ -91,6 +93,13 @@ export default {
     this.load()
   },
   methods: {
+    stateFormat(row,column){
+        if (row.gender==="1"){
+          return "男";
+        }else{
+          return "女";
+        }
+    },
     load() {
       this.request.get("/user/checkPage", {
         params: {

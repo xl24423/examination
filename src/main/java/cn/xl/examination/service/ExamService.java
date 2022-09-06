@@ -26,5 +26,6 @@ public interface ExamService extends IService<Exam> {
     PageInfo<Exam> myExam(User user, Integer pageNum, Integer pageSize);
 
     Exam oneDetail(String username, Integer bankId);
+
 }
 

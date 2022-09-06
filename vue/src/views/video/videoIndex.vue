@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <el-button style="margin:10px" type="primary" @click="$router.push('/videoinsert')"><i class="el-icon-plus"></i>
+    <el-button style="margin:10px" type="primary" @click="$router.push('/videoinsert')" v-if="roleId==='1'"><i class="el-icon-plus"></i>
       添加视频
     </el-button>
     <el-row>
@@ -60,7 +60,7 @@
 export default {
   data() {
     return {
-      isPlay:true,
+      roleId: "",
       total: 0,
       list: [],
       pageNum: 1,
@@ -73,6 +73,11 @@ export default {
     this.loadAllVideo();
   },
   methods: {
+    me(){
+      this.request.get("/user/me").then(res=>{
+        this.roleId = res.data.roleId;
+      })
+    },
     loadAllVideo() {
       this.request.get("/resources/getAll", {
         params: {

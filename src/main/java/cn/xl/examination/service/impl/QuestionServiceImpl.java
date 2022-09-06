@@ -1,6 +1,7 @@
 package cn.xl.examination.service.impl;
 
 import cn.xl.examination.dao.*;
+import cn.xl.examination.entity.QuestionBank;
 import cn.xl.examination.entity.QuestionImage;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.exception.ServiceException;
@@ -18,8 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * (Question)表服务实现类
@@ -112,26 +112,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
     public PageInfo<Question> getAllQuestions(Integer pageNum,Integer pageSize) {
         PageHelper.startPage(pageNum,pageSize);
         List<Question> questions = questionDao.selectAllQuestions();
-        for (Question q : questions){
-            switch (q.getType()) {
-                case "1":
-                    q.setType("单选题");
-                    break;
-                case "2":
-                    q.setType("多选题");
-                    break;
-                case "3":
-                    q.setType("判断题");
-                    break;
-            }
-            String questionName = questionBankDao.backQuestionBankName(q.getQuestionBankId());
-            q.setQuestionBankId(questionName);
-            String username = userDao.backUserName(q.getUserId());
-            q.setUserId(username);
-            String url = questionImageDao.selectUrl(q.getId());
-            q.setUrl(url);
-        }
-        return new PageInfo<>(questions);
+        return convey(questions);
     }
 
     @Override
@@ -152,6 +133,34 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
     @Override
     public Question[] backQuestionsDetails(Integer id) {
         return questionDao.backQuestionsDetails(id);
+    }
+
+    @Override
+    public PageInfo<Question> searchAllQuestions(String questionName, String region, String questionContext, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Question> questions = new ArrayList<>();
+        if (!questionName.equals("")){
+            List<QuestionBank> banks = questionBankDao.nameBlurSearch(questionName);
+            for (QuestionBank b : banks){
+                questions.addAll(Arrays.asList(questionDao.selectByQuestionBankId(b.getId())));
+            }
+        }else if (!region.equals("")){
+            questions = questionDao.selectByRegion(region);
+        }else if (!questionContext.equals("")){
+            questions = questionDao.selectByQuestionContext(questionContext);
+        }
+        return convey(questions);
+    }
+    private PageInfo<Question> convey(List<Question> questions){
+        List<QuestionBank> allQuestionBank = questionBankDao.findAllQuestionBank();
+        Map<Integer,String> map = new HashMap<>();
+        for (QuestionBank qb : allQuestionBank){
+            map.put(qb.getId(),qb.getName());
+        }
+        for (Question q : questions){
+            q.setQuestionBankId(map.get(Integer.parseInt(q.getQuestionBankId())));
+        }
+        return new PageInfo<>(questions);
     }
 }
 

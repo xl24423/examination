@@ -10,16 +10,6 @@
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
 
-    <div style="margin: 10px 0">
-      <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
-      <el-upload
-          action="https://192.168.5.153:9090/user/import" :show-file-list="false" accept=".xlsx"
-          :on-success="handExcelImportSuccess" style="display:inline-block">
-        <el-button type="primary" class="ml-5">导入 <i class="el-icon-bottom"></i></el-button>
-      </el-upload>
-      <el-button type="primary" @click="exp" class="ml-5"> 导出 <i class="el-icon-top"></i></el-button>
-    </div>
-
     <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'" max-height="480">
       <el-table-column prop="id" label="ID" width="50"></el-table-column>
       <el-table-column prop="username" label="用户名" width="100"></el-table-column>
@@ -27,6 +17,8 @@
       <el-table-column prop="tel" label="电话" width="110"></el-table-column>
       <el-table-column prop="roleId" label="角色" width="100"></el-table-column>
       <el-table-column prop="majorType" label="专业"></el-table-column>
+      <el-table-column prop="gender" label="性别" :formatter="stateFormat" width="50"></el-table-column>
+      <el-table-column prop="companyId" label="公司"></el-table-column>
       <el-table-column prop="certificate" label="证书" width="80">
         <template slot-scope="scope">
           <div class="block" >
@@ -107,7 +99,7 @@
         </el-form-item>
         <el-form-item label="专业" prop="major" required>
           <el-select v-model="form.major" autocomplete="off">
-            <el-option :label="m.major" :value="m.major" v-for="m in majors"></el-option>
+            <el-option :label="m.major" :value="m.id" v-for="m in majors"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -180,6 +172,13 @@ export default {
     this.initMajor();
   },
   methods: {
+    stateFormat(row,column){
+      if (row.gender==="1"){
+        return "男";
+      }else{
+        return "女";
+      }
+    },
     initMajor() {
       this.request.get("/major/allMajor").then(res => {
         if (res.code === 200) {
@@ -240,10 +239,6 @@ export default {
         }
       })
     },
-    handleAdd() {
-      this.dialogFormVisible = true
-      this.form = {}
-    },
     handleEdit(row) {
       this.form = row
       this.dialogFormVisible = true
@@ -293,13 +288,6 @@ export default {
         }
         this.load();
       })
-    },
-    exp() {
-      this.request.get("/user/export?token=" + this.token)//导出
-    },
-    handExcelImportSuccess() {
-      this.$message.success("导入成功")
-      this.load()
     },
   }
 }

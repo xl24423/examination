@@ -30,5 +30,7 @@ public interface QuestionService extends IService<Question> {
     Question[] countScore(Integer bankId);
 
     Question[] backQuestionsDetails(Integer id);
+
+    PageInfo<Question> searchAllQuestions(String questionName, String region, String questionContext, Integer pageNum, Integer pageSize);
 }
 

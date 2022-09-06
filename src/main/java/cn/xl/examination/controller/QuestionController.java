@@ -271,5 +271,18 @@ public class QuestionController extends ApiController {
         result.setData(questionVOS);
         return result;
     }
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('/question/*')")
+    public Result search(@AuthenticationPrincipal UserDetails userDetails, String questionName,String region,String questionContext, Integer pageNum, Integer pageSize){
+        Result result = new Result();
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")) {
+            result.setAuthError();
+            return result;
+        }
+        PageInfo<Question> questionPageInfo = questionService.searchAllQuestions(questionName,region,questionContext,pageNum,pageSize);
+        result.setSuccess(userDetails);
+        result.setData(questionPageInfo);
+        return result;
+    }
 }
 

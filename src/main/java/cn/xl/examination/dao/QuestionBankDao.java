@@ -41,5 +41,7 @@ public interface QuestionBankDao extends BaseMapper<QuestionBank> {
     QuestionBank likeName(String name);
     @Select("select * from question_bank where isAction = 'true' and name like CONCAT('%', #{name}, '%')")
     QuestionBank actionExamSearch(String name);
+    @Select("select * from question_bank where name like CONCAT('%', #{name}, '%')")
+    List<QuestionBank> nameBlurSearch(String name);
 }
 

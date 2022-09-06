@@ -28,7 +28,7 @@
       </el-menu-item>
     </el-submenu>
 
-    <el-submenu index="2">
+    <el-submenu index="2" v-if="roleId==='1'">
       <template slot="title">
         <i class="el-icon-menu"></i>
         <span slot="title">系统管理</span>
@@ -43,7 +43,7 @@
       </el-menu-item>
     </el-submenu>
 
-    <el-submenu index="3">
+    <el-submenu index="3" v-if="roleId==='1'">
       <template slot="title">
         <i class="el-icon-s-help"></i>
         <span slot="title">考试管理</span>
@@ -68,7 +68,7 @@
         <i class="el-icon-mobile"></i>
         <span slot="title">视频列表</span>
       </el-menu-item>
-      <el-menu-item index="/videoinsert">
+      <el-menu-item index="/videoinsert" v-if="roleId==='1'">
         <i class="el-icon-folder-add"></i>
         <span slot="title">视频添加</span>
       </el-menu-item>
@@ -82,7 +82,7 @@
         <i class="el-icon-edit-outline"></i>
         <span slot="title">考试记录</span>
       </el-menu-item>
-      <el-menu-item index="Passlist">
+      <el-menu-item index="Passlist" v-if="roleId==='1'">
         <i class="el-icon-document"></i>
         <span slot="title">通过名单</span>
       </el-menu-item>
@@ -93,9 +93,24 @@
 <script>
 export default {
   name: "Aside",
+  data(){
+    return {
+      roleId:"",
+    }
+  },
   props: {
     isCollapse: Boolean,
     logoTextShow: Boolean
+  },
+  created(){
+    this.init();
+  },
+  methods:{
+    init(){
+      this.request.get("/user/me").then(res=>{
+        this.roleId = res.data.roleId;
+      })
+    }
   }
 }
 </script>
