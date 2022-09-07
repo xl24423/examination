@@ -2,6 +2,7 @@ package cn.xl.examination.controller;
 
 
 import cn.xl.examination.common.lang.Result;
+import cn.xl.examination.entity.Question;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.exception.ServiceException;
 import cn.xl.examination.service.QuestionService;
@@ -121,11 +122,11 @@ public class QuestionBankController extends ApiController {
     // 学生开始考试搜索
     @GetMapping("/actionExamSearch")
     @PreAuthorize("hasAuthority('/questionBank/action')")
-    public Result actionExamSearch(@AuthenticationPrincipal UserDetails userDetails,String name){
+    public Result actionExamSearch(@AuthenticationPrincipal UserDetails userDetails,Integer pageNum, Integer pageSize, String name){
         Result result = new Result();
-        QuestionBank questionBank = questionBankService.actionExamSearch(name);
+        PageInfo<QuestionBank> questionBanks = questionBankService.actionExamSearch(pageNum,pageSize,name);
         result.setSuccess(userDetails);
-        result.setData(questionBank);
+        result.setData(questionBanks);
         return result;
     }
     @GetMapping("/add")
@@ -171,9 +172,9 @@ public class QuestionBankController extends ApiController {
     }
     @GetMapping("/selectByName")
     @PreAuthorize("hasAuthority('/questionBank/*')")
-    public Result selectByName(String name){
+    public Result selectByName(Integer pageNum, Integer pageSize, String name){
         Result result = new Result();
-        QuestionBank questionBank = questionBankService.likeName(name);
+        PageInfo<QuestionBank> questionBank = questionBankService.likeName(pageNum,pageSize,name);
         result.setCode(200);
         result.setData(questionBank);
         return result;

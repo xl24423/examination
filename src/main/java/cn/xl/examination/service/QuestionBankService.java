@@ -33,8 +33,8 @@ public interface QuestionBankService extends IService<QuestionBank> {
 
     String getTime(Integer id);
 
-    QuestionBank likeName(String name);
+    PageInfo<QuestionBank> likeName(Integer pageNum, Integer pageSize, String name);
 
-    QuestionBank actionExamSearch(String name);
+    PageInfo<QuestionBank> actionExamSearch(Integer pageNum, Integer pageSize, String name);
 }
 

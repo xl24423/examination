@@ -6,7 +6,7 @@
           <el-form ref="form" :model="form">
             <el-col :span="4">
               <el-form-item>
-                <el-select v-model="region" placeholder="请选择活动区域" @click.native="handleClick">
+                <el-select v-model="region" placeholder="请选择题目类型" @click.native="handleClick">
                   <el-option
                       v-for="item in questions"
                       :label="item.name"
@@ -15,7 +15,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="4" style="margin-right: 40px"
+            <el-col :span="4" style="margin-right: 20px"
             >
               <el-input
                   v-model="questionName"
@@ -65,7 +65,7 @@
           :data="questionList"
           style="width: 100%"
       >
-        <el-table-column label="题目类型" prop="type" min-width="30%" :formatter="stateFormat">
+        <el-table-column label="题目类型" prop="type" min-width="30%" :formatter="stateFormat1">
           <!-- <template slot-scope="scope">{{ scope.row.date }}</template> -->
           <!-- {{type}} -->
         </el-table-column>
@@ -73,7 +73,7 @@
         <el-table-column prop="question" label="题目内容" min-width="200%"></el-table-column>
         <el-table-column prop="questionBankId" label="所属题库" min-width="50%"></el-table-column>
         <el-table-column prop="score" label="分值" min-width="30%"></el-table-column>
-        <el-table-column prop="solution" label="答案" min-width="60%"></el-table-column>
+        <el-table-column prop="solution" label="答案" min-width="60%"  :formatter="stateFormat2"></el-table-column>
         <el-table-column prop="url" label="图片" width="80">
           <template slot-scope="scope">
             <div class="block">
@@ -173,13 +173,22 @@ export default {
   },
 
   methods: {
-    stateFormat(row, column) {
+    stateFormat1(row, column) {
       if (row.type === "1") {
         return "单选题";
       } else if (row.type === "2") {
         return "多选题";
       } else if (row.type === "3") {
         return "判断题";
+      }
+    },
+    stateFormat2(row, column) {
+      if (row.solution === "true") {
+        return "对";
+      } else if (row.solution === "false") {
+        return "错";
+      } else  {
+        return row.solution;
       }
     },
     handleEdit(id) {
@@ -227,12 +236,19 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      if (this.questionName!=="" || this.region !=="" || this.questionContext)
-      this.init();
+      if (this.questionName!=="" || this.region !=="" || this.questionContext !==""){
+        this.select();
+      }else{
+        this.init();
+      }
     },
     handleCurrentChange(val) {
       this.pageNum = val;
-      this.init();
+      if (this.questionName!=="" || this.region !=="" || this.questionContext !==""){
+        this.select();
+      }else{
+        this.init();
+      }
     },
     handleClick() {
       this.questionContext = ""

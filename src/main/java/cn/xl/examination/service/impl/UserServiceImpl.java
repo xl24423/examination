@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * (User)表服务实现类
@@ -76,7 +77,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
                 setPassword(pwd).
                 setIsCheck(0).   // 未审核为 0
                 setCreatetime(LocalDateTime.now()).
-                setCertificateUrl("http://192.168.5.153:9090/static/certificate/" + newName).
+                setCertificateUrl("http://127.0.0.1:9090/static/certificate/" + newName).
                 setInviteCode(registerVO.getInvite()).
                 setCompanyId(String.valueOf(company.getId())).
                 setMajorType(registerVO.getMajor()).
@@ -142,7 +143,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     private PageInfo<User> convey(List<User> allUser) {
         List<Company> companies = companyDao.selectList(null);
-        Map<Integer, String> map = new HashMap<>();
+        Map<Integer, String> map = new ConcurrentHashMap<>();
         for (Company c : companies) {
             map.put(c.getId(), c.getName());
         }
@@ -170,20 +171,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
 
     public List<User> handMajor(List<User> allUser) {
         List<Major> allMajor = majorDao.getAllMajor();
-        for (User u : allUser) {
-            if (u.getRoleId().equals("1")) {
-                u.setRoleId("管理员");
-            } else if (u.getRoleId().equals("10")) {
-                u.setRoleId("用户");
-            }
-            if (u.getMajorType() != null) {
-                for (Major m : allMajor) {
-                    if (u.getMajorType().equals(String.valueOf(m.getId()))) {
-                        u.setMajorType(m.getMajor());
-                    }
-                }
-            }
-        }
         return allUser;
     }
 }

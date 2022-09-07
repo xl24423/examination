@@ -21,6 +21,7 @@ import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * (Question)表控制层
@@ -58,6 +60,15 @@ public class QuestionController extends ApiController {
                               String type,
                               String bankId,
                               String questionContent) {
+        return convey(request,userDetails,analysis,score,type,bankId,questionContent);
+    }
+    private Result convey(HttpServletRequest request,
+                          @AuthenticationPrincipal UserDetails userDetails,
+                          String analysis,
+                          String score,
+                          String type,
+                          String bankId,
+                          String questionContent){
         Result result = new Result();
         User user = userService.getUserByUsername(userDetails.getUsername());
         if (!user.getRoleId().equals("1")) {
@@ -97,6 +108,21 @@ public class QuestionController extends ApiController {
         result.setSuccess(userDetails);
         result.setData(n);
         return result;
+    }
+
+    @PostMapping("/questionEdit")
+    @PreAuthorize("hasAuthority('/question/*')")
+    @Transactional
+    public Result questionEdit(HttpServletRequest request,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              String id,
+                              String analysis,
+                              String score,
+                              String type,
+                              String bankId,
+                              String questionContent) {
+        questionService.deleteByQuestionId(Integer.parseInt(id));
+        return convey(request,userDetails,analysis,score,type,bankId,questionContent);
     }
 
     @Value("${image-path}")
@@ -142,7 +168,7 @@ public class QuestionController extends ApiController {
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://192.168.5.153:9090/static/image/" + path + "/" + name;
+        String url = "http://127.0.0.1:9090/static/image/" + path + "/" + name;
         log.debug("回显图片的路径为:{}", url);
         QuestionImage questionImage = new QuestionImage().setQuestionId(id).setImageUrl(url);
         Integer i = questionService.postResource(questionImage);
@@ -164,7 +190,6 @@ public class QuestionController extends ApiController {
             return result;
         }
         PageInfo<Question> questionPageInfo = questionService.getAllQuestions(pageNum, pageSize);
-
         result.setSuccess(userDetails);
         result.setData(questionPageInfo);
         return result;
@@ -219,7 +244,7 @@ public class QuestionController extends ApiController {
         List<QuestionVO> questionVOS = new ArrayList<>(questions.length);
         String url;
         List<Answer> answers = answerDao.selectByIdAndUserId(id,userService.getUserByUsername(userDetails.getUsername()).getId());
-        Map<Integer,String> map = new HashMap<>();
+        Map<Integer,String> map = new ConcurrentHashMap<>();
         for (Answer answer : answers) {
             map.put(Integer.valueOf(answer.getQuestionId()),answer.getUserAnswer());
         }
@@ -282,6 +307,15 @@ public class QuestionController extends ApiController {
         PageInfo<Question> questionPageInfo = questionService.searchAllQuestions(questionName,region,questionContext,pageNum,pageSize);
         result.setSuccess(userDetails);
         result.setData(questionPageInfo);
+        return result;
+    }
+    @GetMapping("/searchOne")
+    @PreAuthorize("hasAuthority('/question/*')")
+    public Result searchOne(@AuthenticationPrincipal UserDetails userDetails, Integer id){
+        Result result = new Result();
+        Question question = questionService.searchOne(id);
+        result.setCode(200);
+        result.setData(question);
         return result;
     }
 }

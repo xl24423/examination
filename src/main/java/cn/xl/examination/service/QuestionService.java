@@ -32,5 +32,9 @@ public interface QuestionService extends IService<Question> {
     Question[] backQuestionsDetails(Integer id);
 
     PageInfo<Question> searchAllQuestions(String questionName, String region, String questionContext, Integer pageNum, Integer pageSize);
+
+    Question searchOne(Integer id);
+
+    void deleteByQuestionId(int parseInt);
 }
 

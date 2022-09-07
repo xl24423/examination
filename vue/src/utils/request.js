@@ -1,7 +1,7 @@
 import axios from 'axios'
 import user from "../views/User"
 const request = axios.create({
-    baseURL: 'http://192.168.5.153:9090',
+    baseURL: 'http://127.0.0.1:9090',
     timeout: 5000
 })
 

@@ -12,7 +12,7 @@
           </el-col>
           <el-col :span="3" style="margin: 0 20px"
           >
-            <el-button type="primary" icon="el-icon-question" @click="search(questionName)">搜索
+            <el-button type="primary" icon="el-icon-question" @click="search()">搜索
             </el-button>
             <el-button type="warning" @click="reset">重置</el-button>
           </el-col
@@ -55,7 +55,6 @@
       <div class="block" style="margin-top:10px;">
         <!-- <span class="demonstration">完整功能</span> -->
         <el-pagination
-            :disabled="questionName!==''"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
@@ -164,7 +163,6 @@ export default {
           id: id,
         }
       }).then(res => {
-        console.log(res)
         if (res.code === 200) {
           this.$message.success("删除成功")
           this.init();
@@ -173,17 +171,25 @@ export default {
         }
       })
     },
-    reset(){
+    reset() {
       this.questionName = "";
       this.init();
     },
     handleSizeChange(val) {
       this.pageSize = val
-      this.init();
+      if (this.questionName !== "") {
+        this.search();
+      } else {
+        this.init();
+      }
     },
     handleCurrentChange(val) {
       this.pageNum = val
-      this.init();
+      if (this.questionName !== "") {
+        this.search();
+      } else {
+        this.init();
+      }
     },
     addSub() {
       this.request.get("/user/me").then(res => {
@@ -208,18 +214,18 @@ export default {
         }
       })
     },
-    search(name) {
-      if (name!==""){
-        this.request.get("/questionBank/selectByName?name=" + name).then(res => {
-          if (res.code === 200){
-            this.questionList = [];
-            if (res.data !== null) {
-              this.questionList.push(res.data)
-              this.total = 1;
-            } else {
-              this.questionList = [];
-              this.total = 0;
-            }
+    search() {
+      if (this.questionName !== "") {
+        this.request.get("/questionBank/selectByName", {
+          params: {
+            pageNum: this.pageNum,
+            pageSize: this.pageSize,
+            name: this.questionName
+          }
+        }).then(res => {
+          if (res.code === 200) {
+              this.questionList = res.data.list;
+              this.total = res.data.total;
             let list = this.questionList;
             for (let i = 0; i < list.length; i++) {
               if (list[i].isAction === "true") {
@@ -230,12 +236,12 @@ export default {
                 list[i].isAction = "开启";
               }
             }
-          }else{
+          } else {
             this.$message.error(res.msg)
           }
         })
-      }else{
-       this.init();
+      } else {
+        this.init();
       }
     }
   },

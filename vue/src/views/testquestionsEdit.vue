@@ -9,9 +9,9 @@
           <el-select placeholder="请选择题库" v-model="form.bankId">
             <el-option
                 v-for="item in question_bank"
-                :label="item.name"
                 :value="item.id"
-            >{{ item.name }}
+                :label="item.name"
+            >
             </el-option
             >
           </el-select>
@@ -25,8 +25,8 @@
         </el-form-item>
         <el-form-item label="答案对错" v-if="form.type==='3'">
           <el-select v-model="form.solution">
-            <el-option label="对" :value="true"></el-option>
-            <el-option label="错" :value="false"></el-option>
+            <el-option label="对" :value="'true'" ></el-option>
+            <el-option label="错" :value="'false'"></el-option>
           </el-select>
         </el-form-item>
 
@@ -54,11 +54,9 @@
         <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
 
 
-
-
       </el-upload>
       <div style="padding-top: 20px">
-        <el-image :key="urls" :src="urls" style="width: 200px; height: 200px" fit="fill" >
+        <el-image :key="urls" :src="urls" style="width: 200px; height: 200px" fit="fill">
         </el-image>
         <span><button @click="delImage">删除</button></span>
       </div>
@@ -157,8 +155,9 @@
 export default {
   data() {
     return {
+      id: "",
       files: [],
-      urls:"http://192.168.5.153:9090/static/wjz.jpg",
+      urls: "http://127.0.0.1:9090/static/wjz.jpg",
       option: [
         {
           label: "A",
@@ -183,31 +182,111 @@ export default {
         score: "",
         solution: "",
       },
-      tableData: [
-        {
-          type: false,
-          content: "",
-          option: "",
-        },
-      ],
+      tableData: [],
     };
   },
   methods: {
-    delImage(){
+    init() {
+      this.request.get("/questionBank/getAllQuestionBank").then(res => {
+        this.question_bank = res.data;
+        console.log(this.question_bank)
+        this.id = location.pathname.split("/")[2]
+        this.request.get("/question/searchOne?id=" + this.id).then(res => {
+          this.$set(this.form, "bankId", Number(res.data.questionBankId))
+          this.$set(this.form, "analysis", res.data.questionAnalysis)
+          this.$set(this.form, "content", res.data.question)
+          this.$set(this.form, "type", res.data.type)
+          this.$set(this.form, "score", res.data.score)
+          this.$set(this.form, "solution", res.data.solution)
+
+          if (res.data.url !== null) {
+            this.$set(this, "urls", res.data.url)
+          }
+          if (res.data.type === "1" || res.data.type === "2") {
+            let A = {};
+            A.type = false;
+            let B = {};
+            B.type = false;
+            let C = {};
+            C.type = false;
+            let D = {};
+            D.type = false;
+            if (res.data.type === "1") {
+              let sp = res.data.solution
+              switch (sp) {
+                case 'A': {
+                  A.type = true;
+                }
+                  break;
+                case 'B': {
+                  B.type = true;
+                }
+                  break;
+                case 'C': {
+                  C.type = true;
+                }
+                  break;
+                case 'D': {
+                  D.type = true;
+                }
+              }
+            } else if (res.data.type === "2") {
+              let sps = [];
+              sps = res.data.solution.split(",");
+              sps.forEach((i) => {
+                if (i === "A") {
+                  A.type = true;
+                }
+                if (i === "B") {
+                  B.type = true;
+                }
+                if (i === "C") {
+                  C.type = true;
+                }
+                if (i === "D") {
+                  D.type = true;
+                }
+              })
+            }
+            A.content = res.data.a;
+            A.option = "A"
+            B.content = res.data.b;
+            B.option = "B"
+            C.content = res.data.c;
+            C.option = "C"
+            D.content = res.data.d;
+            D.option = "D"
+            if (res.data.a !== "") {
+              this.tableData.push(A)
+            }
+            if (res.data.b !== "") {
+              this.tableData.push(B)
+            }
+            if (res.data.c !== "") {
+              this.tableData.push(C)
+            }
+            if (res.data.d !== "") {
+              this.tableData.push(D)
+            }
+          }
+        })
+
+      })
+    },
+    delImage() {
       this.files = [];
-      this.urls = "http://192.168.5.153:9090/static/wjz.jpg"
+      this.urls = "http://127.0.0.1:9090/static/wjz.jpg"
     },
     handlePreview(file) {
       if (this.files.length < 1) {
         if (file != null) {
           if (file.type != null && file.type.match("image/*")) {
             let form = new FormData();
-            form.append("file",file);
-            this.request.post("/resources/image",form).then(res=>{
+            form.append("file", file);
+            this.request.post("/resources/image", form).then(res => {
               this.files.push(file);
               this.urls = res.data;
             })
-
           } else {
             this.$message.error("文件只支持上传图片")
             return;
@@ -223,7 +302,6 @@ export default {
       }
 
     },
-
     add() {
       if (this.tableData.length < 4) {
         this.tableData.push({
@@ -235,7 +313,6 @@ export default {
         this.$message.error("最多新增4个选项");
       }
     },
-
     del(item) {
       var index = this.tableData.findIndex((i) => i == item);
       //判断索引值是否有效，当索引值为-1时说明没有符合条件的对象
@@ -250,7 +327,6 @@ export default {
       for (let i = 0; i < tableData.length; i++) {
         list.push(tableData[i].option);
       }
-
       if (this.form.bankId === "") {
         this.$message.error("请选择题库");
         return;
@@ -273,10 +349,11 @@ export default {
       }
       if (this.form.type === "3" && this.tableData.length > 0) {
         this.$message.error("判断题请删除选项")
+        this.form.solution='';
         this.tableData = [];
         return;
       }
-      if (this.form.type === "3" && this.form.solution ===""){
+      if (this.form.type === "3" && this.form.solution === "") {
         this.$message.error("请选择对错")
         return;
       }
@@ -300,16 +377,16 @@ export default {
           return;
         }
       }
-      if (this.form.type === "2"){
-        if (this.tableData.length < 3 || num < 2){
+      if (this.form.type === "2") {
+        if (this.tableData.length < 3 || num < 2) {
 
           this.$message.error("多选至少添加3个选项和两个答案")
           return;
         }
       }
 
-      if (this.form.type === "1"){
-        if (num!==1){
+      if (this.form.type === "1") {
+        if (num !== 1) {
           this.$message.error("单选只能有一个答案")
           return;
         }
@@ -323,18 +400,18 @@ export default {
         this.$message.error("分值只能为1-100数字")
         return;
       }
-
       let form = new FormData;
       form.append("analysis", this.form.analysis)
       form.append("bankId", this.form.bankId)
       form.append("questionContent", this.form.content)
       form.append("score", this.form.score)
       form.append("type", this.form.type)
-      if (this.form.solution !== "" && this.form.type==="3") {
+      form.append("id", this.id)
+      if (this.form.solution !== "" && this.form.type === "3") {
         form.append("solution", this.form.solution)
       }
       form.append("tableData", JSON.stringify(this.tableData))
-      this.request.post("/question/questionAdd", form
+      this.request.post("/question/questionEdit", form
       ).then(res => {
         if (res.code === 200) {
           let id = res.data;
@@ -352,9 +429,8 @@ export default {
               }
             })
           }
-          this.$message.success("新增成功")
-          this.form = {};
-          this.tableData = [];
+          this.$message.success("保存成功")
+          this.$router.push("/testquestions");
         } else {
           this.$message.error(res.msg)
         }
@@ -372,10 +448,12 @@ export default {
     },
   },
   created() {
-    this.tableData = []
-    this.request.get("/questionBank/getAllQuestionBank").then(res => {
-      this.question_bank = res.data;
-    })
+    this.tableData = [];
+    this.form = {};
+    this.files = [];
+    this.init();
+
+
   }
 };
 </script>

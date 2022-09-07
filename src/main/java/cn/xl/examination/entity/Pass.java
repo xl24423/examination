@@ -10,20 +10,23 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * (QuestionImage)表实体类
+ * (Pass)表实体类
  *
  * @author makejava
- * @since 2022-08-16 09:19:23
+ * @since 2022-09-07 10:47:47
  */
 @SuppressWarnings("serial")
-@EqualsAndHashCode
-@TableName("question_image")
-@Accessors(chain = true)
 @Data
-public class QuestionImage extends Model<QuestionImage> {
-    @TableField("question_id")
-    private Integer questionId;
-    @TableField("image_url")
-    private String imageUrl;
+@EqualsAndHashCode
+@TableName("operation_ticket")
+@Accessors(chain = true)
+public class Pass extends Model<Pass> {
+    //用户id
+    @TableField("user_id")
+    private Integer userId;
+    //合格证书
+    @TableField("qualify_url")
+    private String qualifyUrl;
+
     }
 

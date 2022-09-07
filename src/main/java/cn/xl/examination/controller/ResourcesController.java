@@ -83,7 +83,7 @@ public class ResourcesController extends ApiController {
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://192.168.5.153:9090/static/video/"+path+"/"+name;
+        String url = "http://127.0.0.1:9090/static/video/"+path+"/"+name;
         log.debug("回显图片的路径为:{}",url);
         Resources resources = new Resources();
         resources.setName(videoName).setContent(content).setAddress(url);
@@ -148,7 +148,7 @@ public class ResourcesController extends ApiController {
 
         }, milliseconds);
         result.setCode(200);
-        result.setData("http://192.168.5.153:9090/static/back/"+file.getOriginalFilename());
+        result.setData("http://127.0.0.1:9090/static/back/"+file.getOriginalFilename());
         return result;
     }
 }

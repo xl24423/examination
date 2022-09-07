@@ -14,7 +14,7 @@
           </el-form>
           <el-col :span="3" style="margin: 0 20px"
           >
-            <el-button type="primary" icon="el-icon-question" @click="select(questionName)"
+            <el-button type="primary" icon="el-icon-question" @click="select()"
             >搜索
             </el-button>
             <el-button type="warning" @click="reset">重置</el-button>
@@ -70,7 +70,6 @@
       <div class="block" style="margin-top: 10px">
         <!-- <span class="demonstration">完整功能</span> -->
         <el-pagination
-            :disabled="IsSearch"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="pageNum"
@@ -90,7 +89,6 @@ export default {
   name: "Home",
   data() {
     return {
-      IsSearch: false,
       jumpId: 0,
       ExamVisible: false,
       dialogFormVisible: false,
@@ -140,15 +138,19 @@ export default {
         }
       })
     },
-    select(questionName) {
-       if (questionName !==""){
-         this.IsSearch = true;
-         this.request.get("/questionBank/actionExamSearch?name="+questionName).then(res=>{
+    select() {
+       if (this.questionName !==""){
+         this.request.get("/questionBank/actionExamSearch",{
+           params: {
+             pageNum: this.pageNum,
+             pageSize: this.pageSize,
+             name: this.questionName
+           }
+         }).then(res=>{
             if (res.code === 200){
               if (res.data !== null){
-                this.total = 1;
-                this.questionList =[];
-                this.questionList.push(res.data);
+                this.total = res.data.total;
+                this.questionList = res.data.list;
               }else{
                 this.total = 0;
                 this.questionList = [];
@@ -165,11 +167,20 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      this.init()
+      if (this.questionName!==""){
+        console.log("我有错")
+        this.select();
+      }else{
+        this.init()
+      }
     },
     handleCurrentChange(val) {
       this.pageNum = val;
-      this.init()
+      if (this.questionName!==""){
+        this.select();
+      }else{
+        this.init()
+      }
     },
   },
 };

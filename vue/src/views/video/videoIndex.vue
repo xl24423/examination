@@ -71,11 +71,13 @@ export default {
   created() {
     this.token = localStorage.getItem("token");
     this.loadAllVideo();
+    this.me();
   },
   methods: {
     me(){
       this.request.get("/user/me").then(res=>{
         this.roleId = res.data.roleId;
+
       })
     },
     loadAllVideo() {

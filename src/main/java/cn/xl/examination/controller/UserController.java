@@ -89,7 +89,7 @@ public class UserController extends ApiController {
                        String password,
                        String name,
                        String tel,
-                       String major,
+                       String majorType,
                        String roleId,
                        @AuthenticationPrincipal UserDetails userDetails) {
         Result result = new Result();
@@ -119,8 +119,8 @@ public class UserController extends ApiController {
             }
             password = passwordEncoder.encode(password);
         }
-        log.debug("这里是用户信息:" + id + "," + username + "," + password + "," + name + "," + tel + "," + major + "," + roleId);
-        userService.editUser(id, username, password, name, tel, Integer.valueOf(major),Integer.valueOf(roleId));
+        log.debug("这里是用户信息:" + id + "," + username + "," + password + "," + name + "," + tel + "," + majorType + "," + roleId);
+        userService.editUser(id, username, password, name, tel, Integer.valueOf(majorType),Integer.valueOf(roleId));
 
         result.setSuccess(userDetails);
         result.setMsg("更新成功");

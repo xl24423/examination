@@ -95,27 +95,11 @@ export default {
 
   created() {
     this.roleCheck();
+    // console.log("11");
     this.init();
-    this.passCheck();
   },
 
   methods: {
-    passCheck(){
-      this.request.get("/exam/passCheck").then(res=>{
-        if (res.code===200){
-          if (res.data === true){
-            console.log("考试合格")
-            const h = this.$createElement;
-            this.$notify({
-              title: '考试全部合格',
-              message: h('i', { style: 'color: teal'}, '恭喜您已通过所有考试,考试证书已发放到您的账号,请前往首页查看')
-            });
-          }
-        }else{
-          this.$message.error(res.msg)
-        }
-      })
-    },
     roleCheck(){
       this.request.get("user/me").then(res=>{
         if (res.code===200){
@@ -132,28 +116,46 @@ export default {
           pageSize: this.pageSize
         }
       }).then(res=>{
-          if (res.code === 200){
-            if (res.data.total !== 0){
-              this.total = res.data.total;
-              this.ExamList = res.data.list;
-            }else {
-              this.$message.error("你还没有考试记录")
-            }
-          }else{
-            this.$message.error(res.msg)
+        if (res.code === 200){
+          if (res.data.total !== 0){
+            this.total = res.data.total;
+            this.ExamList = res.data.list;
+          }else {
+            this.$message.error("你还没有考试记录")
           }
+        }else{
+          this.$message.error(res.msg)
+        }
       })
     },
     select() {
-
+      if (this.questionBankName==="" && this.name === ""){
+        this.init();
+      }else{
+        this.request.get("/exam/recodeSearch",{
+          params:{
+            name : this.name,
+            questionBankName: this.questionBankName
+          }
+        })
+      }
     },
     handleSizeChange(val) {
       this.pageSize = val;
+      if (this.questionBankName!=="" || this.name !== ""){
+        this.select();
+      }else{
+        this.init();
+      }
     },
     handleCurrentChange(val) {
       this.current = val;
+      if (this.questionBankName!=="" || this.name !== ""){
+        this.select();
+      }else {
+        this.init();
+      }
     },
-
   },
 };
 </script>

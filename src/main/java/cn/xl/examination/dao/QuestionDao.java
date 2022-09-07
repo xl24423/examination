@@ -42,5 +42,7 @@ public interface QuestionDao extends BaseMapper<Question> {
     List<Question> selectByRegion(String region);
     @Select("select * from question where question like CONCAT('%',#{questionContext},'%')")
     List<Question> selectByQuestionContext(String questionContext);
+    @Delete("delete from question where id = #{id}")
+    void deleteByQuestionId(int id);
 }
 

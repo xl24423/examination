@@ -14,7 +14,7 @@
       <div class="answer-sheet-box">
         <!-- 标题 -->
         <div class="answer-sheet-title">答题卡</div>
-        <el-tag type="info" style="background-color: #909399;color: white" >未作答</el-tag>
+        <el-tag type="info" style="background-color: #909399;color: white">未作答</el-tag>
         <el-tag type="success" style="background-color: #67C23A;color: white">已作答</el-tag>
         <el-tag type="warning" style="background-color: #E6A23C; color: white">当前题目</el-tag>
         <div v-for="(item, index) in questionInfoList" :key="index">
@@ -151,7 +151,8 @@ export default {
     }
   },
   created() {
-
+    this.stopF5Refresh();
+    this.deleteQualify();
   },
   mounted() {
     window.addEventListener("load", () => {
@@ -189,7 +190,14 @@ export default {
         // 默认问题(右侧)
         this.currentQuestion = this.questionInfoList[0].questionlist[0]
         this.currentQuestion.index = 0
-        this.currentQuestion.cId = 1  // 默认选择题
+        if (this.questionInfoList[0].questionlist.length > 1) {
+          this.currentQuestion.cId = 1  // 默认选择题
+        } else if (this.questionInfoList[1].questionlist.length > 1) {
+          this.currentQuestion.cId = 2
+        } else {
+          this.currentQuestion.cId = 3
+        }
+
       } else {
         this.$message.error(res.msg)
       }
@@ -197,30 +205,30 @@ export default {
 
   },
   methods: {
-    // stopF5Refresh() {
-    //   document.onkeydown = function (e) {
-    //     var evt = window.event || e;
-    //     var code = evt.keyCode || evt.which;
-    //     //屏蔽F1---F11
-    //     if (code > 111 && code < 123) {
-    //       if (evt.preventDefault) {
-    //         evt.preventDefault();
-    //       } else {
-    //         evt.keyCode = 0;
-    //         evt.returnValue = false;
-    //       }
-    //     }
-    //   };
-    //   //禁止鼠标右键菜单
-    //   document.oncontextmenu = function () {
-    //     return false;
-    //   };
-    //   //阻止后退的所有动作，包括 键盘、鼠标手势等产生的后退动作。
-    //   history.pushState(null, null, window.location.href);
-    //   window.addEventListener("popstate", function () {
-    //  history.pushState(null, null, window.location.href);
-    //   });
-    // },
+    stopF5Refresh() {
+      document.onkeydown = function (e) {
+        var evt = window.event || e;
+        var code = evt.keyCode || evt.which;
+        //屏蔽F1---F11
+        if (code > 111 && code < 123) {
+          if (evt.preventDefault) {
+            evt.preventDefault();
+          } else {
+            evt.keyCode = 0;
+            evt.returnValue = false;
+          }
+        }
+      };
+      //禁止鼠标右键菜单
+      document.oncontextmenu = function () {
+        return false;
+      };
+      //阻止后退的所有动作，包括 键盘、鼠标手势等产生的后退动作。
+      history.pushState(null, null, window.location.href);
+      window.addEventListener("popstate", function () {
+        history.pushState(null, null, window.location.href);
+      });
+    },
     jump(item, index) {
       if (item !== 0 || index !== 0) {
         this.showLastBtn = true;
@@ -248,7 +256,6 @@ export default {
           }
         })
       })
-
       this.currentQuestionType = item
       this.questionInfoList[item].questionlist[index].type = "current"
       this.currentQuestion = this.questionInfoList[item].questionlist[index];
@@ -444,6 +451,21 @@ export default {
       this.answerVO.bankId = location.pathname.split("/")[2]
       this.request.post("/exam", JSON.stringify(this.answerVO), {headers: {'Content-Type': 'application/json;charset=UTF-8'}}).then(res => {
         if (res.code === 200) {
+          this.request.get("/exam/passCheck").then(res => {
+            if (res.code === 200) {
+              if (res.data === true) {
+                this.request.post("/pass").then(res => {
+                  if (res.code !== 200) {
+                    this.$message.error(res.msg)
+                  }
+                }).catch(e => {
+                  this.$message.error(e)
+                })
+              }
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
           this.$message.success(res.msg)
           this.$router.push("/ExaminationRecord")
         }
@@ -451,6 +473,27 @@ export default {
         this.$message.error(e.response.data.msg);
         this.$router.push("/onlineexamination")
       })
+
+    },
+    deleteQualify() {
+      console.log("删除考试1")
+      this.request.get("/pass/passCheck").then(res => {
+        if (res.code === 200) {
+          if (res.data === true) {
+            console.log("删除考试2")
+            this.request.get("/pass/del").then(res => {
+              if (res.code !== 200) {
+                this.$message.error(res.msg)
+              }
+            }).catch(e => {
+              this.$message.error(e.msg)
+            })
+          }
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+
     },
 // 获取答题状态
     getTagType(val) {
@@ -579,7 +622,7 @@ export default {
   overflow: hidden;
 }
 
-/deep/.el-button span {
+/deep/ .el-button span {
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;

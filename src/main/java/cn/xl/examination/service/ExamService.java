@@ -7,6 +7,7 @@ import cn.xl.examination.entity.Exam;
 import com.github.pagehelper.PageInfo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -27,5 +28,6 @@ public interface ExamService extends IService<Exam> {
 
     Exam oneDetail(String username, Integer bankId);
 
+    Boolean passCheck(String username);
 }
 

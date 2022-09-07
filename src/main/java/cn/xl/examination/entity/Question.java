@@ -47,10 +47,10 @@ public class Question extends Model<Question> {
     @TableField("D")
     private String D;
     //题库外键
-    @TableField("questionBankId")
+    @TableField("question_bank_id")
     private String questionBankId;
     //题目解析
-    @TableField("questionAnalysis")
+    @TableField("question_analysis")
     private String questionAnalysis;
     //创建时间
     @TableField("createtime")
@@ -62,12 +62,15 @@ public class Question extends Model<Question> {
     @TableField("score")
     private Integer score;
     //出题人id
-    @TableField("userId")
+    @TableField("user_id")
     private String userId;
+    //答案
     @TableField("solution")
     private String solution;
+    //题目图片路径
     @TableField(exist = false)
     private String url;
+    //用户回答
     @TableField(exist = false)
     private String userAnswer;
     }

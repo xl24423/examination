@@ -158,7 +158,7 @@ export default {
   data() {
     return {
       files: [],
-      urls:"http://192.168.5.153:9090/static/wjz.jpg",
+      urls:"http://127.0.0.1:9090/static/wjz.jpg",
       option: [
         {
           label: "A",
@@ -195,7 +195,7 @@ export default {
   methods: {
     delImage(){
       this.files = [];
-      this.urls = "http://192.168.5.153:9090/static/wjz.jpg"
+      this.urls = "http://127.0.0.1:9090/static/wjz.jpg"
     },
     handlePreview(file) {
       if (this.files.length < 1) {
@@ -353,6 +353,7 @@ export default {
             })
           }
           this.$message.success("新增成功")
+          this.files = [];
           this.form = {};
           this.tableData = [];
         } else {

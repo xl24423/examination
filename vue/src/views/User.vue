@@ -97,8 +97,8 @@
             <el-option label="用户" value="10"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="专业" prop="major" required>
-          <el-select v-model="form.major" autocomplete="off">
+        <el-form-item label="专业" prop="majorType" required>
+          <el-select v-model="form.majorType" autocomplete="off">
             <el-option :label="m.major" :value="m.id" v-for="m in majors"></el-option>
           </el-select>
         </el-form-item>
@@ -161,7 +161,7 @@ export default {
           {require: true, message: "请输入手机号", trigger: "blur"},
           {min: 11, max: 11, message: "请输入正确的手机号", pattern: /^1[3456789]\d{9}$/, trigger: 'blur'}
         ],
-        major: [{required: true, message: "请选择专业", trigger: "blur"},],
+        majorType: [{required: true, message: "请选择专业", trigger: "blur"},],
         roleId: [{required: true, message: "请选择角色", trigger: "blur"},],
       },
     }
@@ -241,6 +241,7 @@ export default {
     },
     handleEdit(row) {
       this.form = row
+      this.form.majorType = Number(this.form.majorType);
       this.dialogFormVisible = true
     },
     del(id) {

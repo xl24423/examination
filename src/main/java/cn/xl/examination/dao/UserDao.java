@@ -66,5 +66,7 @@ public interface UserDao extends BaseMapper<User> {
     Integer checkUser(Integer id);
     @Select("update user set username=#{username},name=#{name},tel=#{tel},major_type=#{major},role_id=#{roleId} where id = #{id}")
     void editNotpassword(Integer id, String username, String name, String tel, Integer major, Integer roleId);
+    @Select("select * from user where role_id = 1")
+    List<User> findAllAdmin();
 }
 

@@ -2,6 +2,7 @@ package cn.xl.examination.service.impl;
 
 import cn.xl.examination.dao.QuestionBankDao;
 import cn.xl.examination.dao.QuestionDao;
+import cn.xl.examination.entity.Question;
 import cn.xl.examination.entity.QuestionBank;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.exception.ServiceException;
@@ -19,6 +20,8 @@ import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * (Exam)表服务实现类
@@ -85,6 +88,31 @@ public class ExamServiceImpl extends ServiceImpl<ExamDao, Exam> implements ExamS
         Integer minute = Math.toIntExact((endTimestamp - startTimestamp) / 1000 / 60);
         exam.setMinute(minute);
         return exam;
+    }
+
+    @Override
+    public Boolean passCheck(String username) {
+        boolean isPass = true;
+        List<Exam> exams = examDao.myExam(username);
+        List<QuestionBank> questionBanks = questionBankDao.findAllUserQuestionBank();
+        if (exams.size() < questionBanks.size()){
+            return false;
+        }
+        Map<Integer, Integer> countMap = new ConcurrentHashMap<>();
+        for (QuestionBank qb : questionBanks){
+            Integer countScore = questionDao.countScore(qb.getId());
+            if (countScore==null){
+                countScore = 0;
+            }
+            countMap.put(qb.getId(), countScore*6/10);
+        }
+        for (Exam e : exams){
+            if (e.getCount() < countMap.get(e.getBankId())){
+                isPass = false;
+            }
+        }
+
+        return isPass;
     }
 }
 

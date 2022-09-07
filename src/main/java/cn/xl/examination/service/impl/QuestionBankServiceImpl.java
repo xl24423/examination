@@ -1,6 +1,7 @@
 package cn.xl.examination.service.impl;
 
 import cn.xl.examination.dao.QuestionDao;
+import cn.xl.examination.entity.Question;
 import cn.xl.examination.entity.User;
 import cn.xl.examination.exception.ServiceException;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -99,13 +100,23 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
     }
 
     @Override
-    public QuestionBank likeName(String name) {
-        return questionBankDao.likeName(name);
+    public PageInfo<QuestionBank> likeName(Integer pageNum, Integer pageSize, String name) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<QuestionBank> questionBanks = questionBankDao.likeName(name);
+        return new PageInfo<>(questionBanks);
     }
 
     @Override
-    public QuestionBank actionExamSearch(String name) {
-        return questionBankDao.actionExamSearch(name);
+    public PageInfo<QuestionBank> actionExamSearch(Integer pageNum, Integer pageSize, String name) {
+        PageHelper.startPage(pageNum,pageSize);
+
+        List<QuestionBank> questionBanks = questionBankDao.actionExamSearch(name);
+        for (QuestionBank q : questionBanks){
+            Integer integer = questionDao.countScore(q.getId());
+            q.setCount(String.valueOf(integer));
+            q.setPass(String.valueOf(integer*6/10));
+        }
+        return new PageInfo<>(questionBanks);
     }
 }
 

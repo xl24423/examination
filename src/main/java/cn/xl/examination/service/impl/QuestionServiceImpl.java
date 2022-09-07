@@ -20,6 +20,7 @@ import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * (Question)表服务实现类
@@ -41,6 +42,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
         String C = "";
         String D = "";
         String s = "";
+        Arrays.sort(myTable);
         if(myTable.length>1){
             for (TableDataVO data : myTable) {
                 if (data.getType() != null) {
@@ -58,9 +60,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
                 if (data.getOption().equals("D")) {
                     D = data.getContent();
                 }
-                s = answer.toString();
-                s = s.substring(1);
             }
+            s = answer.toString();
+            s = s.substring(1);
         }else{
             answer.append(myTable[0].getContent());
             s = answer.toString();
@@ -151,14 +153,39 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
         }
         return convey(questions);
     }
+
+    @Override
+    public Question searchOne(Integer id) {
+       Question question = questionDao.selectById(id);
+       question.setUrl(questionImageDao.selectUrl(question.getId()));
+       return question;
+    }
+
+    @Override
+    public void deleteByQuestionId(int id) {
+        questionDao.deleteByQuestionId(id);
+    }
+
     private PageInfo<Question> convey(List<Question> questions){
         List<QuestionBank> allQuestionBank = questionBankDao.findAllQuestionBank();
-        Map<Integer,String> map = new HashMap<>();
+        List<QuestionImage> allQuestionImage = questionImageDao.selectList(null);
+        List<User> allUsers = userDao.findAllAdmin();
+        Map<Integer,String> QuestionBankMap = new ConcurrentHashMap<>();
+        Map<Integer,String> QuestionImageMap = new ConcurrentHashMap<>();
+        Map<Integer,String> UserMap = new ConcurrentHashMap<>();
         for (QuestionBank qb : allQuestionBank){
-            map.put(qb.getId(),qb.getName());
+            QuestionBankMap.put(qb.getId(),qb.getName());
+        }
+        for (QuestionImage qi : allQuestionImage){
+            QuestionImageMap.put(qi.getQuestionId(),qi.getImageUrl());
+        }
+        for (User u : allUsers){
+            UserMap.put(u.getId(),u.getName());
         }
         for (Question q : questions){
-            q.setQuestionBankId(map.get(Integer.parseInt(q.getQuestionBankId())));
+            q.setQuestionBankId(QuestionBankMap.get(Integer.parseInt(q.getQuestionBankId())));
+            q.setUrl(QuestionImageMap.get(q.getId()));
+            q.setUserId(UserMap.get(Integer.parseInt(q.getUserId())));
         }
         return new PageInfo<>(questions);
     }

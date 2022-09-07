@@ -188,11 +188,9 @@ export default {
         this.currentQuestion = this.questionInfoList[0].questionlist[0]
         this.questionInfoList.forEach((item, index) => {
           item.questionlist.forEach((el, idx) => {
-            console.log(el.value)
             if (el.value !== "null") {
               el.type = 'answer'
             } else {
-              console.log("我变了")
               el.type = ''
             }
             if (index === 0 && idx ===0){

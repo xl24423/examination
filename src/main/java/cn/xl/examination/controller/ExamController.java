@@ -32,10 +32,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * (Exam)表控制层
@@ -79,8 +77,8 @@ public class ExamController extends ApiController {
         Integer sum = 0;  // 记录考试总分
         Answer[] answers = answerService.countScore(userService.getUserByUsername(userDetails.getUsername()).getId(), bankId);
         Question[] questions = questionService.countScore(bankId);
-        HashMap<Integer, String> map = new HashMap<>();
-        HashMap<Integer, Integer> scoreMap = new HashMap<>();
+        Map<Integer, String> map = new ConcurrentHashMap<>();
+        Map<Integer, Integer> scoreMap = new ConcurrentHashMap<>();
         for (Question q : questions) {
             map.put(q.getId(), q.getSolution());
             scoreMap.put(q.getId(), q.getScore());
@@ -124,6 +122,14 @@ public class ExamController extends ApiController {
         PageInfo<Exam> examPageInfo = examService.myExam(user, pageNum, pageSize);
         result.setSuccess(userDetails);
         result.setData(examPageInfo);
+        return result;
+    }
+    @GetMapping("/passCheck")
+    public Result passCheck(@AuthenticationPrincipal UserDetails userDetails) {
+        Result result = new Result();
+        Boolean aBoolean = examService.passCheck(userDetails.getUsername());
+        result.setSuccess(userDetails);
+        result.setData(aBoolean);
         return result;
     }
 
