@@ -76,7 +76,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionDao, Question> impl
                 setB(B).
                 setC(C).
                 setD(D).
-                setScore(Integer.valueOf(score)).
+                setScore(Float.valueOf(score)).
                 setSolution(s).
                 setUserId(userId).
                 setType(type);

@@ -166,7 +166,7 @@ export default {
     this.init();
   },
   mounted() {
-    let id = location.pathname.split("/")[3]
+    let id = this.$route.query.bankId
     this.starTime = new Date().getTime()
     this.request.get("/question/examRecode?id=" + id).then(res => {
       if (res.code === 200) {
@@ -208,8 +208,8 @@ export default {
   },
   methods: {
     init(){
-      let username = location.pathname.split("/")[2];
-      let bankId = location.pathname.split("/")[3];
+      let username = this.$route.query.username;
+      let bankId = this.$route.query.bankId;
       this.request.get("/exam/oneDetail",{
         params:{
           username: username,

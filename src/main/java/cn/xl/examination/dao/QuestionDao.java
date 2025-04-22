@@ -20,7 +20,7 @@ public interface QuestionDao extends BaseMapper<Question> {
     @Insert("insert into question values(#{id},#{question},#{A},#{B},#{C},#{D},#{questionBankId},#{questionAnalysis},#{createtime},#{type},#{score},#{userId},#{solution})")
     Integer addQuestion(Integer id, String question, String A, String B, String C, String D, String questionBankId,
                         String questionAnalysis, LocalDateTime createtime, String type,
-                        Integer score, String userId,String solution
+                        Float score, String userId,String solution
                         );
     @Select("select max(id) from question")
     int selectMaxId();
@@ -28,7 +28,7 @@ public interface QuestionDao extends BaseMapper<Question> {
     List<Question> selectAllQuestions();
     @Select("select sum(score) from question q left join question_bank qb on q.question_bank_id = qb.id where\n" +
             "qb.id = #{id}")
-    Integer countScore(Integer id);
+    Float countScore(Integer id);
     @Delete("delete from question where question_bank_id = #{id}")
     Integer deleteByQuestionBankId(Integer id);
     @Select("select q.id,q.question,q.a,q.b,q.c,q.d,q.type from question q left join question_bank qb on q.question_bank_id = qb.id where\n" +

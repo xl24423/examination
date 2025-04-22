@@ -16,7 +16,7 @@ public class QuestionVO {
     private String value;
     private OptionVO[] option;
     private String url;
-    private Integer score;
+    private Float score;
     private String analysis;
     private String solution;
 

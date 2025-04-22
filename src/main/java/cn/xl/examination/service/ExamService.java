@@ -20,7 +20,7 @@ public interface ExamService extends IService<Exam> {
 
     Boolean IsExam(String username, Integer bankId);
 
-    Integer post(Integer bankId, String username, LocalDateTime starTime, Integer count);
+    Integer post(Integer bankId, String username, LocalDateTime starTime, Float count);
 
     void delete(String username, Integer id);
 
@@ -29,5 +29,7 @@ public interface ExamService extends IService<Exam> {
     Exam oneDetail(String username, Integer bankId);
 
     Boolean passCheck(String username);
+
+    PageInfo<Exam> myPassExam(User user, Integer pageNum, Integer pageSize);
 }
 

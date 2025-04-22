@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +42,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamDao, Exam> implements ExamS
     }
 
     @Override
-    public Integer post(Integer bankId,String username, LocalDateTime starTime,Integer count) {
+    public Integer post(Integer bankId,String username, LocalDateTime starTime,Float count) {
         Exam exam = new Exam();
         exam.setBankId(bankId);
         exam.setStartdate(starTime);
@@ -70,13 +71,38 @@ public class ExamServiceImpl extends ServiceImpl<ExamDao, Exam> implements ExamS
         }
         for (Exam a : exams){
             QuestionBank questionBank = questionBankDao.selectById(a.getBankId());
+            float sum = questionDao.countScore(questionBank.getId());
             a.setExamName(questionBank.getName());
-            a.setSum(questionDao.countScore(questionBank.getId()));
+            a.setSum(sum);
         }
         PageInfo<Exam> pageInfo = new PageInfo<>(exams);
         return pageInfo;
     }
-
+    @Override
+    public PageInfo<Exam> myPassExam(User user, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Exam> exams;
+        if (user.getRoleId().equals("1")){
+            exams = examDao.AllExam();
+        }else{
+            exams = examDao.myExam(user.getUsername());
+        }
+        Iterator<Exam> iterator = exams.iterator();
+        while (iterator.hasNext()) {
+            Exam a = iterator.next();
+            QuestionBank questionBank = questionBankDao.selectById(a.getBankId()); // 查数据库
+            float sum = questionDao.countScore(questionBank.getId()); // 查数据库
+            float count = a.getCount();
+            if (count / sum < 0.6) {
+                iterator.remove(); // 删除不符合条件的
+            } else {
+                a.setExamName(questionBank.getName()); // 只修改符合条件的
+                a.setSum(sum);
+            }
+        }
+        PageInfo<Exam> pageInfo = new PageInfo<>(exams);
+        return pageInfo;
+    }
     @Override
     public Exam oneDetail(String username, Integer bankId) {
         Exam exam = examDao.oneDetail(username, bankId);
@@ -98,11 +124,11 @@ public class ExamServiceImpl extends ServiceImpl<ExamDao, Exam> implements ExamS
         if (exams.size() < questionBanks.size()){
             return false;
         }
-        Map<Integer, Integer> countMap = new ConcurrentHashMap<>();
+        Map<Integer, Float> countMap = new ConcurrentHashMap<>();
         for (QuestionBank qb : questionBanks){
-            Integer countScore = questionDao.countScore(qb.getId());
+            Float countScore = questionDao.countScore(qb.getId());
             if (countScore==null){
-                countScore = 0;
+                countScore = 0.0F;
             }
             countMap.put(qb.getId(), countScore*6/10);
         }
@@ -114,5 +140,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamDao, Exam> implements ExamS
 
         return isPass;
     }
+
+
 }
 

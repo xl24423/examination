@@ -74,11 +74,11 @@ public class ExamController extends ApiController {
         } else {
             throw new ServiceException("对不起,你已经考过这门考试");
         }
-        Integer sum = 0;  // 记录考试总分
+        float sum = 0;  // 记录考试总分
         Answer[] answers = answerService.countScore(userService.getUserByUsername(userDetails.getUsername()).getId(), bankId);
         Question[] questions = questionService.countScore(bankId);
         Map<Integer, String> map = new ConcurrentHashMap<>();
-        Map<Integer, Integer> scoreMap = new ConcurrentHashMap<>();
+        Map<Integer, Float> scoreMap = new ConcurrentHashMap<>();
         for (Question q : questions) {
             map.put(q.getId(), q.getSolution());
             scoreMap.put(q.getId(), q.getScore());
@@ -120,6 +120,15 @@ public class ExamController extends ApiController {
         Result result = new Result();
         User user = userService.getUserByUsername(userDetails.getUsername());
         PageInfo<Exam> examPageInfo = examService.myExam(user, pageNum, pageSize);
+        result.setSuccess(userDetails);
+        result.setData(examPageInfo);
+        return result;
+    }
+    @GetMapping("/myPassExam")
+    public Result myPassExam(@AuthenticationPrincipal UserDetails userDetails, Integer pageNum, Integer pageSize) {
+        Result result = new Result();
+        User user = userService.getUserByUsername(userDetails.getUsername());
+        PageInfo<Exam> examPageInfo = examService.myPassExam(user, pageNum, pageSize);
         result.setSuccess(userDetails);
         result.setData(examPageInfo);
         return result;

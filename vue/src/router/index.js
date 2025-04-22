@@ -70,7 +70,7 @@ const routes = [
         component: () => import('../views/Examine.vue')
       },
       {
-        path:'/ExaminationDetails/*',
+        path:'/ExaminationDetails',
         name:"考试详情",
         component: () => import('../views/ExaminationDetails.vue')
       },

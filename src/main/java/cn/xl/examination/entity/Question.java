@@ -60,7 +60,7 @@ public class Question extends Model<Question> {
     private String type;
     //得分
     @TableField("score")
-    private Integer score;
+    private Float score;
     //出题人id
     @TableField("user_id")
     private String userId;

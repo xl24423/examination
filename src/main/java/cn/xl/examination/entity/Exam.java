@@ -42,13 +42,13 @@ public class Exam extends Model<Exam> {
     private String username;
     //成绩
     @TableField("count")
-    private Integer count;
+    private Float count;
     //试卷名称
     @TableField(exist = false)
     private String examName;
     //试卷总分
     @TableField(exist = false)
-    private Integer sum;
+    private Float sum;
     //用时 / (分)
     @TableField(exist = false)
     private Integer minute;

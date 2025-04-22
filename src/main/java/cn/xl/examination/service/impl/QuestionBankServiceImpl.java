@@ -60,12 +60,12 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
         PageHelper.startPage(pageNum,pageSize);
         List<QuestionBank> questionBanks = questionBankDao.findAllUserQuestionBank();
         for (QuestionBank q : questionBanks){
-             Integer count = questionDao.countScore(q.getId());
+             Float count = questionDao.countScore(q.getId());
              if (count == null){
-                count = 0;
+                count = 0.0F;
              }
             q.setCount(String.valueOf(count));
-            Integer pass = count * 6 / 10;
+            Float pass = count * 6 / 10;
             q.setPass(String.valueOf(pass));
         }
         PageInfo<QuestionBank> pageInfo = new PageInfo<>(questionBanks);
@@ -85,9 +85,9 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
     @Override
     public QuestionBank selectOne(Integer id) {
         QuestionBank questionBank =  questionBankDao.selectById(id);
-        Integer count = questionDao.countScore(questionBank.getId());
+        Float count = questionDao.countScore(questionBank.getId());
         if (count == null){
-            count = 0 ;
+            count = 0.0F ;
         }
         questionBank.setCount(String.valueOf(count));
         questionBank.setPass(String.valueOf(count*6/10));
@@ -112,9 +112,9 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankDao, Questi
 
         List<QuestionBank> questionBanks = questionBankDao.actionExamSearch(name);
         for (QuestionBank q : questionBanks){
-            Integer integer = questionDao.countScore(q.getId());
-            q.setCount(String.valueOf(integer));
-            q.setPass(String.valueOf(integer*6/10));
+            Float sum = questionDao.countScore(q.getId());
+            q.setCount(String.valueOf(sum));
+            q.setPass(String.valueOf(sum*6/10));
         }
         return new PageInfo<>(questionBanks);
     }

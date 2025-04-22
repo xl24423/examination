@@ -50,7 +50,7 @@
           <template slot-scope="scope">
             <el-button
                 type="primary"
-                @click="$router.push('/ExaminationDetails/' + scope.row.username+'/'+scope.row.bankId)"
+                @click="$router.push('/ExaminationDetails?username=' + scope.row.username+'&bankId='+scope.row.bankId)"
             >
               <i class="el-icon-position"></i> 详情</el-button
             >
@@ -110,7 +110,7 @@ export default {
       })
     },
     init() {
-      this.request.get("/exam/myExam",{
+      this.request.get("/exam/myPassExam",{
         params:{
           pageNum: this.pageNum,
           pageSize: this.pageSize
