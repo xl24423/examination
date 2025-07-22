@@ -3,6 +3,10 @@ server:
   error:
     include-exception: true
     include-message: always
+aliyun:
+  oss:
+    access-key-id: ${OSS_ACCESS_KEY_ID}
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET}
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/examination?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
