@@ -72,9 +72,12 @@
 <script>
 import user from "./User"
 import qs from 'qs'
+const API_BASE_URL = 'http://s764c7d7.natappfree.cc'
 export default {
   name: "Login",
   data() {
+
+
     return {
       imageUrl: "",
       user: {},
@@ -99,14 +102,15 @@ export default {
     this.init()
   },
   methods: {
-    Reload() {
-      localStorage.setItem("codeId",Math.random())
-      let item = localStorage.getItem("codeId");
-      document.getElementById("CreateCheckCode").src = "http://127.0.0.1:9090/checkCode?codeId=" + item
-    },
     init() {
-      localStorage.setItem("codeId",Math.random())
-      this.imageUrl = "http://127.0.0.1:9090/checkCode?codeId="+localStorage.getItem("codeId");
+      const codeId = Math.random();
+      localStorage.setItem("codeId", codeId);
+      this.imageUrl = `/api/checkCode?codeId=${codeId}`; // 使用代理路径
+    },
+    Reload() {
+      const codeId = Math.random();
+      localStorage.setItem("codeId", codeId);
+      document.getElementById("CreateCheckCode").src = `/api/checkCode?codeId=${codeId}`;
     },
     login() {
       localStorage.removeItem("token")

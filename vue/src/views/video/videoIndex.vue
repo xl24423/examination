@@ -13,14 +13,14 @@
         <el-card :body-style="{ padding: '0px',}">
           <div>
             <!-- <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image"> -->
-            <video controls require :src="index.address+'?token='+token"
-                   style="width: 100%; height: 100%; object-fit: fill"
+            <video controls require :src="index.fileUrl+'?token='+token"
+                   style="width: 100%; height: 200px; object-fit: cover"
                    :id="'videobox'+index.id"
             >
             </video>
           </div>
           <div style="padding: 14px">
-            <span>视频名称:{{ index.name }}</span>
+            <span>视频名称:{{ index.fileName }}</span>
             <div class="bottom clearfix">
               <span class="text-sm-right">{{ index.content }}</span>
               <el-popconfirm
@@ -30,7 +30,7 @@
                   icon="el-icon-info"
                   icon-color="red"
                   title="您确定删除吗？"
-                  @confirm="deleteResource(index.id)"
+                  @confirm="deleteResource(index.objectKey)"
               >
                 <el-button type="danger" slot="reference" style="float:right">删除 <i class="el-icon-remove-outline"></i>
                 </el-button>
@@ -81,18 +81,20 @@ export default {
       })
     },
     loadAllVideo() {
-      this.request.get("/resources/getAll", {
+      this.request.get("/fileAddress/getAll", {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
         }
       }).then(res => {
         if (res.code === 200) {
-          if (res.data.total === 0 || res.data.total === null || res.data.total === undefined) {
+          console.log(res)
+          if (res.data.length === 0) {
             this.$message.error("该页面没有资源或服务器出错")
           }
-          this.total = res.data.total;
-          this.list = res.data.list
+          this.total = res.data.length;
+          this.list = res.data;
+          console.log(this.list)
         } else {
           this.$message.error(res.msg)
         }
@@ -109,8 +111,8 @@ export default {
       this.pageNum = pageNum
       this.loadAllVideo()
     },
-    deleteResource: function (id) {
-      this.request.get("/resources/delete?id=" + id).then(res => {
+    deleteResource: function (objectKey) {
+      this.request.get("/resources/delete?objectKey=" + objectKey).then(res => {
         if (res.code === 200) {
           this.$message.success(res.msg);
         } else {

@@ -1,5 +1,6 @@
 package cn.xl.examination.dao;
 
+import cn.xl.examination.entity.FileAddress;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import cn.xl.examination.entity.Resources;
 import org.apache.ibatis.annotations.Delete;
@@ -22,6 +23,7 @@ public interface ResourcesDao extends BaseMapper<Resources> {
     Integer insertOne(String address, String name, String content);
     @Select("select * from resources")
     List<Resources> findAllResource();
+
     @Delete("delete from resources where id = #{id}")
     Integer deleteByResourceId(Integer id);
 }

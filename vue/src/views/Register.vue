@@ -221,7 +221,7 @@ export default {
     },
     login() {
       if (this.files.length < 1) {
-        this.$message.error("请您上传您的电工证")
+        this.$message.error("请您上传您的学生证")
         return;
       }
       this.$refs["userForm"].validate((valid) => {

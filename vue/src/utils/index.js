@@ -354,3 +354,4 @@ export function resetTokenAndClearUser() {
   // 重设路由
   resetRouter()
 }
+const baseUrl = "http://s764c7d7.natappfree.cc/api";

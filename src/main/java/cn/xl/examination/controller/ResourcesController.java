@@ -3,6 +3,10 @@ package cn.xl.examination.controller;
 
 
 import cn.xl.examination.common.lang.Result;
+import cn.xl.examination.constBag.NatConst;
+import cn.xl.examination.dto.FileUrlDto;
+import cn.xl.examination.entity.FileAddress;
+import cn.xl.examination.service.FileAddressService;
 import cn.xl.examination.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.api.ApiController;
@@ -45,7 +49,10 @@ public class ResourcesController extends ApiController {
     UserService userService;
 
     @PostMapping("/upFile")
-    public Result upFile(@AuthenticationPrincipal UserDetails userDetails, MultipartFile file, String videoName, String content) throws IOException {
+    public Result upFile( @AuthenticationPrincipal UserDetails userDetails,
+                          @RequestParam("file") MultipartFile file,
+                          @RequestParam("videoName") String videoName,
+                          @RequestParam("content") String content) throws IOException {
         Result result = new Result();
         System.out.println(userDetails);
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
@@ -83,7 +90,7 @@ public class ResourcesController extends ApiController {
         // 为了显示回显,我们需要返回可以访问上传的图片的路径
         // 我们上传的图片要想访问,需要访问静态资源服务器的路径,可能的格式如下
         // http://localhost:8899/2022/03/23/xxx-xxx-xxx.jpg
-        String url = "http://127.0.0.1:9090/static/video/"+path+"/"+name;
+        String url = NatConst.value +"/api/static/video/"+path+"/"+name;
         log.debug("回显图片的路径为:{}",url);
         Resources resources = new Resources();
         resources.setName(videoName).setContent(content).setAddress(url);
@@ -97,6 +104,28 @@ public class ResourcesController extends ApiController {
         result.setMsg("上传成功");
         return result;
     }
+    @Resource
+    FileAddressService fileAddressService;
+    @PostMapping("/upFileName")
+    public Result saveVideosUrl(@AuthenticationPrincipal UserDetails userDetails,
+                                @RequestBody FileUrlDto fileUrl){
+        Result result = new Result();
+        System.out.println(userDetails);
+        if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
+            result.setAuthError();
+            return result;
+        }
+        if (fileUrl == null || fileUrl.getFileName().isEmpty() || fileUrl.getContent().isEmpty()){
+            result.setPathError();
+            return result;
+        }
+        FileAddress fileAddress = new FileAddress();
+        fileAddress.setFileName(fileUrl.getFileName()).setFileUrl(fileUrl.getFileUrl()).setContent(fileUrl.getContent()).setObjectKey(fileUrl.getObjectKey());
+
+        fileAddressService.save(fileAddress);
+        return Result.succ(200);
+    }
+//    https://xionglei-bucket.oss-cn-beijing.aliyuncs.com/1753167009831_rfzn83o9ht_9b0c0c95342b0d3c1b5990c10fb9acc7.mp4
     @GetMapping("/getAll")
     public Result getAll(Integer pageNum, Integer pageSize){
         Result result = new Result();
@@ -105,17 +134,17 @@ public class ResourcesController extends ApiController {
         return result;
     }
     @GetMapping("/delete")
-    public Result deleteResource(Integer id,@AuthenticationPrincipal UserDetails userDetails){
+    public Result deleteResource(String objectKey,@AuthenticationPrincipal UserDetails userDetails){
         Result result = new Result();
         if (!userService.getUserByUsername(userDetails.getUsername()).getRoleId().equals("1")){
             result.setAuthError();
             return result;
         }
-        if (id == null){
+        if (objectKey == null || objectKey.isEmpty()){
             result.setPathError();
             return result;
         }
-        Integer i = resourcesService.deleteResource(id);
+        Integer i = fileAddressService.deleteAddress(objectKey);
         if (i!=1){
             result.setDataBaseError();
         }

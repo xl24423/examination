@@ -1,8 +1,8 @@
 import axios from 'axios'
 import user from "../views/User"
 const request = axios.create({
-    baseURL: 'http://127.0.0.1:9090',
-    timeout: 5000
+    baseURL: 'http://s764c7d7.natappfree.cc/api',
+    timeout: 500000
 })
 
 // request 拦截器

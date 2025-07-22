@@ -51,7 +51,7 @@ public class User extends Model<User> {
     //企业id, 对应company表
     @TableField("company_id")
     private String companyId;
-    //电工证书保存地址
+    //学生证书保存地址
     @TableField("certificate_url")
     private String certificateUrl;
     //专业类别（多选）  1并网调度协议练习人员；2变电站运维人员；3停送电联系人员；
