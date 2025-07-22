@@ -5,15 +5,8 @@ import org.springframework.beans.factory.annotation.Value;
 public class OssConst {
 
     public static String accessKeyId;
-    public static String secret = "";
-    @Value("${aliyun.oss.access-key-id}")
-    public void setAccessKeyId(String accessKeyId){
-        OssConst.accessKeyId = accessKeyId;
-    }
-    @Value("${aliyun.oss.access-key-secret}")
-    public void setSecret(String secret){
-        OssConst.secret = secret;
-    }
+    public static String secret;
+
 
 
     public static final String bucketName = "xionglei-bucket";
